@@ -214,7 +214,7 @@ const rand4=()=>String(1000+Math.random()*9000|0);
 async function startHost(resume){
  S=resume||{code:rand4(),phase:'lobby',set:loadSet(),P:{},order:[],cid:{},pc:{},seq:0,pending:[],deaths:[],meeting:null,timerEnd:0,result:null,winner:null,reason:''};
  S.pending=[];keepAwake();
- Object.values(S.P).forEach(p=>p.on=false);
+ Object.values(S.P).forEach(p=>p.on=!!p.bot);
  if(resume&&S.timerEnd){S.timerEnd=Date.now()+15000} // 재시작 시 여유 시간
  app.innerHTML=`<h1>🚀 우리 반 우주선</h1><p class="sub">연결 준비 중…</p>`;
  try{await needPeer()}catch(e){app.innerHTML=`<div class="card center"><h2>⚠️ 인터넷 연결을 확인해주세요</h2><p>게임 연결 모듈을 불러오지 못했어요.</p></div>`;return}
@@ -234,8 +234,9 @@ async function startHost(resume){
 }
 function hostTick(){
  if(!S)return;
+ botTick();
  if(hostReady)setStatus('');
- if(!S._chk||Date.now()-S._chk>2000){S._chk=Date.now();let ch=false;S.order.forEach(id=>{const p=P(id);if(p&&p.on&&p.seen&&Date.now()-p.seen>12000){p.on=false;ch=true}});if(ch)renderHost()}
+ if(!S._chk||Date.now()-S._chk>2000){S._chk=Date.now();let ch=false;S.order.forEach(id=>{const p=P(id);if(p&&!p.bot&&p.on&&p.seen&&Date.now()-p.seen>12000){p.on=false;ch=true}});if(ch)renderHost()}
  const t=$('#htimer');
  if(t&&S.timerEnd){const s=Math.max(0,Math.ceil((S.timerEnd-Date.now())/1000));t.textContent=s;t.style.color=s<=10?'#f87171':'#fff'}
  if(S.timerEnd&&Date.now()>=S.timerEnd){
@@ -331,6 +332,35 @@ function kick(pid){
  delete S.P[pid];S.order=S.order.filter(x=>x!==pid);for(const k in S.cid)if(S.cid[k]===pid)delete S.cid[k];delete S.pc[pid];
  renderHost();saveHost();
 }
+const BOTN=['로봇1','로봇2','로봇3','로봇4','로봇5','로봇6'];
+function addBots(){
+ if(S.phase!=='lobby')return;
+ let need=Math.max(4,4-S.order.length),added=0;
+ for(const nm of BOTN){if(added>=need)break;if(S.order.some(id=>P(id).name===nm))continue;
+  const pid='p'+(++S.seq);const used=new Set(S.order.map(id=>P(id).color));
+  S.P[pid]={pid,name:nm,color:COLORS.find(c=>!used.has(c))||'#64748b',role:'crew',alive:true,pub:true,tasks:[],meet:0,cd:0,vote:null,on:true,bot:true};
+  S.order.push(pid);added++}
+ renderHost();saveHost();
+}
+function botTick(){
+ if(!S||!['play','vote'].includes(S.phase))return;
+ const now=Date.now();
+ for(const id of S.order){const b=P(id);if(!b||!b.bot)continue;
+  if(!b.next)b.next=now+4000+Math.random()*8000;
+  if(now<b.next)continue;
+  if(S.phase==='play'){
+   b.next=now+8000+Math.random()*12000;
+   if(b.role==='crew'){const t=b.tasks.find(x=>!x.done);if(t){t.done=true;if(checkWin())return;bcastAll();renderHost()}}
+   else if(b.alive&&now>=(b.cd||0)&&Math.random()<.5){const tg=alivePlayers().filter(q=>q.role!=='imp');if(tg.length){const v=tg[Math.random()*tg.length|0];v.alive=false;v.pub=false;S.deaths.push(v.pid);b.cd=now+S.set.cd*1000;if(checkWin())return;bcastAll();renderHost()}}
+  }else if(S.phase==='vote'&&b.alive&&b.vote==null){
+   b.next=now+2000+Math.random()*5000;
+   const opts=alivePlayers().filter(q=>q.pid!==b.pid&&!(b.role==='imp'&&q.role==='imp'));
+   b.vote=Math.random()<.25||!opts.length?'skip':opts[Math.random()*opts.length|0].pid;
+   if(alivePlayers().every(q=>q.vote!=null)){endVote();return}
+   bcastAll();renderHost();
+  }
+ }
+}
 function genTasks(n){
  const quiz=parseQuiz(S.set.quiz);
  let types=['wires','order','hold','simon'];if(quiz.length)types.push('quiz');
@@ -347,7 +377,7 @@ function startGame(){
  const ni=Math.min(S.set.imp,maxImp(ids.length));
  const imps=new Set(shuffle(ids).slice(0,ni));
  const now=Date.now();
- ids.forEach(id=>{const p=P(id);Object.assign(p,{role:imps.has(id)?'imp':'crew',alive:true,pub:true,tasks:genTasks(S.set.tasks),meet:S.set.meet,cd:now+S.set.cd*1000,vote:null})});
+ ids.forEach(id=>{const p=P(id);p.next=0;Object.assign(p,{role:imps.has(id)?'imp':'crew',alive:true,pub:true,tasks:genTasks(S.set.tasks),meet:S.set.meet,cd:now+S.set.cd*1000,vote:null})});
  Object.assign(S,{phase:'play',deaths:[],meeting:null,result:null,winner:null,reason:'',timerEnd:0,impN:ni});
  SND.start();bcastAll();renderHost();
 }
@@ -359,7 +389,7 @@ function callMeeting(by){
  S.meeting={by,dead};S.phase='meeting';S.timerEnd=Date.now()+S.set.disc*1000;
  SND.alarm();bcastAll();renderHost();
 }
-function startVote(){if(S.phase!=='meeting')return;S.phase='vote';S.timerEnd=Date.now()+S.set.vote*1000;S.order.forEach(id=>P(id).vote=null);SND.ding();bcastAll();renderHost()}
+function startVote(){if(S.phase!=='meeting')return;S.order.forEach(id=>{if(P(id).bot)P(id).next=0});S.phase='vote';S.timerEnd=Date.now()+S.set.vote*1000;S.order.forEach(id=>P(id).vote=null);SND.ding();bcastAll();renderHost()}
 function endVote(){
  if(S.phase!=='vote')return;
  const cnt={},al=alivePlayers();let skip=0,none=0;
@@ -379,7 +409,7 @@ function afterResult(){
  if(checkWin())return;
  const now=Date.now();
  S.order.forEach(id=>{const p=P(id);p.vote=null;if(p.role==='imp')p.cd=now+S.set.cd*1000});
- S.phase='play';S.timerEnd=0;S.meeting=null;
+ S.order.forEach(id=>{if(P(id).bot)P(id).next=0});S.phase='play';S.timerEnd=0;S.meeting=null;
  bcastAll();renderHost();
 }
 function checkWin(){
@@ -402,7 +432,7 @@ function joinURL(){return location.origin+location.pathname+'?join='+S.code+(LOC
 function plistHTML(opts){
  opts=opts||{};
  return `<div class="plist">${S.order.map(id=>{const p=P(id);const dead=opts.showDead&&!p.alive&&p.pub;const mk=opts.voted?(p.alive?(p.vote!=null?'✅':'⏳'):''):'';
-  return `<div class="pl ${dead?'dead':''} ${p.on?'':'off'}" ${opts.kick?`onclick="kick('${id}')"`:''}>${av(p)}<span>${esc(p.name)}</span>${dead?'<span class="mark">👻</span>':''}${mk?`<span class="mark">${mk}</span>`:''}</div>`}).join('')}</div>`;
+  return `<div class="pl ${dead?'dead':''} ${p.on?'':'off'}" ${opts.kick?`onclick="kick('${id}')"`:''}>${av(p)}<span>${esc(p.name)}${p.bot?' 🤖':''}</span>${dead?'<span class="mark">👻</span>':''}${mk?`<span class="mark">${mk}</span>`:''}</div>`}).join('')}</div>`;
 }
 function pendHTML(){if(!S.pending.length)return'';return`<div class="pend"><b>🔁 재접속 요청</b>${S.pending.map((r,i)=>`<div style="margin-top:8px">${esc(r.name)} <button class="btn green" style="padding:6px 12px;font-size:16px" onclick="allowRe(${i},true)">허용</button> <button class="btn gray" style="padding:6px 12px;font-size:16px" onclick="allowRe(${i},false)">거절</button></div><div class="small">진짜 본인 패드인지 확인하고 허용하세요.</div>`).join('')}</div>`}
 
@@ -442,6 +472,7 @@ function renderHost(){
    <div class="small">퀴즈 문제를 모두 지우면 퀴즈 임무는 나오지 않아요.</div>
   </details>
   <div class="row"><button class="btn big green" onclick="startGame()">▶️ 게임 시작</button></div>
+  <div class="row" style="margin-top:10px"><button class="btn gray" onclick="addBots()">🤖 혼자 연습용 로봇 추가</button></div>
   <p class="center small" id="impHint">${impHint()}</p>
   <div id="pendBox">${pendHTML()}</div></div>`;
   app.innerHTML=h;
