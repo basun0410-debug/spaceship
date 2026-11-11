@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>우리 반 우주선 – 임포스터를 찾아라!</title>
+<title>우리 반 우주선 – 임포스터를 찾아라! (v3)</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%}
@@ -454,6 +454,7 @@ function renderHost(){
    <div class="card" style="flex:1.6">
     <h2>👩‍🚀 참가한 크루 <span id="pcount">${S.order.length}</span>명</h2>
     <div class="small">이름을 누르면 대기실에서 내보낼 수 있어요.</div>
+    <button class="btn amber" style="margin-top:10px" onclick="addBots()">🤖 혼자 연습용 로봇 추가</button>
     <div id="plistBox" style="margin-top:10px">${plistHTML({kick:true})}</div>
    </div>
   </div>
@@ -472,7 +473,7 @@ function renderHost(){
    <div class="small">퀴즈 문제를 모두 지우면 퀴즈 임무는 나오지 않아요.</div>
   </details>
   <div class="row"><button class="btn big green" onclick="startGame()">▶️ 게임 시작</button></div>
-  <div class="row" style="margin-top:10px"><button class="btn gray" onclick="addBots()">🤖 혼자 연습용 로봇 추가</button></div>
+
   <p class="center small" id="impHint">${impHint()}</p>
   <div id="pendBox">${pendHTML()}</div></div>`;
   app.innerHTML=h;
