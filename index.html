@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>우리 반 우주선 – 임포스터를 찾아라! (v7)</title>
+<title>우리 반 우주선 – 임포스터를 찾아라! (v8)</title>
 <style>
 @font-face{font-family:'GmarketSans';font-weight:300;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff') format('woff')}
 @font-face{font-family:'GmarketSans';font-weight:500;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff')}
@@ -613,7 +613,7 @@ function onHostMsg(cid,m){
   bcastAll();renderHost();break;
  }
 }
-function tp(p,x,y){p.x=x;p.y=y;p.vent=null;p.tpN=(p.tpN||0)+1}
+function tp(p,x,y){if(!walkable(x,y)){for(let r=4;r<400&&!walkable(x,y);r+=4)for(let a=0;a<16;a++){const nx=x+Math.cos(a/16*Math.PI*2)*r,ny=y+Math.sin(a/16*Math.PI*2)*r;if(walkable(nx,ny)){x=nx;y=ny;break}}}p.x=x;p.y=y;p.vent=null;p.tpN=(p.tpN||0)+1}
 function spawnAll(){const ids=S.order;ids.forEach((id,i)=>{const sp=SPAWN(i,ids.length);tp(P(id),sp.x,sp.y);P(id).path=null})}
 function doKill(k,v){
  v.alive=false;v.pub=false;S.deaths.push(v.pid);S.bodies.push({pid:v.pid,x:v.x,y:v.y});k.cd=Date.now()+S.set.cd*1000;tp(k,v.x,v.y);v.path=null;
@@ -1179,10 +1179,11 @@ function ensureGame(){
  const cv=$('#cv'),gm=$('#game');
  const rb=$('#roleBtn'),box=$('#roleBox');const on=e=>{e.preventDefault();box.innerHTML=roleText();box.classList.add('show')},off=()=>box.classList.remove('show');
  rb.addEventListener('pointerdown',on);rb.addEventListener('pointerup',off);rb.addEventListener('pointerleave',off);rb.addEventListener('pointercancel',off);rb.addEventListener('contextmenu',e=>e.preventDefault());
- cv.addEventListener('pointerdown',e=>{if(joy.on)return;joy={on:true,id:e.pointerId,ox:e.clientX,oy:e.clientY,dx:0,dy:0};cv.setPointerCapture(e.pointerId);const j=$('#joy');j.style.display='block';j.style.left=e.clientX+'px';j.style.top=e.clientY+'px';$('#knob').style.transform='translate(-50%,-50%)'});
+ cv.addEventListener('pointerdown',e=>{joy={on:true,id:e.pointerId,ox:e.clientX,oy:e.clientY,dx:0,dy:0};try{cv.setPointerCapture(e.pointerId)}catch(x){}const j=$('#joy');j.style.display='block';j.style.left=e.clientX+'px';j.style.top=e.clientY+'px';$('#knob').style.transform='translate(-50%,-50%)'});
  cv.addEventListener('pointermove',e=>{if(!joy.on||e.pointerId!==joy.id)return;let dx=e.clientX-joy.ox,dy=e.clientY-joy.oy;const d=Math.hypot(dx,dy),m=60;if(d>m){dx=dx/d*m;dy=dy/d*m}joy.dx=dx/m;joy.dy=dy/m;$('#knob').style.transform=`translate(calc(-50% + ${dx}px),calc(-50% + ${dy}px))`});
  const end=e=>{if(e.pointerId!==joy.id)return;joy={on:false,id:null,dx:0,dy:0};$('#joy').style.display='none'};
- cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
+ cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);cv.addEventListener('lostpointercapture',end);
+ addEventListener('pointerup',end);addEventListener('blur',()=>{joy={on:false,id:null,dx:0,dy:0};$('#joy')&&($('#joy').style.display='none')});
  G={last:performance.now()};requestAnimationFrame(frame);
 }
 function leaveGame(){if(G){G=null;document.body.classList.remove('ingame')}}
@@ -1199,6 +1200,7 @@ function frame(now){
  const l=Math.hypot(vx,vy);if(l>1){vx/=l;vy/=l}
  const can=!frozen()&&!ME.vent;
  ME.mv=can&&l>.15;
+ if(!ghost&&!ME.vent&&!walkable(ME.x,ME.y))unstick();
  if(ME.mv){const sp=(ghost?GHOST_SPEED:SPEED)*dt;
   const nx=ME.x+vx*sp,ny=ME.y+vy*sp;
   if(ghost){ME.x=Math.max(-100,Math.min(MAP_W+100,nx));ME.y=Math.max(-100,Math.min(MAP_H+100,ny))}
@@ -1224,6 +1226,7 @@ function frame(now){
  if(t-actT>180){actT=t;updateActs()}
  requestAnimationFrame(frame);
 }
+function unstick(){for(let r=4;r<400;r+=4)for(let a=0;a<16;a++){const x=ME.x+Math.cos(a/16*Math.PI*2)*r,y=ME.y+Math.sin(a/16*Math.PI*2)*r;if(walkable(x,y)){ME.x=x;ME.y=y;return}}}
 function nearest(list,r){let best=null,bd=r;list.forEach(x=>{const d=dist(x,ME);if(d<bd){bd=d;best=x}});return best}
 function findActs(){
  const me=V.me,imp=me.role==='imp',ghost=!me.alive,a={};
