@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>우리 반 우주선 – 임포스터를 찾아라! (v4)</title>
+<title>우리 반 우주선 – 임포스터를 찾아라! (v5)</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%}
@@ -57,7 +57,7 @@ label{display:block;margin:8px 0 4px;font-weight:700}
 @keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 .toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);background:#16a34a;color:#fff;padding:14px 24px;border-radius:999px;font-weight:900;font-size:20px;z-index:99;box-shadow:0 6px 20px #0008;text-align:center}
 .status{position:fixed;top:0;left:0;right:0;background:#b45309;color:#fff;text-align:center;padding:6px;font-weight:800;z-index:98}
-.pend{position:fixed;right:14px;bottom:14px;z-index:60;background:#1e293b;border:2px solid #f59e0b;border-radius:16px;padding:12px;max-width:340px}
+.pend{position:fixed;right:14px;bottom:80px;z-index:90;background:#1e293b;border:2px solid #f59e0b;border-radius:16px;padding:12px;max-width:340px}
 .vbtn{display:flex;align-items:center;gap:12px;width:100%;margin:8px 0;padding:12px;font:inherit;font-size:21px;font-weight:800;border-radius:14px;border:2px solid #475569;background:#1e293b;color:#fff;text-align:left}
 .vbtn.sel{border-color:#fde047;background:#3f3a10}
 .small{font-size:14px;opacity:.75}
@@ -89,6 +89,73 @@ details summary{cursor:pointer;font-weight:800;font-size:20px}
 .hand{width:230px;height:230px;border-radius:50%;border:6px dashed #f87171;background:#1f2937;font-size:90px;display:block;margin:18px auto;touch-action:none;color:#fff}
 .hand.on{background:#166534;border-color:#4ade80}
 .subj{display:inline-block;background:#4f46e5;border-radius:999px;padding:2px 12px;font-size:16px;margin-bottom:6px}
+/* ===== v5: 어몽어스식 연출 ===== */
+.av{background:none!important;border:0;border-radius:0;width:auto;height:auto;vertical-align:middle}
+.av svg{display:block;overflow:visible}
+.logo{font-weight:900;letter-spacing:.04em;color:#fff;-webkit-text-stroke:2px #000;paint-order:stroke fill;text-shadow:0 4px 0 #000,0 0 30px #60a5fa88}
+.space{position:fixed;inset:0;z-index:70;background:#000;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
+.space:before,.space:after{content:"";position:absolute;inset:-50%;pointer-events:none;background-image:radial-gradient(2px 2px at 10% 20%,#fff,transparent),radial-gradient(1px 1px at 30% 70%,#fff,transparent),radial-gradient(2px 2px at 55% 30%,#fff,transparent),radial-gradient(1px 1px at 75% 55%,#fff,transparent),radial-gradient(2px 2px at 90% 15%,#fff,transparent),radial-gradient(1px 1px at 15% 85%,#fff,transparent),radial-gradient(2px 2px at 65% 90%,#fff,transparent),radial-gradient(1px 1px at 45% 50%,#fff,transparent);background-size:300px 300px;animation:stars 6s linear infinite}
+.space:after{background-size:520px 520px;opacity:.6;animation-duration:11s}
+@keyframes stars{to{transform:translateX(-300px)}}
+.space>*{position:relative;z-index:1}
+.typed{font-size:clamp(26px,4.4vw,58px);font-weight:800;color:#fff;min-height:1.3em;margin-top:20px;text-shadow:0 2px 6px #000}
+.typed2{font-size:clamp(20px,3vw,40px);color:#e2e8f0;margin-top:10px;min-height:1.3em}
+.flyer{position:absolute;top:38%;left:0;animation:eject 6s linear forwards;z-index:1}
+@keyframes eject{0%{transform:translateX(-25vw) rotate(0)}100%{transform:translateX(115vw) rotate(900deg)}}
+.cine{position:fixed;inset:0;z-index:80;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
+.cine.shh{background:#000}
+.cine.crew{background:radial-gradient(ellipse at 50% 70%,#1e3a8a 0,#000 65%)}
+.cine.imp{background:radial-gradient(ellipse at 50% 70%,#7f1d1d 0,#000 65%)}
+.cine.meet{background:repeating-linear-gradient(135deg,#7f1d1d 0 40px,#991b1b 40px 80px);animation:zoomin .5s ease-out}
+.cine .big{font-size:clamp(56px,12vw,170px);font-weight:900;line-height:1;-webkit-text-stroke:3px #000;paint-order:stroke fill;text-shadow:0 6px 0 #000}
+.cine .mid{font-size:clamp(22px,3.6vw,46px);font-weight:800;color:#fff;margin-top:16px}
+.line{display:flex;gap:clamp(6px,1.5vw,20px);align-items:flex-end;justify-content:center;flex-wrap:wrap;margin-top:24px;max-width:96vw}
+.line>div{text-align:center;font-weight:800;color:#fff;font-size:clamp(13px,1.6vw,22px)}
+@keyframes zoomin{0%{transform:scale(1.8);opacity:0}100%{transform:scale(1);opacity:1}}
+.pop{animation:zoomin .45s ease-out}
+.bob{animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-8px)}}
+.floaters{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.floaters span{position:absolute;opacity:.55;animation:drift linear infinite}
+@keyframes drift{0%{transform:translateX(-15vw) rotate(0)}100%{transform:translateX(115vw) rotate(360deg)}}
+#app{z-index:1}
+/* 승무원 대기실 */
+.crewgrid{display:flex;flex-wrap:wrap;gap:8px 4px;justify-content:center}
+.crewgrid .cm{width:86px;text-align:center;font-weight:800;font-size:16px;position:relative;cursor:default}
+.crewgrid .cm.off{opacity:.45}
+.crewgrid .cm.dead{opacity:.35}
+.crewgrid .cm .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crewgrid .cm .badge{position:absolute;right:4px;top:0;font-size:20px}
+/* 투표 태블릿 */
+.tablet{background:#b8c6d1;border:6px solid #475569;border-radius:26px;padding:16px;color:#0f172a;box-shadow:0 10px 0 #1e293b}
+.tablet h2{margin:0 0 10px;text-align:center;font-size:clamp(24px,3.4vw,44px);font-weight:900}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
+.tile{display:flex;align-items:center;gap:10px;background:#e2e8f0;border:3px solid #1e293b;border-radius:14px;padding:6px 10px;min-height:66px;position:relative;font-weight:900;font-size:20px}
+.tile.dead{background:#94a3b8;opacity:.7}
+.tile.dead .tn{text-decoration:line-through}
+.tile .vs{position:absolute;right:8px;top:6px;background:#16a34a;color:#fff;font-size:13px;padding:2px 8px;border-radius:999px;transform:rotate(-8deg)}
+.tile .chips{display:flex;flex-wrap:wrap;gap:2px;margin-left:auto;max-width:55%}
+.tile.top{outline:5px solid #dc2626}
+.tskip{margin-top:10px;font-weight:900;font-size:20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+/* 패드 HUD */
+.hudtop{display:flex;align-items:center;gap:8px;background:#0b3d1a;border:3px solid #000;border-radius:10px;padding:4px 8px;font-weight:900;font-size:14px}
+.hudtop .bar{flex:1;height:18px}
+.actbar{position:fixed;left:0;right:0;bottom:0;z-index:35;display:flex;gap:8px;justify-content:center;padding:8px 8px calc(8px + env(safe-area-inset-bottom));background:linear-gradient(transparent,#000c 35%)}
+.act{position:relative;width:min(19vw,104px);height:min(19vw,104px);border-radius:22px;border:4px solid #000;background:#e2e8f0;color:#0f172a;font:inherit;font-weight:900;font-size:clamp(13px,2.6vw,18px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:0 5px 0 #000;padding:0}
+.act .ic{font-size:clamp(28px,6vw,42px);line-height:1}
+.act[disabled]{opacity:.32;filter:grayscale(1)}
+.act.kill{background:#fecaca}.act.sab{background:#fca5a5}.act.vent{background:#ddd6fe}.act.rep{background:#fde68a}.act.use{background:#bbf7d0}
+.act .cd{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:900;color:#fff;-webkit-text-stroke:2px #000;paint-order:stroke fill;background:#0006;border-radius:18px}
+body.hasbar #app{padding-bottom:140px}
+/* 비상 버튼 */
+.ebtn{width:min(70vw,300px);height:min(70vw,300px);border-radius:50%;margin:16px auto;display:flex;align-items:center;justify-content:center;background:repeating-conic-gradient(#111 0 12deg,#facc15 12deg 24deg);border:6px solid #000}
+.ebtn button{width:72%;height:72%;border-radius:50%;border:6px solid #000;background:radial-gradient(circle at 40% 30%,#fca5a5,#dc2626 45%,#7f1d1d);box-shadow:0 12px 0 #450a0a;color:#fff;font:inherit;font-weight:900;font-size:26px;cursor:pointer}
+.ebtn button:active{transform:translateY(8px);box-shadow:0 4px 0 #450a0a}
+.ebtn button[disabled]{filter:grayscale(.7);opacity:.6}
+/* 방해 공작 지도 */
+.sabmap .room{min-height:100px;background:#3f0d0d;border-color:#7f1d1d;color:#fecaca}
+.sabmap .sbtn{width:64px;height:64px;border-radius:50%;border:4px solid #000;background:#dc2626;color:#fff;font-size:30px;box-shadow:0 4px 0 #000}
+.sabmap .sbtn[disabled]{opacity:.35}
 </style>
 </head>
 <body>
@@ -169,7 +236,20 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
 const pick=a=>a[Math.random()*a.length|0];
 const rid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
-const av=(p,size)=>`<span class="av" style="background:${p.color}${size?`;width:${size}px;height:${size}px;font-size:${size*.45}px`:''}">${esc([...p.name][0]||'?')}</span>`;
+/* 우리 반 우주인 캐릭터 (동그란 헬멧 + 안테나) */
+function shade(hex,k){const n=parseInt(String(hex).slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;const f=x=>Math.max(0,Math.min(255,Math.round(k<0?x*(1+k):x+(255-x)*k)));return'#'+[f(r),f(g),f(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+function crewSVG(color,h,o){
+ o=o||{};const d=shade(color,-.35),ch=esc(o.ch||'');const W=o.dead?h:h/1.2;
+ const eyes=o.dead?'<path d="M39 38l8 8M47 38l-8 8M53 38l8 8M61 38l-8 8" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>':'<circle cx="43" cy="43" r="3.8" fill="#111"/><circle cx="57" cy="43" r="3.8" fill="#111"/><path d="M44 50q6 5 12 0" stroke="#111" stroke-width="2.6" fill="none" stroke-linecap="round"/>';
+ const legs=o.ghost?`<path d="M18 92q8 18 16 0q8 18 16 0q8 18 16 0q8 18 16 0" fill="${color}" stroke="#111" stroke-width="4"/>`:`<rect x="28" y="92" width="17" height="22" rx="7" fill="${d}" stroke="#111" stroke-width="4"/><rect x="55" y="92" width="17" height="22" rx="7" fill="${d}" stroke="#111" stroke-width="4"/>`;
+ return `<svg width="${W}" height="${h}" viewBox="${o.dead?'-12 0 120 120':'0 0 100 120'}" style="${o.ghost?'opacity:.55;':''}">${o.dead?'<ellipse cx="46" cy="96" rx="56" ry="9" fill="#b91c1c" opacity=".85"/><g transform="rotate(-90 50 60)">':''}
+ <line x1="50" y1="12" x2="50" y2="4" stroke="#111" stroke-width="4"/><circle cx="50" cy="5" r="6" fill="${o.ghost?'#fde047':color}" stroke="#111" stroke-width="3"/>
+ ${legs}<rect x="18" y="44" width="64" height="58" rx="26" fill="${color}" stroke="#111" stroke-width="4"/>
+ <circle cx="50" cy="42" r="30" fill="${color}" stroke="#111" stroke-width="4"/>
+ <ellipse cx="50" cy="44" rx="21" ry="17" fill="${o.dead?'#cbd5e1':'#e0f7ff'}" stroke="#111" stroke-width="3"/><ellipse cx="41" cy="35" rx="6" ry="3.5" fill="#fff" opacity=".9"/>${eyes}
+ ${ch?`<circle cx="50" cy="83" r="12" fill="#fff" stroke="#111" stroke-width="2.5"/><text x="50" y="90" text-anchor="middle" font-size="18" font-weight="900" fill="#111" font-family="sans-serif">${ch}</text>`:''}${o.dead?'</g>':''}</svg>`;
+}
+const av=(p,size,o)=>`<span class="av">${crewSVG(p.color,(size||44)*1.15,Object.assign({ch:[...(p.name||'?')][0]},o||{}))}</span>`;
 function toast(t,color){const d=document.createElement('div');d.className='toast';d.textContent=t;if(color)d.style.background=color;document.body.appendChild(d);setTimeout(()=>d.remove(),1900)}
 function setStatus(t){let s=$('#status');if(!t){s&&s.remove();return}if(!s){s=document.createElement('div');s.id='status';s.className='status';document.body.appendChild(s)}s.innerHTML=esc(t)+(typeof PT!=='undefined'&&PT&&PT.kick?' <button class="btn" style="padding:4px 12px;font-size:15px;margin-left:8px" onclick="PT.kick()">지금 다시 연결</button>':'')}
 function loadScript(src){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
@@ -187,7 +267,19 @@ const SND={alarm(){for(let i=0;i<8;i++)beep(i%2?620:880,.26,'square',i*.3,.12)},
  lose(){[392,330,262,196].forEach((f,i)=>beep(f,.45,'sawtooth',i*.25,.12))},
  ding(){beep(988,.25,'sine',0,.2);beep(1318,.4,'sine',.12,.2)},
  siren(){beep(440,.5,'sawtooth',0,.08);beep(660,.5,'sawtooth',.5,.08)},
- drum(){for(let i=0;i<10;i++)beep(110,.1,'square',i*.12,.15)}};
+ drum(){for(let i=0;i<10;i++)beep(110,.1,'square',i*.12,.15)},
+ horn(){[0,.55].forEach(t=>{beep(392,.45,'sawtooth',t,.14);beep(523,.45,'sawtooth',t,.1)});beep(659,.9,'sawtooth',1.1,.12)},
+ shh(){noise(1.2,.08,2500)},
+ kill(){noise(.25,.35,900);beep(90,.4,'square',0,.2)},
+ whoosh(){noise(2.2,.12,600)},
+ reveal(){[196,262,330,392].forEach((f,i)=>beep(f,.9,'triangle',i*.08,.08))}};
+function noise(d,vol,freq){if(!AC)return;try{const n=AC.sampleRate*d,b=AC.createBuffer(1,n,AC.sampleRate),a=b.getChannelData(0);for(let i=0;i<n;i++)a[i]=(Math.random()*2-1)*(1-i/n);const s=AC.createBufferSource();s.buffer=b;const f=AC.createBiquadFilter();f.type='lowpass';f.frequency.value=freq||1200;const g=AC.createGain();g.gain.value=vol||.2;s.connect(f);f.connect(g);g.connect(AC.destination);s.start()}catch(e){}}
+/* 전체 화면 연출 */
+let cineT=null;
+function cine(cls,html,ms,done){let c=$('#cine');if(!c){c=document.createElement('div');c.id='cine';document.body.appendChild(c)}c.className='cine '+cls;c.innerHTML=html;c.style.display='flex';clearTimeout(cineT);cineT=setTimeout(()=>{c.style.display='none';c.innerHTML='';done&&done()},ms)}
+function cineOff(){clearTimeout(cineT);const c=$('#cine');if(c){c.style.display='none';c.innerHTML=''}}
+function typeText(el,txt,speed){if(!el)return Promise.resolve();el.textContent='';return new Promise(ok=>{let i=0;const ch=[...txt];const go=()=>{if(!el.isConnected)return ok();el.textContent=ch.slice(0,++i).join('');if(i<ch.length)setTimeout(go,speed||70);else ok()};setTimeout(go,speed||70)})}
+function floatersHTML(){return `<div class="floaters">${COLORS.slice(0,6).map((c,i)=>`<span style="top:${8+i*15}%;animation-duration:${22+i*7}s;animation-delay:-${i*5}s">${crewSVG(c,50+(i%3)*18)}</span>`).join('')}</div>`}
 
 /* ========= 통신 ========= */
 function hostTransport(code,onMsg,onReady,onErr){
@@ -247,7 +339,7 @@ document.addEventListener('pointerdown',keepAwake,{passive:true});
 /* ========= 첫 화면 ========= */
 function home(){
  const saved=hostSaved();
- app.innerHTML=`<h1>🚀 우리 반 우주선</h1><p class="sub" style="font-size:22px">우주선 안에 숨어 있는 <b style="color:#f87171">임포스터</b>를 찾아라!</p>
+ app.innerHTML=`${floatersHTML()}<h1 class="logo" style="font-size:clamp(40px,8vw,96px);margin-top:30px">우리 반 우주선</h1><p class="sub" style="font-size:22px">우주선 안에 숨어 있는 <b style="color:#f87171">임포스터</b>를 찾아라!</p>
  <div class="card" style="max-width:560px;margin:24px auto">
   <button class="btn big purple" id="bHost">🖥️ 선생님 화면으로 시작 (전자칠판)</button>
   ${saved?`<p></p><button class="btn big amber" id="bResume">↩️ 진행 중이던 게임 이어하기 (방 코드 ${esc(saved.code)})</button>`:''}
@@ -262,7 +354,7 @@ function home(){
    선생님(호스트)
    ===================================================== */
 let S=null,HT=null,hostReady=false;
-const DEF={imp:2,disc:60,vote:30,cd:25,tasks:5,meet:1,reveal:true,sabCd:35,reactor:45,quiz:DEFAULT_QUIZ};
+const DEF={imp:2,disc:60,vote:30,cd:25,tasks:5,meet:1,reveal:true,anon:true,sabCd:35,reactor:45,quiz:DEFAULT_QUIZ};
 function loadSet(){try{return Object.assign({},DEF,JSON.parse(localStorage.getItem('ship-set-v2')||'{}'))}catch(e){return{...DEF}}}
 function saveSet(){try{localStorage.setItem('ship-set-v2',JSON.stringify(S.set))}catch(e){}}
 function hostSaved(){try{const s=JSON.parse(localStorage.getItem('ship-host-v2')||'null');return s&&s.order&&s.order.length?s:null}catch(e){return null}}
@@ -298,6 +390,7 @@ function hostTick(){
  if(!S._chk||Date.now()-S._chk>2000){S._chk=Date.now();let ch=false;S.order.forEach(id=>{const p=P(id);if(p&&!p.bot&&p.on&&p.seen&&Date.now()-p.seen>12000){p.on=false;ch=true}});if(ch)renderHost()}
  const t=$('#htimer');
  if(t&&S.timerEnd){const s=Math.max(0,Math.ceil((S.timerEnd-Date.now())/1000));t.textContent=s;t.style.color=s<=10?'#f87171':'#fff'}
+ if(S.phase==='result'){const rv=$('#resv');if(rv&&rv.dataset.stg!==resStage(S.timerEnd))renderHost()}
  const st=$('#hsabt');if(st&&S.sab&&S.sab.end)st.textContent=Math.max(0,Math.ceil((S.sab.end-Date.now())/1000))+'초';
  if(S.phase==='play'&&S.sab&&S.sab.type==='reactor'){
   if(Date.now()-lastSiren>1100){lastSiren=Date.now();SND.siren()}
@@ -333,7 +426,7 @@ function viewFor(pid){
   players:S.order.map(id=>{const q=P(id);return{pid:id,name:q.name,color:q.color,alive:seeAll||id===pid?q.alive:(q.alive||!q.pub),imp:(imp||S.phase==='end')&&q.role==='imp'}}),
   meeting:S.meeting,result:S.result,winner:S.winner,reason:S.reason,
   voted:S.phase==='vote'?alivePlayers().filter(q=>q.vote!=null).length:0,
-  aliveN:alivePlayers().length};
+  aliveN:alivePlayers().length,impN:S.impN||0};
  return v;
 }
 
@@ -455,18 +548,36 @@ function startGame(){
  const now=Date.now();quizPool=[];
  ids.forEach(id=>{const p=P(id);p.next=0;Object.assign(p,{role:imps.has(id)?'imp':'crew',alive:true,pub:true,room:'caf',tasks:genTasks(S.set.tasks),meet:S.set.meet,cd:now+S.set.cd*1000,vote:null})});
  Object.assign(S,{phase:'play',deaths:[],bodies:[],sab:null,sabCd:now+15000,meeting:null,result:null,winner:null,reason:'',timerEnd:0,impN:ni});
- SND.start();bcastAll();renderHost();
+ bcastAll();renderHost();boardIntro();
 }
+function boardIntro(){
+ SND.shh();
+ cine('shh',`<div class="pop" style="font-size:clamp(90px,16vw,200px)">🤫</div><div class="big" style="color:#fff">쉿!</div><div class="mid">패드 화면을 손으로 가리고 내 역할을 확인하세요</div>`,3000,()=>{
+  SND.reveal();
+  const ps=S.order.map(P);const sz=Math.max(46,Math.min(110,Math.floor(1100/Math.max(6,ps.length))*1.6));
+  cine('crew',`<div class="mid" style="font-size:clamp(28px,4.5vw,60px)">우리 중에 <b style="color:#f87171">임포스터</b>가 <b style="color:#f87171">${S.impN}명</b> 있습니다</div><div class="line">${ps.map(p=>`<div class="bob" style="animation-delay:-${Math.random()*2}s">${av(p,sz)}<div>${esc(p.name)}</div></div>`).join('')}</div>`,4500);
+ });
+}
+function ejectLines(r){return[r.name?(r.reveal?`${r.name} 님은 임포스터${r.wasImp?'였습니다.':'가 아니었습니다.'}`:`${r.name} 님이 우주선에서 쫓겨났습니다.`):`아무도 퇴출되지 않았습니다. (${r.why})`,r.reveal?`임포스터가 ${r.impLeft}명 남았습니다.`:'']}
+function resStage(end){return end&&end-Date.now()>8000?'tally':'eject'}
 function callMeeting(by,found){
  if(S.phase!=='play')return;
  const dead=S.deaths.map(id=>P(id)&&P(id).name).filter(Boolean);
  S.deaths.forEach(id=>{if(P(id))P(id).pub=true});S.deaths=[];S.bodies=[];
  S.sab=null;
  S.order.forEach(id=>{const p=P(id);p.vote=null;p.room='caf'});
- S.meeting={by,found:found||null,dead};S.phase='meeting';S.timerEnd=Date.now()+S.set.disc*1000;
- SND.alarm();bcastAll();renderHost();
+ S.meeting={by,found:found||null,dead};S.phase='meeting';S.timerEnd=Date.now()+S.set.disc*1000+3000;
+ SND.horn();bcastAll();renderHost();
+ cine('meet',meetSplash(S.meeting,160),3000);
 }
-function startVote(){if(S.phase!=='meeting')return;S.order.forEach(id=>{if(P(id).bot)P(id).next=0});S.phase='vote';S.timerEnd=Date.now()+S.set.vote*1000;S.order.forEach(id=>P(id).vote=null);SND.ding();bcastAll();renderHost()}
+function meetSplash(m,sz){
+ const byP=S&&S.order?S.order.map(P).find(p=>p&&p.name===m.by):(V&&V.players.find(p=>p.name===m.by));
+ const fp=m.found?(S&&S.order?S.order.map(P).find(p=>p&&p.name===m.found.name):V&&V.players.find(p=>p.name===m.found.name)):null;
+ return `<div class="big" style="color:#fff">${m.found?'시체 발견!':'긴급 회의!'}</div>
+ <div class="line" style="align-items:center">${byP?`<div class="bob">${av(byP,sz)}</div>`:'<div style="font-size:'+sz*.8+'px">👩‍🏫</div>'}${m.found&&fp?`<div style="font-size:${sz*.4}px">➡️</div><div>${av(fp,sz*.8,{dead:true})}</div>`:`<div style="font-size:${sz*.7}px">🔴</div>`}</div>
+ <div class="mid">${m.found?`${esc(m.by)} 님이 ${esc(m.found.name)} 님을 발견했어요`:`${esc(m.by)} 님이 비상 버튼을 눌렀어요`}</div>`;
+}
+function startVote(){if(S.phase!=='meeting')return;cineOff();S.order.forEach(id=>{if(P(id).bot)P(id).next=0});S.phase='vote';S.timerEnd=Date.now()+S.set.vote*1000;S.order.forEach(id=>P(id).vote=null);SND.ding();bcastAll();renderHost()}
 function endVote(){
  if(S.phase!=='vote')return;
  const cnt={},al=alivePlayers();let skip=0,none=0;
@@ -475,10 +586,11 @@ function endVote(){
  for(const k in cnt){if(cnt[k]>max){max=cnt[k];top=k;tie=false}else if(cnt[k]===max)tie=true}
  let ej=null;if(top&&!tie&&max>skip)ej=P(top);
  const tally=S.order.filter(id=>cnt[id]).map(id=>({name:P(id).name,color:P(id).color,n:cnt[id]})).sort((a,b)=>b.n-a.n);
+ const by={},skipBy=[];al.forEach(p=>{const c={name:p.name,color:p.color};if(p.vote==='skip')skipBy.push(c);else if(p.vote!=null)(by[p.vote]=by[p.vote]||[]).push(c)});
  if(ej){ej.alive=false;ej.pub=true}
  const impLeft=alivePlayers().filter(p=>p.role==='imp').length;
- S.result={name:ej?ej.name:null,color:ej?ej.color:null,wasImp:ej?ej.role==='imp':null,reveal:S.set.reveal,why:ej?'':(tie?'동점이라':(max<=skip&&skip?'건너뛰기가 많아서':'표가 부족해서')),tally,skip,none,impLeft};
- S.phase='result';S.timerEnd=Date.now()+9000;
+ S.result={pid:ej?ej.pid:null,name:ej?ej.name:null,color:ej?ej.color:null,wasImp:ej?ej.role==='imp':null,reveal:S.set.reveal,why:ej?'':(tie?'동점이라':(max<=skip&&skip?'건너뛰기가 많아서':'표가 부족해서')),tally,skip,none,impLeft,by,skipBy,anon:S.set.anon,top:ej?ej.pid:null};
+ S.phase='result';S.timerEnd=Date.now()+12000;
  SND.drum();bcastAll();renderHost();
 }
 function afterResult(){
@@ -560,8 +672,19 @@ function botTick(){
 function joinURL(){return location.origin+location.pathname+'?join='+S.code+(LOCAL?'&local':'')}
 function plistHTML(opts){
  opts=opts||{};
- return `<div class="plist">${S.order.map(id=>{const p=P(id);const dead=opts.showDead&&!p.alive&&p.pub;const mk=opts.voted?(p.alive?(p.vote!=null?'✅':'⏳'):''):'';
-  return `<div class="pl ${dead?'dead':''} ${p.on?'':'off'}" ${opts.kick?`onclick="kick('${id}')"`:''}>${av(p)}<span>${esc(p.name)}${p.bot?' 🤖':''}</span>${dead?'<span class="mark">👻</span>':''}${mk?`<span class="mark">${mk}</span>`:''}</div>`}).join('')}</div>`;
+ const n=S.order.length,sz=n>24?44:n>14?54:64;
+ return `<div class="crewgrid">${S.order.map(id=>{const p=P(id);const dead=opts.showDead&&!p.alive&&p.pub;
+  return `<div class="cm ${dead?'dead':''} ${p.on?'':'off'}" style="width:${sz+26}px;${opts.kick?'cursor:pointer':''}" ${opts.kick?`onclick="kick('${id}')"`:''}><div class="${dead?'':'bob'}" style="animation-delay:-${(+id.slice(1)%7)*.35}s">${av(p,sz,dead?{ghost:true}:null)}</div><div class="nm">${esc(p.name)}${p.bot?'🤖':''}</div>${p.on?'':'<div class="small" style="color:#fca5a5;font-size:11px">연결 끊김</div>'}</div>`}).join('')}</div>`;
+}
+function tabletHTML(mode){
+ const r=S.result;
+ const tiles=S.order.map(id=>{const p=P(id);const ej=r&&r.pid===id;const dead=!p.alive&&p.pub&&!(mode==='tally'&&ej);
+  let extra='';
+  if(mode==='vote'&&p.alive&&p.vote!=null)extra='<span class="vs">투표 완료</span>';
+  if(mode==='tally'&&r.by[id])extra=`<div class="chips">${r.by[id].map(c=>r.anon?crewSVG('#64748b',30):`<span title="${esc(c.name)}">${crewSVG(c.color,30,{ch:[...c.name][0]})}</span>`).join('')}</div>`;
+  return `<div class="tile ${dead?'dead':''} ${mode==='tally'&&ej?'top':''}">${av(p,40,dead?{dead:true}:null)}<span class="tn">${esc(p.name)}</span>${extra}</div>`}).join('');
+ const skip=mode==='tally'?`<div class="tskip">⏭ 건너뛰기: ${r.skipBy.length?r.skipBy.map(c=>r.anon?crewSVG('#64748b',30):crewSVG(c.color,30,{ch:[...c.name][0]})).join(''):'0표'}</div>`:'';
+ return `<div class="tablet"><h2>${mode==='tally'?'📊 개표 결과':'누가 임포스터일까요?'}</h2><div class="tgrid">${tiles}</div>${skip}</div>`;
 }
 function pendHTML(){if(!S.pending.length)return'';return`<div class="pend"><b>🔁 재접속 요청</b>${S.pending.map((r,i)=>`<div style="margin-top:8px">${esc(r.name)} <button class="btn green" style="padding:6px 12px;font-size:16px" onclick="allowRe(${i},true)">허용</button> <button class="btn gray" style="padding:6px 12px;font-size:16px" onclick="allowRe(${i},false)">거절</button></div><div class="small">진짜 본인 패드인지 확인하고 허용하세요.</div>`).join('')}</div>`}
 function hostMapHTML(){
@@ -574,10 +697,12 @@ function renderHost(){
  const ph=S.phase;
  if(ph==='lobby'&&$('#lobby')){$('#plistBox').innerHTML=plistHTML({kick:true});$('#pcount').textContent=S.order.length;$('#impHint').textContent=impHint();$('#pendBox').innerHTML=pendHTML();return}
  if(ph==='play'&&$('#playv')&&$('#playv').dataset.sig===playSig()){const{d,t}=crewTasks();$('#ptxt').textContent=`전체 임무 진행도 ${Math.round(progress()*100)}%`;$('#pbar').style.width=progress()*100+'%';$('#pcnt').textContent=`크루원 퀴즈 ${d} / ${t}`;$('#plistBox').innerHTML=plistHTML({showDead:true});$('#pendBox').innerHTML=pendHTML();const hn=$('#hholdn');if(hn)hn.textContent=holdN();return}
+ if(ph==='result'&&$('#resv')&&$('#resv').dataset.stg===resStage(S.timerEnd)){const pb=$('#pendBox2');if(pb)pb.innerHTML=pendHTML();return}
+ if(ph==='end'&&$('#endv')){const pb=$('#pendBox2');if(pb)pb.innerHTML=pendHTML();return}
  let h='';
  if(ph==='lobby'){
   const st=S.set;
-  h=`<div id="lobby"><h1>🚀 우리 반 우주선 — 임포스터를 찾아라!</h1>
+  h=`<div id="lobby">${floatersHTML()}<h1 class="logo">우리 반 우주선 <span style="font-size:.55em">— 임포스터를 찾아라!</span></h1>
   <div class="row" style="align-items:stretch">
    <div class="card center" style="flex:1">
     <div style="font-size:22px;font-weight:800">패드로 접속해서 방 코드를 입력하세요</div>
@@ -614,6 +739,7 @@ function renderHost(){
     <div><label>원자로 제한 시간(초)</label><input id="sRea" type="number" min="20" max="120" value="${st.reactor}"></div>
     <div><label>1인당 비상 회의 횟수</label><input id="sMeet" type="number" min="0" max="5" value="${st.meet}"></div>
     <div><label><input id="sRev" type="checkbox" style="width:auto" ${st.reveal?'checked':''}> 쫓겨난 사람 역할 공개</label></div>
+    <div><label><input id="sAnon" type="checkbox" style="width:auto" ${st.anon?'checked':''}> 익명 투표 (누가 누구를 뽑았는지 숨김)</label></div>
    </div>
    <label>📚 퀴즈 문제 (한 줄에 하나: [과목] 질문 / 정답 / 오답 / 오답)</label>
    <textarea id="sQuiz">${esc(st.quiz)}</textarea>
@@ -623,7 +749,7 @@ function renderHost(){
   app.innerHTML=h;
   try{if(typeof qrcode!=='undefined'){const q=qrcode(0,'M');q.addData(joinURL());q.make();$('#qr').innerHTML=`<div class="qr">${q.createSvgTag({cellSize:6,margin:2,scalable:true})}</div>`}else if(!LOCAL){loadScript('https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js').then(()=>{if(S.phase==='lobby'){app.innerHTML='';renderHost()}}).catch(()=>{})}}catch(e){}
   const bind=(id,key,num)=>{const el=$('#'+id);el.onchange=()=>{S.set[key]=num?Math.max(+el.min||0,Math.min(+el.max||999,parseInt(el.value)||DEF[key])):(el.type==='checkbox'?el.checked:el.value);saveSet();saveHost();$('#impHint').textContent=impHint()}};
-  bind('sImp','imp',1);bind('sDisc','disc',1);bind('sVote','vote',1);bind('sCd','cd',1);bind('sTasks','tasks',1);bind('sMeet','meet',1);bind('sSab','sabCd',1);bind('sRea','reactor',1);bind('sRev','reveal');bind('sQuiz','quiz');
+  bind('sImp','imp',1);bind('sDisc','disc',1);bind('sVote','vote',1);bind('sCd','cd',1);bind('sTasks','tasks',1);bind('sMeet','meet',1);bind('sSab','sabCd',1);bind('sRea','reactor',1);bind('sRev','reveal');bind('sAnon','anon');bind('sQuiz','quiz');
   return;
  }
  if(ph==='play'){
@@ -641,32 +767,39 @@ function renderHost(){
   h=`<div class="card alarm center"><div class="huge">${m.found?'💀 시체 발견!':'🚨 긴급 회의!'}</div><div style="font-size:28px;font-weight:800">${m.found?`${esc(m.by)} 님이 ${rn(m.found.room)}에서 <span style="color:#fca5a5">${esc(m.found.name)}</span> 님을 발견했어요`:`${esc(m.by)} 님이 비상 버튼을 눌렀어요`}</div></div>
   <div class="card center"><h2>${m.dead.length?`😱 사라진 크루원: <span style="color:#fca5a5">${m.dead.map(esc).join(', ')}</span>`:'🙂 지난 회의 이후 사라진 크루원은 없어요'}</h2>
   <div style="font-size:24px;margin-top:6px">어디서 무엇을 봤는지 이야기해 보세요! 💬</div><div class="timer" id="htimer">${Math.ceil(S.set.disc)}</div></div>
-  <div class="card">${plistHTML({showDead:true})}</div>
+  ${tabletHTML('meet')}<p></p>
   <div class="row"><button class="btn big amber" onclick="S.timerEnd=0;startVote()">🗳️ 바로 투표 시작</button></div>`;
  }else if(ph==='vote'){
   const al=alivePlayers();
   h=`<div class="card center"><div class="huge">🗳️ 투표 시간</div><div style="font-size:24px">패드에서 임포스터라고 생각하는 사람을 고르세요</div><div class="timer" id="htimer">${S.set.vote}</div>
   <h2>투표 완료 ${al.filter(p=>p.vote!=null).length} / ${al.length}</h2></div>
-  <div class="card">${plistHTML({showDead:true,voted:true})}</div>
+  ${tabletHTML('vote')}<p></p>
   <div class="row"><button class="btn big amber" onclick="S.timerEnd=0;endVote()">⏱ 투표 마감</button></div>`;
  }else if(ph==='result'){
-  const r=S.result;
-  const msg=r.name?(r.reveal?`${esc(r.name)} 님은 임포스터${r.wasImp?'<span style="color:#f87171">였습니다!</span>':'가 <span style="color:#93c5fd">아니었습니다…</span>'}`:`${esc(r.name)} 님이 우주선에서 쫓겨났습니다.`):`아무도 쫓겨나지 않았어요. (${esc(r.why)})`;
-  h=`<div class="card center" style="overflow:hidden;min-height:320px">
-   ${r.name?`<div class="eject">${av({name:r.name,color:r.color},120)}</div>`:'<div style="font-size:90px">🤷</div>'}
-   <div class="huge" style="font-size:clamp(32px,5vw,64px)">${msg}</div>
-   ${r.reveal?`<h2>임포스터가 ${r.impLeft}명 남았습니다.</h2>`:''}
-  </div>
-  <div class="card"><h2>📊 투표 결과</h2>${r.tally.map(x=>`<div class="pl" style="margin:6px 0">${av(x)}<span>${esc(x.name)}</span><span class="mark">${'🗳️'.repeat(x.n)} ${x.n}표</span></div>`).join('')||'<div>표를 받은 사람이 없어요.</div>'}
-   <div style="margin-top:8px;font-size:20px">⏭ 건너뛰기 ${r.skip}표 · 투표 안 함 ${r.none}명</div></div>
-  <div class="row"><button class="btn big" onclick="S.timerEnd=0;afterResult()">▶️ 계속하기</button></div>`;
+  const r=S.result,stg=resStage(S.timerEnd);
+  if(stg==='tally'){
+   h=`<div id="resv" data-stg="tally">${tabletHTML('tally')}<p class="center" style="font-size:22px;font-weight:800">투표 안 함 ${r.none}명</p>
+   <div class="row"><button class="btn big" onclick="S.timerEnd=Date.now()+8000;renderHost()">▶️ 결과 보기</button></div></div>`;
+   app.innerHTML=h+`<div id="pendBox2">${pendHTML()}</div>`;return;
+  }
+  const [l1,l2]=ejectLines(r);
+  h=`<div id="resv" data-stg="eject" class="space">${r.name?`<div class="flyer">${av({name:r.name,color:r.color},150)}</div>`:''}
+   <div style="height:34vh"></div><div class="typed" id="ty1"></div><div class="typed2" id="ty2"></div>
+   <button class="btn" style="position:absolute;right:20px;bottom:20px" onclick="S.timerEnd=0;afterResult()">▶️ 계속하기</button></div>`;
+  app.innerHTML=h+`<div id="pendBox2">${pendHTML()}</div>`;SND.whoosh();
+  typeText($('#ty1'),l1,75).then(()=>typeText($('#ty2'),l2,55));
+  return;
  }else if(ph==='end'){
-  const imps=S.order.map(P).filter(p=>p.role==='imp');
-  h=`<div class="card center" style="background:${S.winner==='crew'?'rgba(37,99,235,.35)':'rgba(220,38,38,.35)'}"><div class="huge">${S.winner==='crew'?'🎉 크루원 승리!':'😈 임포스터 승리!'}</div><div style="font-size:28px;font-weight:800">${esc(S.reason)}</div></div>
-  <div class="card center"><h2>이번 판의 임포스터는…</h2><div class="row" style="justify-content:center;flex-wrap:wrap">${imps.map(p=>`<div style="flex:0 0 auto;margin:10px">${av(p,100)}<div style="font-size:28px;font-weight:900;margin-top:6px">${esc(p.name)}</div></div>`).join('')}</div></div>
-  <div class="row"><button class="btn big green" onclick="toLobby()">🔁 같은 멤버로 한 판 더</button><button class="btn big gray" onclick="newRoom()">🆕 새 방 만들기</button></div>`;
+  const cw=S.winner==='crew',team=S.order.map(P).filter(p=>(p.role==='crew')===cw);
+  const sz=Math.max(60,Math.min(130,Math.floor(1300/Math.max(5,team.length))*1.4));
+  h=`<div id="endv" class="space" style="background:radial-gradient(ellipse at 50% 75%,${cw?'#1e3a8a':'#7f1d1d'} 0,#000 65%)">
+   <div class="big logo pop" style="font-size:clamp(60px,11vw,150px);color:${cw?'#60a5fa':'#f87171'}">${cw?'크루원 승리':'임포스터 승리'}</div>
+   <div style="font-size:clamp(22px,3vw,36px);font-weight:800;margin-top:8px">${esc(S.reason)}</div>
+   <div class="line">${team.map(p=>`<div class="bob" style="animation-delay:-${Math.random()*2}s">${av(p,sz,p.alive?null:{ghost:true})}<div>${esc(p.name)}</div></div>`).join('')}</div>
+   ${cw?`<div style="font-size:24px;margin-top:14px">이번 판의 임포스터: ${S.order.map(P).filter(p=>p.role==='imp').map(p=>`<b style="color:#f87171">${esc(p.name)}</b>`).join(', ')}</div>`:''}
+   <div class="row" style="margin-top:24px;max-width:900px;width:100%"><button class="btn big green" onclick="toLobby()">🔁 같은 멤버로 한 판 더</button><button class="btn big gray" onclick="newRoom()">🆕 새 방 만들기</button></div></div>`;
  }
- app.innerHTML=h+pendHTML();
+ app.innerHTML=h+`<div id="pendBox2">${pendHTML()}</div>`;
  hostTick();
 }
 function playSig(){return S.sab?S.sab.type:'-'}
@@ -675,7 +808,7 @@ function impHint(){const n=S.order.length;if(n<4)return`최소 4명이 필요해
 /* =====================================================
    학생(패드)
    ===================================================== */
-let doneLocal=new Set(),myVote=null,moving=false;
+let doneLocal=new Set(),myVote=null,moving=false,padStg="";
 let V=null,PT=null,lastSig='',prevAlive=null,prevPhase=null,prevSab=null,prevBodies=0,notes={},myCode='',myName='',joined=false,ovKind='';
 function joinForm(err,code){
  const c=code||Q.get('join')||'';
@@ -714,7 +847,7 @@ function onPMsg(m){
  const old=V;V=m;V.end=m.left?Date.now()+m.left:0;V.cdEnd=Date.now()+(m.me.cdLeft||0);V.sabEnd=m.sab&&m.sab.left?Date.now()+m.sab.left:0;V.sabCdEnd=Date.now()+(m.sabCdLeft||0);
  if(old&&old.me.room!==m.me.room)moving=false;
  if(prevAlive===true&&!m.me.alive&&m.phase==='play'){closeOv();killedOv()}
- if(prevPhase&&prevPhase!==m.phase){if(m.phase!=='play')closeOv();if(m.phase==='meeting')beepMeet();if(m.phase==='play'&&prevPhase==='lobby')roleIntro()}
+ if(prevPhase&&prevPhase!==m.phase){if(m.phase!=='play')closeOv();if(m.phase!=='meeting')cineOff();if(m.phase==='meeting'){beepMeet();cine('meet',meetSplash(m.meeting,90),2800)}if(m.phase==='play'&&prevPhase==='lobby')roleIntro()}
  const sabT=m.sab?m.sab.type:null;
  if(m.phase==='play'&&sabT&&sabT!==prevSab){initAudio();SND.alarm();try{navigator.vibrate&&navigator.vibrate([300,100,300])}catch(e){}}
  if(prevSab&&!sabT&&ovKind.startsWith('fix'))closeOv();
@@ -726,17 +859,18 @@ function onPMsg(m){
  liveOv();
  renderPlayer();
 }
-function beepMeet(){initAudio();for(let i=0;i<4;i++)beep(i%2?620:880,.2,'square',i*.25,.08);try{navigator.vibrate&&navigator.vibrate([200,100,200])}catch(e){}}
+function beepMeet(){initAudio();SND.horn();try{navigator.vibrate&&navigator.vibrate([200,100,200])}catch(e){}}
 function pTick(){
  if(!V)return;
  const t=$('#ptimer');if(t&&V.end){t.textContent=Math.max(0,Math.ceil((V.end-Date.now())/1000))}
  const st=$('#psabt');if(st&&V.sabEnd)st.textContent=Math.max(0,Math.ceil((V.sabEnd-Date.now())/1000))+'초';
  const cdl=Math.ceil((V.cdEnd-Date.now())/1000);
- document.querySelectorAll('.kt').forEach(b=>{b.disabled=cdl>0});
- const kc=$('#killcd');if(kc)kc.textContent=cdl>0?`⏳ ${cdl}초 뒤에 제거할 수 있어요`:'🔪 지금 제거할 수 있어요';
+ const ak=$('#akill');if(ak){ak.disabled=cdl>0||ak.dataset.ok!=='1';const k=$('#kcd');k.style.display=cdl>0?'flex':'none';k.textContent=cdl}
  const sc=Math.ceil((V.sabCdEnd-Date.now())/1000);
- document.querySelectorAll('.sabb').forEach(b=>{b.disabled=sc>0||!!V.sab});
+ const as=$('#asab');if(as){as.disabled=!!V.sab||sc>0;const k=$('#scd');k.style.display=!V.sab&&sc>0?'flex':'none';k.textContent=sc}
+ document.querySelectorAll('.sbtn').forEach(b=>{b.disabled=sc>0||!!V.sab});
  const scl=$('#sabcd');if(scl)scl.textContent=V.sab?'방해 공작이 진행 중이에요':(sc>0?`⏳ ${sc}초 뒤에 할 수 있어요`:'💥 지금 할 수 있어요');
+ if(V.phase==='result'&&V.end){const stg=resStage(V.end);if(stg!==padStg){lastSig='';renderPlayer()}}
 }
 function commsOut(){return V.sab&&V.sab.type==='comms'&&V.me.role==='crew'&&V.me.alive}
 function renderPlayer(){
@@ -746,7 +880,7 @@ function renderPlayer(){
  const head=`<div class="row" style="align-items:center;flex-wrap:nowrap"><div style="flex:0 0 auto">${av(me,52)}</div><div style="font-size:22px;font-weight:900">${esc(me.name)} ${ghost?'👻':''}</div><div style="flex:0 0 auto" class="small">방 ${esc(V.code)}</div></div>`;
  let h='';
  if(ph==='lobby'){
-  h=`${head}<div class="card center"><div style="font-size:70px">🧑‍🚀</div><h2>참가 완료!</h2><p style="font-size:20px">선생님이 게임을 시작할 때까지 기다려요.</p><p>지금 ${V.players.length}명 탑승</p></div>
+  h=`${head}<div class="card center"><div class="bob" style="display:inline-block">${av(me,110)}</div><h2>참가 완료!</h2><p style="font-size:20px">선생님이 게임을 시작할 때까지 기다려요.</p><p>지금 ${V.players.length}명 탑승</p></div>
   <div class="card"><b>📖 게임 방법</b><ul style="font-size:17px;line-height:1.7"><li>지도에서 <b>옆 방</b>을 눌러 돌아다녀요.</li><li><b>크루원</b>: ❗ 방에 가서 수업 퀴즈를 풀어요. 모두 풀면 승리!</li><li><b>임포스터</b>: 같은 방에 있는 크루원을 몰래 제거해요.</li><li>쓰러진 친구를 보면 <b>💀 신고</b>, 식당에서는 <b>🔴 비상 버튼</b>!</li><li>내 화면은 <b>절대 친구에게 보여주면 안 돼요</b> 🤫</li></ul></div>`;
  }else if(ph==='play'){
   const R=ROOMS[me.room],imp=me.role==='imp',sb=V.sab,dark=V.here===null,co=commsOut();
@@ -754,32 +888,30 @@ function renderPlayer(){
   const done=me.tasks.filter(t=>t.done).length;
   const sabBar=sb?`<div class="sabbar ${sb.type}">${SABS[sb.type].e} ${SABS[sb.type].n}! ${sb.type==='reactor'?`<span id="psabt"></span> · ${sb.holders}/2명`:''}<div style="font-size:15px;font-weight:700">${SABS[sb.type].how}</div></div>`:'';
   const tiles=RID.map(r=>{const T=ROOMS[r];const cur=me.room===r;const can=!cur&&!moving&&(ghost||adj(me.room,r));const tk=!co&&me.tasks.some(t=>!t.done&&t.room===r);const sr=sb&&SABS[sb.type].room===r;
-   return `<button class="room ${cur?'cur':''} ${can?'can':''} ${sr?'sabr':''} ${moving===r?'go':''}" style="grid-column:${T.x+1};grid-row:${T.y+1}" onclick="goRoom('${r}')"><div class="re">${T.e}</div><div>${T.n}</div><div class="rm">${cur?av(me,24):''}${tk?'❗':''}${sr?'🚨':''}${r==='caf'?'<span style="font-size:13px">🔴</span>':''}</div></button>`}).join('');
-  let room=`<div class="card"><div style="font-size:22px;font-weight:900">📍 지금 위치: ${R.e} ${R.n}</div>`;
-  room+=`<div class="small" style="margin:4px 0">이 방에 같이 있는 사람</div><div class="here">${dark?'<b style="color:#fca5a5">🌑 전등이 꺼져서 주변이 안 보여요!</b>':(V.here.length?V.here.map(q=>`<span style="display:inline-flex;align-items:center;gap:4px;font-weight:800;${q.alive?'':'opacity:.5'}">${av(q,36)}${esc(q.name)}${q.alive?'':'👻'}${q.imp?'😈':''}</span>`).join(''):'<span class="small">아무도 없어요</span>')}</div>`;
-  V.bodies.forEach(b=>{room+=`<div class="body">💀 ${av(b,36)} ${esc(b.name)} 님이 쓰러져 있어요!${!ghost?`<button class="btn red sm" style="margin-left:auto" onclick="report()">📢 신고하기</button>`:''}</div>`});
+   return `<button class="room ${cur?'cur':''} ${can?'can':''} ${sr?'sabr':''} ${moving===r?'go':''}" style="grid-column:${T.x+1};grid-row:${T.y+1}" onclick="goRoom('${r}')"><div class="re">${T.e}</div><div>${T.n}</div><div class="rm">${cur?av(me,22,ghost?{ghost:true}:null):''}${tk?'❗':''}${sr?'🚨':''}${r==='caf'?'<span style="font-size:13px">🔴</span>':''}</div></button>`}).join('');
+  let room=`<div class="card"><div style="font-size:22px;font-weight:900">📍 ${R.e} ${R.n}</div>`;
+  room+=`<div class="here" style="margin-top:6px">${dark?'<b style="color:#fca5a5">🌑 전등이 꺼져서 주변이 안 보여요!</b>':(V.here.length?V.here.map(q=>`<span style="display:inline-flex;flex-direction:column;align-items:center;font-weight:800;font-size:14px">${av(q,40,q.alive?null:{ghost:true})}${esc(q.name)}${q.imp?'😈':''}</span>`).join(''):'<span class="small">이 방에는 아무도 없어요</span>')}</div>`;
+  V.bodies.forEach(b=>{room+=`<div class="body">${av(b,34,{dead:true})} ${esc(b.name)} 님이 쓰러져 있어요!${!ghost?' → <b>📢 신고</b>를 누르세요':''}</div>`});
   if(co)room+=`<div class="body" style="background:#7c2d12;border-color:#f97316">📡 통신이 끊겨서 임무 목록이 안 보여요! 통신실에서 고쳐 주세요.</div>`;
-  else myHere.forEach(t=>{room+=`<button class="btn big green" style="margin-top:8px" onclick="openTask('${t.id}')">📚 ${imp?'(가짜) ':''}퀴즈 임무 풀기${t.q&&t.q.s?' · '+esc(t.q.s):''}</button>`});
-  if(sb&&!ghost&&SABS[sb.type].room===me.room)room+=`<button class="btn big amber" style="margin-top:8px" onclick="openFix('${sb.type}')">🛠️ ${SABS[sb.type].n} 고치기</button>`;
-  if(me.room==='caf'&&!ghost)room+=`<button class="btn big red" style="margin-top:8px" ${me.meet<=0||sb?'disabled':''} onclick="askMeeting()">🔴 비상 버튼 (${me.meet}회)${sb?' · 고장 중엔 못 눌러요':''}</button>`;
+  else if(myHere.length)room+=`<div class="small" style="color:#86efac;font-weight:800;opacity:1;margin-top:6px">❗ 이 방에 ${imp?'(가짜) ':''}퀴즈 임무가 있어요 → 아래 <b>사용</b> 버튼!</div>`;
+  if(sb&&!ghost&&SABS[sb.type].room===me.room)room+=`<div class="small" style="color:#fdba74;font-weight:800;opacity:1;margin-top:6px">🛠️ 여기서 ${SABS[sb.type].n}을 고칠 수 있어요 → <b>사용</b>!</div>`;
   room+=`</div>`;
-  let impc='';
-  if(imp){
-   const tg=(V.here||[]).filter(q=>q.alive&&!q.imp);
-   const vents=ventsFrom(me.room);
-   impc=`<div class="card" style="border-color:#b91c1c;background:rgba(127,29,29,.25)"><b>😈 임포스터 행동</b> <span class="small">(친구에게 보이지 않게!)</span>
-    ${me.alive?`<div style="margin-top:8px"><div id="killcd" class="small"></div>${tg.length?tg.map(q=>`<button class="vbtn kt" onclick="confirmKill('${q.pid}')">🔪 ${av(q,32)} ${esc(q.name)} 제거</button>`).join(''):'<div class="small">이 방에는 제거할 크루원이 없어요.</div>'}</div>`:''}
-    ${me.alive&&vents.length?`<div style="margin-top:8px"><b>🕳️ 환풍구로 순간이동</b><div class="row" style="margin-top:6px">${vents.map(r=>`<button class="btn purple sm" onclick="vent('${r}')">${rn(r)}</button>`).join('')}</div></div>`:''}
-    <div style="margin-top:10px"><b>💥 방해 공작</b> <span id="sabcd" class="small"></span><div class="row" style="margin-top:6px">${Object.keys(SABS).map(k=>`<button class="btn dark sm sabb" onclick="doSab('${k}')">${SABS[k].e} ${SABS[k].n}</button>`).join('')}</div></div></div>`;
-  }
   const list=co?'':`<div class="card"><b>📋 내 임무 (${done}/${me.tasks.length})</b>${imp?' <span class="small">가짜 임무예요. 하는 척만!</span>':''}<div class="tasklist" style="margin-top:6px">${me.tasks.map(t=>`<div class="${t.done?'done':''}"><span>📚 퀴즈${t.q&&t.q.s?' · '+esc(t.q.s):''}</span><span>${rn(t.room)} ${t.done?'✅':''}</span></div>`).join('')}</div></div>`;
-  h=`${sabBar}${head}
-  <div class="card" style="padding:10px"><button class="rolebtn" id="roleBtn">🔒 내 역할 보기 (꾹 누르고 있기)</button><div class="rolebox ${me.role}" id="roleBox">${roleText()}</div></div>
-  ${ghost?`<div class="card center" style="background:rgba(100,116,139,.35)"><b style="font-size:20px">👻 당신은 유령이에요</b><div>말은 하지 말고, 어디든 날아가서 퀴즈를 풀면 팀을 도울 수 있어요.</div></div>`:''}
-  <div class="card" style="padding:10px"><b>전체 임무 진행도</b><div class="bar" style="margin-top:6px"><i style="width:${V.progress*100}%"></i></div></div>
+  const U=useList();
+  const kt=imp&&me.alive?(V.here||[]).filter(q=>q.alive&&!q.imp):[];
+  const vents=imp&&me.alive?ventsFrom(me.room):[];
+  let acts=`<button class="act use" ${U.length?'':'disabled'} onclick="doUse()"><span class="ic">✋</span>사용</button>`;
+  if(!ghost)acts+=`<button class="act rep" ${V.bodies.length?'':'disabled'} onclick="report()"><span class="ic">📢</span>신고</button>`;
+  if(imp&&me.alive)acts+=`<button class="act kill" id="akill" data-ok="${kt.length?1:0}" onclick="doKillBtn()"><span class="ic">🔪</span>제거<span class="cd" id="kcd" style="display:none"></span></button>`;
+  if(imp)acts+=`<button class="act sab" id="asab" onclick="openSabMap()"><span class="ic">💥</span>방해<span class="cd" id="scd" style="display:none"></span></button>`;
+  if(imp&&me.alive)acts+=`<button class="act vent" ${vents.length?'':'disabled'} onclick="openVent()"><span class="ic">🕳️</span>환풍구</button>`;
+  h=`${sabBar}<div class="hudtop"><span>전체 임무</span><div class="bar"><i style="width:${V.progress*100}%"></i></div><span>${Math.round(V.progress*100)}%</span></div>
+  <div class="row" style="align-items:center;flex-wrap:nowrap;margin-top:8px"><div style="flex:0 0 auto">${av(me,48,ghost?{ghost:true}:null)}</div><div style="font-size:22px;font-weight:900">${esc(me.name)} ${ghost?'👻':''}</div><button class="rolebtn" id="roleBtn" style="flex:0 0 46%;padding:10px;font-size:15px">🔒 내 역할 (꾹 누르기)</button></div>
+  <div class="rolebox ${me.role}" id="roleBox">${roleText()}</div>
+  ${ghost?`<div class="card center" style="background:rgba(100,116,139,.35);padding:8px"><b>👻 당신은 유령이에요</b> — 말없이 어디든 날아가 퀴즈를 풀어 팀을 도와요.</div>`:''}
   ${room}
   <div class="card" style="padding:8px"><div class="small center">🗺️ 우주선 지도 — ${ghost?'유령은 어디든 갈 수 있어요':'파란 칸(옆 방)을 눌러 이동해요'}</div><div class="map">${tiles}</div></div>
-  ${impc}${list}`;
+  ${list}<div class="actbar">${acts}</div>`;
  }else if(ph==='meeting'){
   const m=V.meeting;
   h=`${head}<div class="card alarm center"><div style="font-size:60px">${m.found?'💀':'🚨'}</div><h2>${m.found?'시체 발견!':'긴급 회의!'}</h2><div style="font-size:19px">${m.found?`${esc(m.by)} 님이 ${rn(m.found.room)}에서 ${esc(m.found.name)} 님을 발견했어요`:`${esc(m.by)} 님이 비상 버튼을 눌렀어요`}</div></div>
@@ -794,15 +926,21 @@ function renderPlayer(){
    <button class="vbtn" onclick="pickVote('skip',this)"><span style="font-size:30px">⏭</span><span>건너뛰기 (잘 모르겠어요)</span></button>
    <p></p><button class="btn big green" id="voteGo" disabled onclick="sendVote()">✅ 이 사람에게 투표하기</button></div>`}
  }else if(ph==='result'){
-  const r=V.result;
-  h=`${head}<div class="card center"><div style="font-size:60px">${r.name?'🚀💨':'🤷'}</div><h2>${r.name?(r.reveal?`${esc(r.name)} 님은 임포스터${r.wasImp?'였습니다!':'가 아니었습니다…'}`:`${esc(r.name)} 님이 쫓겨났어요`):'아무도 쫓겨나지 않았어요'}</h2>${r.reveal?`<p style="font-size:20px">임포스터가 ${r.impLeft}명 남았습니다.</p>`:''}<p>칠판을 보세요!</p></div>`;
+  const r=V.result,stg=resStage(V.end);padStg=stg;
+  if(stg==='tally')h=`${head}<div class="card center"><div style="font-size:60px">📊</div><h2>개표 중…</h2><p style="font-size:22px">칠판을 보세요!</p></div>`;
+  else{const [l1,l2]=ejectLines(r);h=`<div class="space">${r.name?`<div class="flyer">${av({name:r.name,color:r.color},110)}</div>`:''}<div style="height:30vh"></div><div class="typed" id="ty1"></div><div class="typed2" id="ty2"></div></div>`;
+   setTimeout(()=>typeText($('#ty1'),l1,75).then(()=>typeText($('#ty2'),l2,55)),0)}
  }else if(ph==='end'){
-  const win=(V.winner==='crew')===(me.role==='crew');
-  const imps=V.players.filter(p=>p.imp);
-  h=`${head}<div class="card center" style="background:${win?'rgba(22,163,74,.35)':'rgba(100,116,139,.35)'}"><div style="font-size:70px">${win?'🏆':'😢'}</div><h2>${V.winner==='crew'?'크루원 승리!':'임포스터 승리!'}</h2><p style="font-size:20px">${esc(V.reason)}</p><p style="font-size:22px;font-weight:900">나는 ${me.role==='imp'?'임포스터':'크루원'} → ${win?'승리!':'아쉽게 패배'}</p></div>
-  <div class="card center"><b>이번 판 임포스터</b><div style="font-size:24px;font-weight:900;margin-top:8px">${imps.map(p=>av(p)+' '+esc(p.name)).join('&nbsp;&nbsp;')}</div></div>`;
+  const cw=V.winner==='crew',win=cw===(me.role==='crew');
+  const team=V.players.filter(p=>cw?!p.imp:p.imp);
+  h=`<div class="space" style="background:radial-gradient(ellipse at 50% 75%,${win?'#1e3a8a':'#7f1d1d'} 0,#000 65%)">
+   <div class="logo pop" style="font-size:clamp(64px,18vw,130px);color:${win?'#60a5fa':'#f87171'}">${win?'승리':'패배'}</div>
+   <div style="font-size:22px;font-weight:800">${cw?'크루원 승리!':'임포스터 승리!'} — ${esc(V.reason)}</div>
+   <div class="line">${team.map(p=>`<div class="bob">${av(p,team.length>8?44:70,p.alive?null:{ghost:true})}<div>${esc(p.name)}</div></div>`).join('')}</div>
+   <div style="font-size:20px;margin-top:14px">나는 <b>${me.role==='imp'?'임포스터':'크루원'}</b>${cw?` · 임포스터: ${V.players.filter(p=>p.imp).map(p=>esc(p.name)).join(', ')}`:''}</div></div>`;
  }
  const y=window.scrollY;
+ document.body.classList.toggle('hasbar',ph==='play');
  app.innerHTML=h;
  if(ph==='play')window.scrollTo(0,y);
  const rb=$('#roleBtn');
@@ -812,10 +950,23 @@ function renderPlayer(){
 }
 function roleText(){const me=V.me;if(me.role==='imp'){const mates=V.players.filter(p=>p.imp&&p.pid!==me.pid).map(p=>p.name);return`😈 당신은 임포스터!<div style="font-size:17px;font-weight:700;margin-top:6px">${mates.length?'동료 임포스터: '+mates.map(esc).join(', '):'혼자 활동하는 임포스터예요'}<br>같은 방의 크루원을 몰래 제거하고, 퀴즈는 푸는 척만 하세요.</div>`}return`🧑‍🚀 당신은 크루원!<div style="font-size:17px;font-weight:700;margin-top:6px">❗ 방을 돌며 퀴즈를 풀고, 임포스터를 찾아내세요!</div>`}
 function roleIntro(){
- const me=V.me;openOv(`<div class="center" style="padding-top:30px"><div style="font-size:90px">🤫</div><h2>쉿!</h2><div style="font-size:22px">주변 친구에게 화면이 보이지 않게 하세요!</div><p></p><button class="btn big" id="ri">👀 내 역할 확인하기</button></div>`,'intro');
- $('#ri').onclick=()=>{$('#ovin').innerHTML=`<div class="rolebox show ${me.role}" style="margin-top:40px;font-size:30px">${roleText()}</div><p></p><button class="btn big" onclick="closeOv()">확인했어요</button>`;try{navigator.vibrate&&navigator.vibrate(150)}catch(e){}};
+ initAudio();SND.shh();
+ openOv(`<div class="center" style="padding-top:30px"><div style="font-size:110px">🤫</div><h2 class="logo" style="font-size:60px;margin:0">쉿!</h2><div style="font-size:22px">손으로 화면을 가리고<br>친구에게 보이지 않게 하세요!</div><p></p><button class="btn big" id="ri">👀 내 역할 확인하기</button></div>`,'intro');
+ $('#ri').onclick=()=>{
+  const me=V.me,imp=me.role==='imp',mates=V.players.filter(p=>p.imp&&p.pid!==me.pid);
+  SND.reveal();try{navigator.vibrate&&navigator.vibrate(150)}catch(e){}
+  $('#ovin').innerHTML=`<div class="center pop" style="padding-top:20px;border-radius:24px;background:radial-gradient(ellipse at 50% 80%,${imp?'#7f1d1d':'#1e3a8a'} 0,transparent 70%)">
+   <div class="logo" style="font-size:clamp(54px,15vw,90px);color:${imp?'#f87171':'#60a5fa'}">${imp?'임포스터':'크루원'}</div>
+   <div style="font-size:20px;font-weight:800;margin:6px 0 10px">${imp?(mates.length?'동료 임포스터와 함께 크루원을 몰래 제거하세요':'혼자서 크루원을 몰래 제거하세요'):`우리 중에 <b style="color:#f87171">임포스터</b>가 ${V.impN}명 있습니다`}</div>
+   <div class="line" style="margin-top:6px">${[me,...(imp?mates:[])].map(p=>`<div class="bob">${av(p,90)}<div>${esc(p.name)}</div></div>`).join('')}</div>
+   <p style="font-size:18px">${imp?'퀴즈는 푸는 척만 하세요. 🔪제거 · 💥방해 · 🕳️환풍구 버튼을 쓸 수 있어요.':'❗ 방을 돌며 퀴즈를 풀고, 임포스터를 찾아내세요!'}</p>
+   <button class="btn big" onclick="closeOv()">확인했어요 (화면 닫기)</button><div class="small" style="margin-top:6px">8초 뒤 자동으로 닫혀요</div></div>`;
+  setTimeout(()=>{if(ovKind==='intro')closeOv()},8000);
+ };
 }
-function killedOv(){try{navigator.vibrate&&navigator.vibrate([300,100,300])}catch(e){}openOv(`<div class="center" style="padding-top:40px"><div style="font-size:100px">👻</div><h2>당신은 제거되었어요!</h2><p style="font-size:20px">이제 유령이에요. <b>소리 내지 말고</b>, 누가 그랬는지 알려주면 안 돼요.<br>남은 퀴즈를 풀면 크루원 팀을 도울 수 있어요.</p><button class="btn big" onclick="closeOv()">알겠어요</button></div>`,'killed')}
+function killedOv(){try{navigator.vibrate&&navigator.vibrate([300,100,300])}catch(e){}initAudio();SND.kill();
+ cine('imp',`<div class="pop" style="font-size:120px">💥</div><div class="big" style="color:#f87171;font-size:clamp(50px,13vw,110px)">제거당했어요!</div>`,1800,()=>
+ openOv(`<div class="center" style="padding-top:40px"><div class="bob" style="display:inline-block">${av(V.me,110,{ghost:true})}</div><h2>당신은 유령이 되었어요</h2><p style="font-size:20px"><b>소리 내지 말고</b>, 누가 그랬는지 알려주면 안 돼요.<br>남은 퀴즈를 풀면 크루원 팀을 도울 수 있어요.</p><button class="btn big" onclick="closeOv()">알겠어요</button></div>`,'killed'))}
 function goRoom(r){
  if(!V||V.phase!=='play'||moving||r===V.me.room)return;
  if(V.me.alive&&!adj(V.me.room,r))return toast('바로 옆 방(파란 칸)으로만 갈 수 있어요','#475569');
@@ -825,7 +976,32 @@ function goRoom(r){
 function vent(r){PT.send({t:'vent',room:r});toast('🕳️ 슝!','#7c3aed')}
 function report(){PT.send({t:'report'})}
 function doSab(k){PT.send({t:'sab',type:k});toast(SABS[k].e+' 방해 공작 시작!','#7f1d1d')}
-function askMeeting(){openOv(`<div class="center" style="padding-top:40px"><div style="font-size:80px">🔴</div><h2>비상 회의를 열까요?</h2><p>남은 횟수: ${V.me.meet}회</p><div class="row"><button class="btn big gray" onclick="closeOv()">취소</button><button class="btn big red" onclick="PT.send({t:'meet'});closeOv()">회의 열기!</button></div></div>`,'meet')}
+function askMeeting(){
+ const sb=!!V.sab,n=V.me.meet;
+ openOv(`<div class="center" style="padding-top:20px"><h2 class="logo" style="font-size:40px;margin:0">긴급 회의</h2>
+  <div class="ebtn"><button id="ebgo" ${sb||n<=0?'disabled':''}>누르기!</button></div>
+  <div style="font-size:21px;font-weight:800">${sb?'🚨 긴급 회의는 위급 상황에는 열 수 없어요!<br>먼저 고장을 고쳐 주세요.':n<=0?'비상 버튼을 이미 다 썼어요.':`남은 횟수: ${n}회`}</div>
+  <p></p><button class="btn gray" onclick="closeOv()">닫기</button></div>`,'meet');
+ const b=$('#ebgo');if(b)b.onclick=()=>{PT.send({t:'meet'});closeOv()};
+}
+function useList(){
+ const me=V.me,sb=V.sab,out=[];if(V.phase!=='play')return out;
+ if(sb&&me.alive&&SABS[sb.type].room===me.room)out.push({l:`🛠️ ${SABS[sb.type].n} 고치기`,f:()=>openFix(sb.type)});
+ if(!commsOut())me.tasks.filter(t=>t.room===me.room&&!t.done).forEach(t=>out.push({l:`📚 ${me.role==='imp'?'(가짜) ':''}퀴즈 임무${t.q&&t.q.s?' · '+t.q.s:''}`,f:()=>openTask(t.id)}));
+ if(me.room==='caf'&&me.alive)out.push({l:'🔴 비상 버튼',f:askMeeting});
+ return out;
+}
+let pickFns=[];
+function chooser(title,items,kind){pickFns=items.map(i=>i.f);openOv(`<div style="padding-top:30px"><h2 class="center">${title}</h2>${items.map((i,k)=>`<button class="vbtn" onclick="const f=pickFns[${k}];closeOv();f()">${i.h||esc(i.l)}</button>`).join('')}<p></p><button class="btn gray big" onclick="closeOv()">닫기</button></div>`,kind||'pick')}
+function doUse(){const u=useList();if(!u.length)return;if(u.length===1)return u[0].f();chooser('무엇을 할까요?',u)}
+function doKillBtn(){if(V.cdEnd>Date.now())return;const tg=(V.here||[]).filter(q=>q.alive&&!q.imp);if(!tg.length)return toast('이 방에는 제거할 크루원이 없어요','#475569');if(tg.length===1)return confirmKill(tg[0].pid);chooser('🔪 누구를 제거할까요?',tg.map(q=>({h:`${av(q,34)} ${esc(q.name)}`,f:()=>confirmKill(q.pid)})))}
+function openVent(){const vs=ventsFrom(V.me.room);if(!vs.length)return;chooser('🕳️ 환풍구로 어디로 갈까요?',vs.map(r=>({l:rn(r),f:()=>vent(r)})))}
+function openSabMap(){
+ const rooms=RID.map(r=>{const T=ROOMS[r];const k=Object.keys(SABS).find(x=>SABS[x].room===r);
+  return `<div class="room" style="grid-column:${T.x+1};grid-row:${T.y+1}"><div>${T.n}</div>${k?`<button class="sbtn" onclick="doSab('${k}');closeOv()">${SABS[k].e}</button><div style="font-size:13px">${SABS[k].n}</div>`:''}</div>`}).join('');
+ openOv(`<div style="padding-top:30px"><h2 class="center">💥 방해 공작 지도</h2><div class="center small" id="sabcd"></div><div class="map sabmap" style="margin-top:10px">${rooms}</div>
+  <div class="small" style="margin-top:10px;line-height:1.6">💡 전등: 크루원 시야 차단 · 📡 통신: 임무 목록 숨김 · ☢️ 원자로: ${'제한 시간 안에 못 고치면 임포스터 승리!'}</div><p></p><button class="btn gray big" onclick="closeOv()">닫기</button></div>`,'sabmap');pTick();
+}
 function memoCard(){const others=V.players.filter(p=>p.pid!==V.me.pid);return`<div class="card"><b>🤔 수상한 사람 메모</b> <span class="small">(나만 보여요. 눌러서 표시)</span><div class="plist" style="margin-top:8px">${others.map(p=>`<div class="pl ${p.alive?'':'dead'}" onclick="toggleNote('${p.pid}')">${av(p)}<span>${esc(p.name)}</span><span class="mark">${notes[p.pid]?'🤔':''}</span></div>`).join('')}</div></div>`}
 function toggleNote(pid){notes[pid]=!notes[pid];lastSig='';renderPlayer()}
 function confirmKill(pid){const p=(V.here||[]).find(x=>x.pid===pid);if(!p)return;if(V.cdEnd>Date.now())return toast('아직 기다려야 해요','#dc2626');
