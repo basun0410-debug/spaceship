@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>우리 반 우주선 – 임포스터를 찾아라! (v20)</title>
+<title>우리 반 우주선 – 임포스터를 찾아라! (v21)</title>
 <style>
 @font-face{font-family:'GmarketSans';font-weight:300;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff') format('woff')}
 @font-face{font-family:'GmarketSans';font-weight:500;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff')}
@@ -1080,7 +1080,6 @@ function renderHost(){
   ${quickHTML()}
   <div class="row"><button class="btn big" style="background:#7c3aed;flex:2" onclick="tutBegin()">🎓 튜토리얼 시작 (설명 → AI 연습 → 게임)</button></div>
   <div class="row"><button class="btn big" style="background:#15803d" onclick="startGame(true)">🎓 연습 판 (임포스터 없이 2분)</button><button class="btn big green" onclick="startGame()">▶️ 게임 시작</button></div>
-  <p class="center small" id="tutCount">${tutCount()}</p>
   <p class="center small" id="impHint">${impHint()}</p>
   <details class="card"><summary>📖 게임 방법 (아이들에게 설명할 때)</summary>
    <ul style="font-size:18px;line-height:1.7">
@@ -1271,20 +1270,21 @@ function renderPlayer(){
  const me=V.me,ph=V.phase,ghost=!me.alive;
  const head=`<div class="row" style="align-items:center;flex-wrap:nowrap"><div style="flex:0 0 auto">${av(me,52)}</div><div style="font-size:22px;font-weight:900">${esc(me.name)} ${ghost?'👻':''}</div><div style="flex:0 0 auto" class="small">${V.solo?'🤖 AI 연습 <b id="soloH"></b> <button class="btn gray sm" onclick="soloExit()">그만하기</button>':'방 '+esc(V.code)}</div></div>`;
  let h='';
+ if(ph==='lobby'&&V.tut&&V.tut.mode==='slides'&&SLIDES[V.tut.i].video){app.innerHTML=`${head}<div class="card center" style="padding:50px 20px"><div style="font-size:110px">📺👀</div><h1 style="margin:10px 0">앞 칠판을 봐요!</h1><p style="font-size:24px">다 같이 조작법 영상을 볼 거예요</p></div>`;return}
  if(ph==='lobby'&&V.tut&&V.tut.mode==='slides'){h=`${head}<div class="card center small" style="font-size:18px;opacity:1">👀 칠판을 보면서 함께 들어요</div>${slideHTML(V.tut.i,V.players,true)}`;app.innerHTML=h;paintSlide(app);return}
  if(ph==='lobby'&&V.tut&&V.tut.mode==='ai'&&!SOLO&&!TUT&&lastAutoAI!==V.tut.id){lastAutoAI=V.tut.id;const r=V.tut.role||'crew';
   app.innerHTML=`${head}<div class="card center"><div style="font-size:80px">🤖</div><h2>AI 연습 게임을 시작해요!</h2><p style="font-size:22px">이번에 나는 <b style="color:${r==='imp'?'#f87171':'#60a5fa'}">${r==='imp'?'😈 임포스터':'👩‍🚀 크루원'}</b>로 연습해요</p></div>`;
   setTimeout(()=>{if(V&&V.phase==='lobby'&&V.tut&&V.tut.mode==='ai'&&!SOLO)soloStart(r,true)},2200);return}
  if(ph==='lobby'){
   const L=me.look||defLook(me.color),used=new Set(V.usedColors.filter(c=>c!==me.color));
-  if(V.tut&&V.tut.mode==='ai')h=`<div class="card center" style="background:#1e3a8a"><b>🤖 AI 연습 시간이에요!</b> 다시 해 보거나 선생님이 게임을 시작할 때까지 기다려요.</div>`;
-  h=(h||'')+`${head}<div class="card center" style="background:#14532d"><button class="btn big" style="background:#16a34a;width:100%" onclick="tutStart()">🎓 게임 방법 따라하기 연습 (2분)</button><div style="margin-top:10px;font-weight:900;font-size:19px">🤖 AI 로봇 4명과 연습 게임</div><div class="row" style="margin-top:6px"><button class="btn" style="background:#2563eb" onclick="soloStart('crew')">👩‍🚀 크루원으로</button><button class="btn red" onclick="soloStart('imp')">😈 임포스터로</button></div><div class="small" style="margin-top:6px">${me.tut?'✅ 연습 완료! 다시 해도 돼요':'게임 시작 전에 꼭 한 번 해 보세요'}</div></div><div class="card center"><h2 style="margin:0">🎨 내 캐릭터 꾸미기</h2><div class="bob" style="display:inline-block;margin-top:6px">${av(me,120)}</div><div style="font-size:30px;height:34px">${L.pet||''}</div>
+  if(V.tut&&V.tut.mode==='ai')h=`<div class="card center" style="background:#1e3a8a"><b>🤖 연습 끝!</b> 선생님이 게임을 시작할 때까지 캐릭터를 꾸미며 기다려요.</div>`;
+  h=(h||'')+`${head}<div class="card center"><h2 style="margin:0">🎨 내 캐릭터 꾸미기</h2><div class="bob" style="display:inline-block;margin-top:6px">${av(me,120)}</div><div style="font-size:30px;height:34px">${L.pet||''}</div>
    <div class="small">선생님이 게임을 시작할 때까지 마음껏 꾸며요! · 지금 ${V.players.length}명 탑승</div></div>
    <div class="card"><b>색깔</b> <span class="small">(친구와 같은 색은 못 골라요)</span><div class="sw2">${PALETTE.map(([n,c])=>`<button class="cbtn ${c===me.color?'sel':''}" ${used.has(c)?'disabled':''} style="background:${c}" title="${n}" onclick="setLook({c:'${c}'})">${used.has(c)?'✕':''}</button>`).join('')}</div>
    <b>모자</b><div class="sw2">${HATS.map(([k,n])=>`<button class="ibtn ${L.h===k?'sel':''}" onclick="setLook({h:'${k}'})">${crewSVG(me.color,62,{hat:k})}<div>${n}</div></button>`).join('')}</div>
    <b>얼굴</b><div class="sw2">${FACES.map(([k,n])=>`<button class="ibtn ${L.f===k?'sel':''}" onclick="setLook({f:'${k}'})">${crewSVG(me.color,62,{face:k,hat:L.h})}<div>${n}</div></button>`).join('')}</div>
    <b>펫</b><div class="sw2">${PETS.map(k=>`<button class="ibtn pet ${L.pet===k?'sel':''}" onclick="setLook({pet:'${k}'})">${k||'없음'}</button>`).join('')}</div></div>
-  <div class="card"><b>📖 게임 방법</b><ul style="font-size:17px;line-height:1.7"><li>화면 아무 데나 손가락을 대고 끌면 <b>조이스틱</b>처럼 움직여요.</li><li><b>크루원</b>: 노란 <b>!</b> 기계에 가서 [사용]을 눌러 임무를 해요. 모두 끝내면 승리!</li><li><b>임포스터</b>: 가까이 있는 크루원을 몰래 제거하고, 🕳️ 환풍구로 숨어 다녀요.</li><li>쓰러진 친구 근처에서 <b>📢 신고</b>, 식당 가운데 <b>🔴 비상 버튼</b>으로 회의!</li><li>내 화면은 <b>절대 친구에게 보여주면 안 돼요</b> 🤫</li></ul></div>`;
+  `;
  }else if(ph==='meeting'){
   const m=V.meeting;
   h=`${head}<div class="card alarm center"><div style="font-size:60px">${m.found?'💀':'🚨'}</div><h2>${m.found?'시체 발견!':'긴급 회의!'}</h2><div style="font-size:19px">${m.found?`${esc(m.by)} 님이 ${rn(m.found.room)}에서 ${esc(m.found.name)} 님을 발견했어요`:`${esc(m.by)} 님이 비상 버튼을 눌렀어요`}</div></div>
@@ -1328,7 +1328,7 @@ function roleText(){const me=V.me;if(me.role==='imp'){const mates=V.players.filt
 const SLIDES=[
  {t:'🚀 우리 반 우주선에 오신 걸 환영해요!',b:(ps)=>`<p class="sl-lead">우주선 안에 <b class="r">임포스터</b>가 몰래 숨어 있어요.<br><b class="bl">크루원</b>은 임무를 하며 임포스터를 찾아내고, 임포스터는 들키지 않게 방해해요.</p>
   <div class="line">${ps.slice(0,23).map(p=>`<div class="bob" style="animation-delay:-${(p.name.length%5)*.4}s">${av(p,ps.length>14?44:60)}<div>${esc(p.name)}</div></div>`).join('')}</div>`},
- {t:'🎮 패드 조작법 (영상)',b:()=>`<video class="sl-vid" src="howto.mp4?v=1" controls autoplay muted playsinline preload="auto"></video><p class="sl-txt">🤫 <b class="r">약속!</b> 내 패드 화면은 절대 친구에게 보여주지 않아요.</p>`},
+ {t:'🎮 패드 조작법 (영상)',video:1,b:()=>`<video class="sl-vid" src="howto.mp4?v=1" controls autoplay muted playsinline preload="auto"></video><p class="sl-txt">🤫 <b class="r">약속!</b> 내 패드 화면은 절대 친구에게 보여주지 않아요.</p>`},
  {t:'🗺️ 우리 우주선 지도',b:()=>`<canvas class="tmap"></canvas><p class="sl-txt">방 14개가 복도로 이어져 있어요. 모두 <b>🍽️ 식당</b>에서 출발해요. 식당 한가운데에는 <b class="r">🔴 비상 버튼</b>이 있어요.</p>`},
  {t:'👩‍🚀 크루원이 하는 일',b:()=>`<div class="sl-mach">${['quiz','wires','swipe','download','scan','trash','fuel'].map(k=>`<div><canvas class="mach" data-k="${k}"></canvas><div>${KIND[k].n}</div></div>`).join('')}</div>
   <ul class="sl-ul"><li>노란 <b class="y">!</b> 가 있는 기계로 가서 <b>[사용]</b> → 임무를 해요. 수업 퀴즈도 있어요!</li><li>🩻 몸 스캔은 친구들 눈에 보여요 → <b>크루원이라는 증거</b></li><li>🏆 <b>모든 임무 완료</b> 또는 <b>임포스터를 모두 추방</b>하면 크루원 승리</li></ul>`},
