@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>우리 반 우주선 – 임포스터를 찾아라! (v11)</title>
+<title>우리 반 우주선 – 임포스터를 찾아라! (v12)</title>
 <style>
 @font-face{font-family:'GmarketSans';font-weight:300;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff') format('woff')}
 @font-face{font-family:'GmarketSans';font-weight:500;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff')}
@@ -515,13 +515,13 @@ function home(){
    선생님(호스트)
    ===================================================== */
 let S=null,HT=null,hostReady=false;
-const DEF={imp:2,disc:60,vote:30,cd:25,tasks:5,meet:1,reveal:true,anon:true,sabCd:35,reactor:45,quiz:DEFAULT_QUIZ};
-function loadSet(){try{const o=Object.assign({},DEF,JSON.parse(localStorage.getItem('ship-set-v2')||'{}'));
+const DEF={imp:4,disc:90,vote:30,cd:25,tasks:5,meet:1,reveal:true,anon:true,sabCd:35,reactor:45,quiz:DEFAULT_QUIZ};
+function loadSet(){try{let raw=localStorage.getItem('ship-set-v3');if(!raw){const old=JSON.parse(localStorage.getItem('ship-set-v2')||'{}');raw=JSON.stringify(old.quiz?{quiz:old.quiz}:{})}const o=Object.assign({},DEF,JSON.parse(raw||'{}'));
  // 예전 기본 퀴즈(힌트 없음)를 그대로 저장해 둔 경우 힌트 있는 새 기본 퀴즈로 바꿔요
  const plain=DEFAULT_QUIZ.split('\n').map(l=>l.replace(/\s*\/\s*힌트:.*$/,'').trim());
  if(!/힌트\s*:/.test(o.quiz)&&o.quiz.split('\n').map(l=>l.trim()).filter(Boolean).every(l=>plain.includes(l)))o.quiz=DEFAULT_QUIZ;
  return o}catch(e){return{...DEF}}}
-function saveSet(){try{localStorage.setItem('ship-set-v2',JSON.stringify(S.set))}catch(e){}}
+function saveSet(){try{localStorage.setItem('ship-set-v3',JSON.stringify(S.set))}catch(e){}}
 function hostSaved(){try{const s=JSON.parse(localStorage.getItem('ship-host-v2')||'null');return s&&s.order&&s.order.length?s:null}catch(e){return null}}
 function saveHost(){try{localStorage.setItem('ship-host-v2',JSON.stringify(S))}catch(e){}}
 const rand4=()=>String(1000+Math.random()*9000|0);
@@ -544,7 +544,7 @@ async function startHost(resume){
   });
  };
  open();
- setInterval(hostTick,250);setInterval(posTick,120);
+ setInterval(hostTick,250);setInterval(posTick,60);
  window.onbeforeunload=()=>S.phase!=='lobby'&&S.phase!=='end'?'게임이 진행 중이에요':undefined;
 }
 let lastSiren=0;
@@ -594,9 +594,13 @@ function viewFor(pid){
  return v;
 }
 /* 위치 방송 (게임 중 0.12초마다) */
+let lastPosT=0;
+const posGap=n=>n>15?200:n>10?150:120;   // 사람이 많을수록 조금 느슨하게
 function posTick(){
  if(!S||S.phase!=='play')return;
- botMove(0.12);
+ const nowT=Date.now();if(nowT-lastPosT<posGap(S.order.length))return;
+ const dt=Math.min(.3,(nowT-(lastPosT||nowT-120))/1000);lastPosT=nowT;
+ botMove(dt);
  const all=[],living=[];
  S.order.forEach(id=>{const p=P(id);if(p.x==null)return;const e=[id,Math.round(p.x),Math.round(p.y),p.f||1,p.mv?1:0,p.alive?0:1,p.vent?1:0,p.sc?1:0];all.push(e);if(p.alive)living.push(e)});
  S.order.forEach(id=>{const p=P(id),c=S.pc[id];if(!c||!HT||p.bot)return;HT.send(c,{t:'pos',a:p.alive?living:all})});
@@ -1367,8 +1371,8 @@ function frame(now){
   else{if(walkable(nx,ME.y))ME.x=nx;if(walkable(ME.x,ny))ME.y=ny}
   if(Math.abs(vx)>.1)ME.f=vx<0?-1:1}
  const t=Date.now();
- if((ME.mv&&t-lastSend>90)||(ME.mv!==lastSentMv)){lastSend=t;lastSentMv=ME.mv;PT.send({t:'pos',x:Math.round(ME.x),y:Math.round(ME.y),f:ME.f,mv:ME.mv,sc:ME.sc?1:0})}
- for(const id in OTH){const o=OTH[id];const k=1-Math.exp(-dt*12);if(Math.hypot(o.tx-o.x,o.ty-o.y)>260){o.x=o.tx;o.y=o.ty}else{o.x+=(o.tx-o.x)*k;o.y+=(o.ty-o.y)*k}}
+ if((ME.mv&&t-lastSend>(V.players.length>15?150:90))||(ME.mv!==lastSentMv)){lastSend=t;lastSentMv=ME.mv;PT.send({t:'pos',x:Math.round(ME.x),y:Math.round(ME.y),f:ME.f,mv:ME.mv,sc:ME.sc?1:0})}
+ for(const id in OTH){const o=OTH[id];const k=1-Math.exp(-dt*9);if(Math.hypot(o.tx-o.x,o.ty-o.y)>260){o.x=o.tx;o.y=o.ty}else{o.x+=(o.tx-o.x)*k;o.y+=(o.ty-o.y)*k}}
  // 그리기
  const cv=$('#cv');const W=innerWidth,H=innerHeight,dpr=Math.min(2,devicePixelRatio||1);
  if(cv.width!==W*dpr||cv.height!==H*dpr){cv.width=W*dpr;cv.height=H*dpr}
