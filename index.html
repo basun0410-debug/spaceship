@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>우리 반 우주선 – 임포스터를 찾아라! (v22)</title>
+<title>우리 반 우주선 – 임포스터를 찾아라! (v23)</title>
 <style>
 @font-face{font-family:'GmarketSans';font-weight:300;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff') format('woff')}
 @font-face{font-family:'GmarketSans';font-weight:500;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff')}
@@ -665,7 +665,7 @@ function hostTick(){
  if(S.tut&&S.tut.mode==='ai'){const e=$('#tutel');if(e){const el=Math.floor((Date.now()-S.tut.start)/1000);e.textContent=`${Math.floor(el/60)}:${String(el%60).padStart(2,'0')}`}}
  if(S.solo&&S.soloEnd&&S.phase!=='end'&&S.phase!=='lobby'&&Date.now()>=S.soloEnd){S.soloEnd=0;endGame('crew','⏱ 5분이 지났어요! 임포스터가 시간 안에 이기지 못했어요');return}
  if(S.phase==='play'&&S.practice){const pt=$('#prt');const l=Math.max(0,Math.ceil((S.practiceEnd-Date.now())/1000));if(pt)pt.textContent=`${Math.floor(l/60)}:${String(l%60).padStart(2,'0')}`;if(l<=0){endGame('crew','🎓 연습 시간이 끝났어요!');return}}
- musSet(S.phase==='lobby'?'lobby':S.phase==='play'?(S.sab&&SABS[S.sab.type].timed?'crit':'play'):(S.phase==='meeting'||S.phase==='vote')?'meet':'');
+ musSet(S.phase==='lobby'&&S.tut&&S.tut.mode==='slides'&&SLIDES[S.tut.i].video?'':S.phase==='lobby'?'lobby':S.phase==='play'?(S.sab&&SABS[S.sab.type].timed?'crit':'play'):(S.phase==='meeting'||S.phase==='vote')?'meet':'');
  if(S.phase==='play'&&S.sab&&SABS[S.sab.type].timed){
   if(Date.now()-lastSiren>1100){lastSiren=Date.now();SND.siren()}
   if(Date.now()>=S.sab.end){const ty=S.sab.type;S.sabWin=ty;endGame('imp',SAB_LOSE[ty]+' (제한 시간 0초 → 임포스터 즉시 승리)');sabLoseCine(ty);return}
@@ -1055,7 +1055,7 @@ function renderHost(){
  musBtn();if(AC)musInit();if(!window._musHook){window._musHook=1;document.addEventListener('pointerdown',()=>{initAudio();musInit()},{passive:true})}
  if(!S)return;
  const ph=S.phase;
- if(ph==='lobby'&&S.tut){const tv=$('#tutv');const key=S.tut.mode==='slides'?'s'+S.tut.i:'ai';if(tv&&tv.dataset.k===key){if(key==='ai'){$('#aigrid').innerHTML=aiGridHTML();$('#tutdone').textContent=S.order.map(P).filter(p=>!p.bot&&p.aiN>0).length}return}app.innerHTML=tutHostHTML();paintSlide(app);return}
+ if(ph==='lobby'&&S.tut){const tv=$('#tutv');const key=S.tut.mode==='slides'?'s'+S.tut.i:'ai';if(tv&&tv.dataset.k===key){if(key==='ai'){$('#aigrid').innerHTML=aiGridHTML();$('#tutdone').textContent=S.order.map(P).filter(p=>!p.bot&&p.aiN>0).length}return}app.innerHTML=tutHostHTML();paintSlide(app);const vd=app.querySelector('.sl-vid');if(vd){vd.volume=.6;const pr=vd.play();pr&&pr.catch(()=>{vd.muted=true;vd.play().catch(()=>{});toast('🔊 영상 아래 스피커 버튼을 눌러 소리를 켜 주세요','#475569')})}return}
  if(ph==='lobby'&&$('#lobby')){$('#plistBox').innerHTML=plistHTML({kick:true});$('#pcount').textContent=S.order.length;$('#impHint').textContent=impHint();$('#tutCount')&&($('#tutCount').textContent=tutCount());$('#pendBox').innerHTML=pendHTML();return}
  if(ph==='play'&&$('#playv')&&$('#playv').dataset.sig===playSig()){const{d,t}=crewTasks();$('#ptxt').textContent=`전체 임무 진행도 ${Math.round(progress()*100)}%`;$('#pbar').style.width=progress()*100+'%';$('#pcnt').textContent=`크루원 임무 ${d} / ${t}`;$('#plistBox').innerHTML=plistHTML({showDead:true});$('#pendBox').innerHTML=pendHTML();const hn=$('#hholdn');if(hn)hn.textContent=holdN();return}
  if(ph==='result'&&$('#resv')&&$('#resv').dataset.stg===resStage(S.timerEnd)){const pb=$('#pendBox2');if(pb)pb.innerHTML=pendHTML();return}
@@ -1329,7 +1329,7 @@ function roleText(){const me=V.me;if(me.role==='imp'){const mates=V.players.filt
 const SLIDES=[
  {t:'🚀 우리 반 우주선에 오신 걸 환영해요!',b:(ps)=>`<p class="sl-lead">우주선 안에 <b class="r">임포스터</b>가 몰래 숨어 있어요.<br><b class="bl">크루원</b>은 임무를 하며 임포스터를 찾아내고, 임포스터는 들키지 않게 방해해요.</p>
   <div class="line">${ps.slice(0,23).map(p=>`<div class="bob" style="animation-delay:-${(p.name.length%5)*.4}s">${av(p,ps.length>14?44:60)}<div>${esc(p.name)}</div></div>`).join('')}</div>`},
- {t:'🎮 패드 조작법 (영상)',video:1,b:()=>`<video class="sl-vid" src="howto.mp4?v=2" controls autoplay muted playsinline preload="auto"></video><p class="sl-txt">🤫 <b class="r">약속!</b> 내 패드 화면은 절대 친구에게 보여주지 않아요.</p>`},
+ {t:'🎮 패드 조작법 (영상)',video:1,b:()=>`<video class="sl-vid" src="howto.mp4?v=3" controls autoplay playsinline preload="auto" onplay="this.volume=.6"></video><p class="sl-txt">🤫 <b class="r">약속!</b> 내 패드 화면은 절대 친구에게 보여주지 않아요.</p>`},
  {t:'🗺️ 우리 우주선 지도',b:()=>`<canvas class="tmap"></canvas><p class="sl-txt">방 14개가 복도로 이어져 있어요. 모두 <b>🍽️ 식당</b>에서 출발해요. 식당 한가운데에는 <b class="r">🔴 비상 버튼</b>이 있어요.</p>`},
  {t:'👩‍🚀 크루원이 하는 일',b:()=>`<div class="sl-mach">${['quiz','wires','swipe','download','scan','trash','fuel'].map(k=>`<div><canvas class="mach" data-k="${k}"></canvas><div>${KIND[k].n}</div></div>`).join('')}</div>
   <ul class="sl-ul"><li>노란 <b class="y">!</b> 가 있는 기계로 가서 <b>[사용]</b> → 임무를 해요. 수업 퀴즈도 있어요!</li><li>🩻 몸 스캔은 친구들 눈에 보여요 → <b>크루원이라는 증거</b></li><li>🏆 <b>모든 임무 완료</b> 또는 <b>임포스터를 모두 추방</b>하면 크루원 승리</li></ul>`},
