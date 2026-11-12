@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>우리 반 우주선 – 임포스터를 찾아라! (v10)</title>
+<title>우리 반 우주선 – 임포스터를 찾아라! (v11)</title>
 <style>
 @font-face{font-family:'GmarketSans';font-weight:300;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff') format('woff')}
 @font-face{font-family:'GmarketSans';font-weight:500;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff')}
@@ -195,6 +195,26 @@ body.ingame{overflow:hidden;touch-action:none}
 .note{display:inline-block;background:#fef08a;color:#111;padding:10px 18px;border-radius:6px;transform:rotate(-3deg);font-size:18px;margin:10px 0;box-shadow:0 4px 0 #0006}.note b{font-size:32px;letter-spacing:.15em}
 .kpd{font-size:40px;font-weight:900;letter-spacing:.2em;margin:10px 0;font-variant-numeric:tabular-nums}
 .keys{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:320px;margin:0 auto}.keys button{height:66px;border-radius:14px;border:3px solid #000;background:#e2e8f0;font:inherit;font-size:26px;font-weight:900}
+.wl,.wr{display:flex;align-items:center}.wl i,.wr i{display:block;width:16px;height:16px;border-radius:50%;background:#e5e7eb;border:3px solid #000;position:absolute}
+.wl i{right:-10px}.wr i{left:-10px}.wl{cursor:grab;touch-action:none}#wbox{touch-action:none}
+.trash{display:flex;gap:18px;justify-content:center;align-items:stretch;margin-top:14px}
+.chute{position:relative;width:220px;height:300px;background:#1c1917;border:5px solid #000;border-radius:16px;overflow:hidden}
+.chute span{position:absolute;font-size:34px;transition:top 1s ease-in,opacity 1s}
+.hatch{position:absolute;left:0;right:0;bottom:0;height:40px;background:repeating-linear-gradient(90deg,#78716c 0 14px,#57534e 14px 28px);border-top:4px solid #000;transform-origin:bottom;transition:transform .25s}
+.lever{position:relative;width:70px;height:300px}.lever .slot{position:absolute;left:28px;top:0;width:14px;height:100%;background:#0f172a;border-radius:8px;border:3px solid #000}
+.lever .knob{position:absolute;left:0;top:0;width:70px;height:70px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fca5a5,#dc2626 55%,#7f1d1d);border:4px solid #000;touch-action:none;cursor:grab}
+.fuel{display:flex;justify-content:center;align-items:flex-end;gap:0;margin:14px 0}
+.tank{position:relative;width:150px;height:240px;border:5px solid #000;border-radius:30px;background:#292524;overflow:hidden}
+.tank i{position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(#facc15,#ea580c)}
+.tank .lines{position:absolute;inset:0;background:repeating-linear-gradient(transparent 0 46px,rgba(255,255,255,.35) 46px 48px)}
+.pipe{position:relative;width:60px;height:30px;background:#57534e;border:4px solid #000;border-left:0;margin-bottom:180px}
+.pipe b{position:absolute;left:-10px;top:24px;width:12px;height:12px;border-radius:50% 50% 50% 0;background:#facc15;animation:drip .5s linear infinite paused}
+@keyframes drip{from{transform:translateY(0)}to{transform:translateY(40px);opacity:0}}
+.dl{display:flex;align-items:center;justify-content:space-between;margin:16px 0;font-size:64px}
+.dl .pc{display:flex;flex-direction:column;align-items:center}.dl small{font-size:14px}
+.dl .lane{position:relative;flex:1;height:60px;margin:0 10px;border-bottom:4px dashed #475569}
+.fly{position:absolute;left:0;top:6px;font-size:34px;animation:fly2 1.3s linear forwards}
+@keyframes fly2{to{left:calc(100% - 34px)}}
 </style>
 </head>
 <body>
@@ -1156,6 +1176,101 @@ function sprite(p,mode){
  SPR[key]=img;return img;
 }
 function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+/* ---- 기계·가구 그리기 (모두 직접 그린 도형) ---- */
+function box3(ctx,x,y,w,h,top,side,r){ // 앞면+윗면 있는 상자
+ ctx.fillStyle=side;rr(ctx,x,y+8,w,h,r||6);ctx.fill();ctx.fillStyle=top;rr(ctx,x,y,w,h-6,r||6);ctx.fill();ctx.strokeStyle='#0b1220';ctx.lineWidth=3;rr(ctx,x,y,w,h+8,r||6);ctx.stroke()}
+function glowOutline(ctx,x,y,w,h,col){ctx.save();ctx.strokeStyle=col||'#facc15';ctx.lineWidth=6;ctx.shadowColor=col||'#facc15';ctx.shadowBlur=18;rr(ctx,x-6,y-6,w+12,h+20,12);ctx.stroke();ctx.restore()}
+function drawMachine(ctx,k,x,y,t,o){
+ o=o||{};const blink=Math.sin(t*5)>0;ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';
+ switch(k){
+ case 'quiz':{ // 학습용 컴퓨터: 화면에 글자가 흘러가요
+  box3(ctx,x-30,y-20,60,30,'#64748b','#475569',6);
+  ctx.fillStyle='#1e293b';rr(ctx,x-26,y-52,52,38,6);ctx.fill();ctx.strokeStyle='#0b1220';ctx.lineWidth=3;ctx.stroke();
+  ctx.fillStyle=o.task?'#22d3ee':'#0e7490';rr(ctx,x-21,y-47,42,28,3);ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.75)';for(let i=0;i<3;i++){const w=10+((t*20+i*13)%22);ctx.fillRect(x-17,y-43+i*8,w,3)}
+  ctx.fillStyle='#94a3b8';ctx.fillRect(x-20,y-12,40,6);break}
+ case 'wires':{ // 전기 패널: 색색 전선이 늘어져 있어요
+  box3(ctx,x-28,y-38,56,58,'#78716c','#57534e',5);
+  ['#ef4444','#3b82f6','#facc15','#d946ef'].forEach((c,i)=>{ctx.strokeStyle=c;ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(x-18+i*12,y-28);ctx.quadraticCurveTo(x-18+i*12+(i%2?8:-8),y+(Math.sin(t*2+i)*3),x-18+i*12,y+10);ctx.stroke()});
+  ctx.fillStyle=blink&&o.task?'#facc15':'#334155';ctx.beginPath();ctx.arc(x+20,y-32,4,0,7);ctx.fill();break}
+ case 'swipe':{ // 카드 리더기
+  box3(ctx,x-22,y-30,44,48,'#94a3b8','#64748b',6);ctx.fillStyle='#0f172a';ctx.fillRect(x-16,y-12,32,6);
+  ctx.fillStyle='#052e16';rr(ctx,x-14,y-26,28,10,2);ctx.fill();ctx.fillStyle='#4ade80';ctx.font='700 8px GmarketSans,sans-serif';ctx.fillText(o.task?'CARD':'OK',x,y-21);
+  ctx.fillStyle=o.task&&blink?'#ef4444':'#22c55e';ctx.beginPath();ctx.arc(x+14,y+6,4,0,7);ctx.fill();break}
+ case 'download':{ // 서버 컴퓨터: 불빛이 깜빡여요
+  box3(ctx,x-24,y-50,48,68,'#475569','#334155',6);
+  for(let i=0;i<4;i++){ctx.fillStyle='#1e293b';ctx.fillRect(x-18,y-44+i*14,36,9);ctx.fillStyle=((t*4+i)|0)%3===0?'#22c55e':'#14532d';ctx.fillRect(x+8,y-42+i*14,6,5)}break}
+ case 'scan':{ // 바닥 스캐너: 둥근 발판
+  ctx.fillStyle='#164e63';ctx.beginPath();ctx.ellipse(x,y,46,20,0,0,7);ctx.fill();ctx.strokeStyle='#0b1220';ctx.lineWidth=4;ctx.stroke();
+  ctx.strokeStyle=`rgba(74,222,128,${.4+.3*Math.sin(t*3)})`;ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(x,y,34,13,0,0,7);ctx.stroke();
+  ctx.fillStyle='#0e7490';ctx.beginPath();ctx.ellipse(x,y,18,7,0,0,7);ctx.fill();break}
+ case 'trash':{ // 쓰레기 투입구 + 레버
+  box3(ctx,x-30,y-46,52,62,'#57534e','#44403c',6);ctx.fillStyle='#1c1917';rr(ctx,x-24,y-38,40,24,4);ctx.fill();
+  ctx.fillStyle='#a8a29e';for(let i=0;i<3;i++)ctx.fillRect(x-20,y-34+i*7,32,2);
+  ctx.strokeStyle='#d6d3d1';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(x+26,y-10);ctx.lineTo(x+26,y-36);ctx.stroke();ctx.fillStyle='#ef4444';ctx.beginPath();ctx.arc(x+26,y-38,6,0,7);ctx.fill();break}
+ case 'fuel':{ // 연료 탱크 + 눈금
+  ctx.fillStyle='#b45309';rr(ctx,x-26,y-50,52,66,20);ctx.fill();ctx.strokeStyle='#0b1220';ctx.lineWidth=3;ctx.stroke();
+  ctx.fillStyle='#fde68a';rr(ctx,x-20,y-44,10,52,4);ctx.fill();ctx.fillStyle='#16a34a';const lv=.3+.2*Math.sin(t);ctx.fillRect(x-20,y+8-52*lv,10,52*lv);
+  ctx.fillStyle='#78350f';ctx.fillRect(x+2,y-30,16,4);ctx.fillRect(x+2,y-20,16,4);ctx.fillRect(x+2,y-10,16,4);break}
+ case 'admin':{ // 관리실 홀로그램 지도 탁자
+  ctx.fillStyle='#134e4a';rr(ctx,x-70,y-36,140,72,16);ctx.fill();ctx.strokeStyle='#0b1220';ctx.lineWidth=4;ctx.stroke();
+  ctx.fillStyle=`rgba(45,212,191,${.35+.15*Math.sin(t*2)})`;rr(ctx,x-58,y-26,116,52,10);ctx.fill();
+  ctx.strokeStyle='rgba(204,251,241,.8)';ctx.lineWidth=2;RID.forEach(k=>{const r=ROOMS[k].r;ctx.strokeRect(x-56+r[0]/MAP_W*112,y-24+r[1]/MAP_H*48,r[2]/MAP_W*112,r[3]/MAP_H*48)});break}
+ case 'cams':{ // 보안실 모니터 4대
+  box3(ctx,x-56,y-6,112,26,'#475569','#334155',6);
+  for(let i=0;i<4;i++){const mx=x-54+(i%2)*56,my=y-58+((i/2)|0)*26;ctx.fillStyle='#0f172a';rr(ctx,mx,my,52,24,4);ctx.fill();ctx.fillStyle=`rgba(74,222,128,${.25+.15*Math.sin(t*3+i)})`;ctx.fillRect(mx+4,my+4,44,16)}
+  ctx.fillStyle='#ef4444';ctx.beginPath();ctx.arc(x+48,y+2,4,0,7);ctx.fill();break}
+ case 'sab_lights':{ // 배전반
+  box3(ctx,x-24,y-44,48,60,'#4b5563','#374151',5);for(let i=0;i<4;i++){ctx.fillStyle=o.alarm?'#7f1d1d':'#16a34a';ctx.fillRect(x-18+i*10,y-36,7,14)}
+  ctx.fillStyle='#facc15';ctx.beginPath();ctx.moveTo(x-6,y-14);ctx.lineTo(x+4,y-14);ctx.lineTo(x-2,y-4);ctx.lineTo(x+6,y-4);ctx.lineTo(x-6,y+10);ctx.lineTo(x-2,y);ctx.lineTo(x-8,y);ctx.closePath();ctx.fill();break}
+ case 'sab_comms':{ // 통신 안테나
+  box3(ctx,x-24,y-14,48,28,'#475569','#334155',5);ctx.strokeStyle='#cbd5e1';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(x,y-14);ctx.lineTo(x,y-40);ctx.stroke();
+  ctx.fillStyle='#e2e8f0';ctx.beginPath();ctx.ellipse(x,y-44,20,10,-.4,0,7);ctx.fill();ctx.strokeStyle='#0b1220';ctx.lineWidth=3;ctx.stroke();
+  if(o.alarm){ctx.strokeStyle='#ef4444';ctx.lineWidth=3;ctx.beginPath();ctx.arc(x+16,y-52,6+((t*20)%14),-.8,.8);ctx.stroke()}break}
+ case 'sab_reactor':{ // 손바닥 판
+  box3(ctx,x-26,y-30,52,46,'#64748b','#475569',8);ctx.fillStyle=o.alarm?(blink?'#ef4444':'#991b1b'):'#0e7490';rr(ctx,x-18,y-24,36,30,6);ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.85)';ctx.beginPath();ctx.ellipse(x,y-4,8,9,0,0,7);ctx.fill();for(let i=0;i<4;i++){rr(ctx,x-9+i*5,y-21,4,12,2);ctx.fill()}break}
+ case 'sab_o2':{ // 비밀번호판
+  box3(ctx,x-22,y-40,44,56,'#94a3b8','#64748b',6);ctx.fillStyle='#052e16';rr(ctx,x-16,y-34,32,10,2);ctx.fill();
+  for(let i=0;i<9;i++){ctx.fillStyle='#e2e8f0';ctx.fillRect(x-14+(i%3)*10,y-20+((i/3)|0)*9,7,6)}
+  ctx.fillStyle=o.alarm&&blink?'#ef4444':'#22c55e';ctx.beginPath();ctx.arc(x+15,y-29,3,0,7);ctx.fill();break}
+ }
+ if(o.alarm){ctx.strokeStyle=`rgba(239,68,68,${.5+.4*Math.sin(t*8)})`;ctx.lineWidth=5;ctx.beginPath();ctx.arc(x,y-14,48,0,7);ctx.stroke()}
+ if(o.task){ctx.strokeStyle=`rgba(250,204,21,${.45+.3*Math.sin(t*5)})`;ctx.lineWidth=4;ctx.setLineDash([10,8]);ctx.lineDashOffset=-t*30;ctx.beginPath();ctx.arc(x,y-14,46,0,7);ctx.stroke();ctx.setLineDash([])}
+ if(o.hi){ctx.shadowColor='#facc15';ctx.shadowBlur=20;ctx.strokeStyle='#fde047';ctx.lineWidth=6;ctx.beginPath();ctx.arc(x,y-14,52,0,7);ctx.stroke()}
+ ctx.restore();
+}
+/* 방마다 분위기 가구 */
+function drawDecor(ctx,t){
+ const R=k=>ROOMS[k].r;let r;
+ // 식당: 둥근 식탁들
+ r=R('caf');[[r[0]+90,r[1]+250],[r[0]+330,r[1]+250]].forEach(([x,y])=>{ctx.fillStyle='#94a3b8';ctx.beginPath();ctx.ellipse(x,y,44,26,0,0,7);ctx.fill();ctx.strokeStyle='#0b1220';ctx.lineWidth=3;ctx.stroke();ctx.fillStyle='#cbd5e1';ctx.beginPath();ctx.ellipse(x,y-4,34,18,0,0,7);ctx.fill()});
+ // 의무실: 침대 2개
+ r=R('med');[[r[0]+40,r[1]+60],[r[0]+40,r[1]+150]].forEach(([x,y])=>{ctx.fillStyle='#e2e8f0';rr(ctx,x,y,90,40,6);ctx.fill();ctx.strokeStyle='#0b1220';ctx.lineWidth=3;ctx.stroke();ctx.fillStyle='#93c5fd';rr(ctx,x+60,y+5,24,30,5);ctx.fill();ctx.fillStyle='#60a5fa';ctx.fillRect(x+4,y+4,52,32)});
+ // 엔진실·원자로: 큰 엔진과 원자로 노심
+ r=R('eng');engine(ctx,r[0]+150,r[1]+150,t);
+ r=R('rea');ctx.fillStyle='#14532d';ctx.beginPath();ctx.arc(r[0]+130,r[1]+150,58,0,7);ctx.fill();ctx.strokeStyle='#0b1220';ctx.lineWidth=5;ctx.stroke();
+ const g=ctx.createRadialGradient(r[0]+130,r[1]+150,4,r[0]+130,r[1]+150,46);g.addColorStop(0,'#bef264');g.addColorStop(1,`rgba(34,197,94,${.4+.2*Math.sin(t*3)})`);ctx.fillStyle=g;ctx.beginPath();ctx.arc(r[0]+130,r[1]+150,44,0,7);ctx.fill();
+ // 창고: 상자 더미
+ r=R('sto');[[r[0]+150,r[1]+120,60],[r[0]+215,r[1]+120,50],[r[0]+180,r[1]+70,46],[r[0]+260,r[1]+220,56]].forEach(([x,y,w])=>{box3(ctx,x-w/2,y-w/2,w,w-6,'#b45309','#92400e',4);ctx.strokeStyle='#78350f';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x-w/2,y-w/2);ctx.lineTo(x+w/2,y+w/2-6);ctx.stroke()});
+ // 우주 정원: 화분과 나무
+ r=R('gar');[[r[0]+90,r[1]+150],[r[0]+170,r[1]+170],[r[0]+130,r[1]+90]].forEach(([x,y],i)=>{ctx.fillStyle='#92400e';rr(ctx,x-16,y,32,22,4);ctx.fill();ctx.fillStyle=['#22c55e','#16a34a','#4ade80'][i];ctx.beginPath();ctx.arc(x,y-10+Math.sin(t+i)*2,22,0,7);ctx.fill();ctx.strokeStyle='#14532d';ctx.lineWidth=3;ctx.stroke()});
+ // 실험실: 플라스크 선반
+ r=R('lab');box3(ctx,r[0]+60,r[1]+100,140,34,'#64748b','#475569',6);['#a855f7','#22d3ee','#f472b6','#facc15'].forEach((c,i)=>{const x=r[0]+78+i*34,y=r[1]+92;ctx.fillStyle='rgba(226,232,240,.6)';ctx.beginPath();ctx.moveTo(x-4,y-26);ctx.lineTo(x+4,y-26);ctx.lineTo(x+12,y);ctx.lineTo(x-12,y);ctx.closePath();ctx.fill();ctx.fillStyle=c;ctx.beginPath();ctx.moveTo(x-8,y-10);ctx.lineTo(x+8,y-10);ctx.lineTo(x+12,y);ctx.lineTo(x-12,y);ctx.closePath();ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(x+(i%2?3:-3),y-14-((t*20+i*7)%14),2,0,7);ctx.fill()});
+ // 조종실: 큰 창문(바깥 별)과 조종석
+ r=R('nav');ctx.fillStyle='#020617';rr(ctx,r[0]+r[2]-40,r[1]+60,30,200,10);ctx.fill();ctx.strokeStyle='#93c5fd';ctx.lineWidth=4;ctx.stroke();ctx.fillStyle='#fff';for(let i=0;i<6;i++)ctx.fillRect(r[0]+r[2]-34+(i*7%18),r[1]+70+((t*40+i*37)%180),3,3);
+ ctx.fillStyle='#1e40af';ctx.beginPath();ctx.arc(r[0]+150,r[1]+160,26,0,7);ctx.fill();ctx.strokeStyle='#0b1220';ctx.lineWidth=3;ctx.stroke();
+ // 무기고: 포탑 조준경
+ r=R('wep');ctx.fillStyle='#7f1d1d';ctx.beginPath();ctx.arc(r[0]+150,r[1]+150,40,0,7);ctx.fill();ctx.strokeStyle='#0b1220';ctx.lineWidth=4;ctx.stroke();ctx.strokeStyle='#fca5a5';ctx.lineWidth=3;ctx.beginPath();ctx.arc(r[0]+150,r[1]+150,22,0,7);ctx.moveTo(r[0]+150-34,r[1]+150);ctx.lineTo(r[0]+150+34,r[1]+150);ctx.moveTo(r[0]+150,r[1]+150-34);ctx.lineTo(r[0]+150,r[1]+150+34);ctx.stroke();
+ // 산소실: 산소 통 3개 (거품)
+ r=R('o2');for(let i=0;i<3;i++){const x=r[0]+70+i*40,y=r[1]+120;ctx.fillStyle='#bae6fd';rr(ctx,x-14,y-40,28,60,12);ctx.fill();ctx.strokeStyle='#0b1220';ctx.lineWidth=3;ctx.stroke();ctx.fillStyle='rgba(255,255,255,.8)';ctx.beginPath();ctx.arc(x,y+10-((t*30+i*20)%50),4,0,7);ctx.fill()}
+ // 통신실·전기실·보안실: 벽쪽 기계
+ r=R('com');box3(ctx,r[0]+90,r[1]+60,110,34,'#475569','#334155',6);ctx.fillStyle='#22c55e';for(let i=0;i<5;i++)if(((t*3+i)|0)%2)ctx.fillRect(r[0]+100+i*20,r[1]+70,10,6);
+ r=R('ele');ctx.strokeStyle='#facc15';ctx.lineWidth=4;ctx.beginPath();for(let i=0;i<6;i++){ctx.lineTo(r[0]+90+i*24,r[1]+130+(i%2?-12:12))}ctx.stroke();
+ r=R('sec');ctx.fillStyle='#334155';rr(ctx,r[0]+140,r[1]+40,70,30,6);ctx.fill();
+}
+function engine(ctx,x,y,t){ctx.fillStyle='#475569';rr(ctx,x-70,y-40,120,80,30);ctx.fill();ctx.strokeStyle='#0b1220';ctx.lineWidth=4;ctx.stroke();ctx.fillStyle='#334155';for(let i=0;i<3;i++)ctx.fillRect(x-50+i*30,y-40,10,80);
+ const f=20+Math.sin(t*20)*6;ctx.fillStyle='#f97316';ctx.beginPath();ctx.moveTo(x-70,y-22);ctx.lineTo(x-70-f,y);ctx.lineTo(x-70,y+22);ctx.closePath();ctx.fill();ctx.fillStyle='#fde047';ctx.beginPath();ctx.moveTo(x-70,y-12);ctx.lineTo(x-70-f*.6,y);ctx.lineTo(x-70,y+12);ctx.closePath();ctx.fill()}
 function drawWorld(ctx,o){
  const t=performance.now()/1000;
  ctx.fillStyle='#03050f';ctx.fillRect(-2000,-2000,MAP_W+4000,MAP_H+4000);
@@ -1176,23 +1291,20 @@ function drawWorld(ctx,o){
  ctx.fillStyle='#dc2626';ctx.beginPath();ctx.arc(BTN.x,BTN.y,BTN.r-20,0,7);ctx.fill();ctx.stroke();
  // 환풍구
  Object.values(VENTS).forEach(v=>{ctx.fillStyle='#111827';rr(ctx,v.x-30,v.y-20,60,40,6);ctx.fill();ctx.strokeStyle='#6b7280';ctx.lineWidth=3;ctx.stroke();for(let i=-18;i<=18;i+=9){ctx.beginPath();ctx.moveTo(v.x+i,v.y-14);ctx.lineTo(v.x+i,v.y+14);ctx.stroke()}});
- // 임무 기계
- const mark=o.mark||new Set();
+ // 방 가구(장식)
+ drawDecor(ctx,t);
+ // 임무 기계 (가까이 가면 노란 테두리)
+ const mark=o.mark||new Set(),hi=o.hi||null;
  for(const id in STATIONS){const st=STATIONS[id],m=mark.has(id);
-  if(m){ctx.fillStyle=`rgba(250,204,21,${.25+.2*Math.sin(t*5)})`;ctx.beginPath();ctx.arc(st.x,st.y,42,0,7);ctx.fill()}
-  ctx.fillStyle=m?'#fde68a':'#94a3b8';rr(ctx,st.x-22,st.y-22,44,44,8);ctx.fill();ctx.strokeStyle='#0f172a';ctx.lineWidth=3;ctx.stroke();
-  ctx.font='24px GmarketSans,sans-serif';ctx.fillText(KIND[st.k].e,st.x,st.y+1);
-  if(m){ctx.font='900 30px GmarketSans,sans-serif';ctx.fillStyle='#facc15';ctx.strokeStyle='#000';ctx.lineWidth=5;const yy=st.y-48+Math.sin(t*6)*5;ctx.strokeText('!',st.x,yy);ctx.fillText('!',st.x,yy)}}
- // 고장 장치
+  drawMachine(ctx,st.k,st.x,st.y,t,{task:m,hi:hi===id});
+  if(m){ctx.font='900 30px GmarketSans,sans-serif';ctx.fillStyle='#facc15';ctx.strokeStyle='#000';ctx.lineWidth=5;const yy=st.y-54+Math.sin(t*6)*5;ctx.strokeText('!',st.x,yy);ctx.fillText('!',st.x,yy)}}
  // 관리실 지도 테이블 · 보안실 CCTV · 카메라
- ctx.fillStyle='#0f766e';rr(ctx,ADMIN.x-60,ADMIN.y-34,120,68,12);ctx.fill();ctx.strokeStyle='#0f172a';ctx.lineWidth=4;ctx.stroke();ctx.font='30px GmarketSans,sans-serif';ctx.fillStyle='#fff';ctx.fillText('🗺️',ADMIN.x,ADMIN.y+2);
- ctx.fillStyle='#1e3a8a';rr(ctx,CAMS_AT.x-50,CAMS_AT.y-30,100,60,10);ctx.fill();ctx.stroke();ctx.fillText('📺',CAMS_AT.x,CAMS_AT.y+2);
+ drawMachine(ctx,'admin',ADMIN.x,ADMIN.y,t,{hi:hi==='admin'});drawMachine(ctx,'cams',CAMS_AT.x,CAMS_AT.y,t,{hi:hi==='cams'});
  CAMS.forEach(c=>{ctx.fillStyle='#334155';ctx.beginPath();ctx.arc(c.x,c.y,14,0,7);ctx.fill();ctx.fillStyle=Math.sin(t*4)>0?'#ef4444':'#7f1d1d';ctx.beginPath();ctx.arc(c.x,c.y,6,0,7);ctx.fill()});
  // 닫힌 문
  const now=Date.now();DOORS.forEach(d=>{if(!(CLOSED[d.room]>now))return;const r=d.r;ctx.fillStyle='#94a3b8';ctx.fillRect(r[0],r[1],r[2],r[3]);ctx.strokeStyle='#0f172a';ctx.lineWidth=4;ctx.strokeRect(r[0],r[1],r[2],r[3]);ctx.fillStyle='#ef4444';ctx.fillRect(r[0]+r[2]/2-4,r[1]+r[3]/2-4,8,8)});
  for(const k in SABS){SABS[k].at.forEach((a,i)=>{const on=o.sab&&o.sab.type===k&&!(o.sab.done&&o.sab.done[i]);
-  ctx.fillStyle=on?`rgba(239,68,68,${.4+.3*Math.sin(t*8)})`:'#475569';rr(ctx,a.x-24,a.y-24,48,48,10);ctx.fill();ctx.strokeStyle='#0f172a';ctx.lineWidth=3;ctx.stroke();
-  ctx.font='26px GmarketSans,sans-serif';ctx.fillStyle='#fff';ctx.fillText(k==='reactor'?'✋':k==='o2'?'🔢':SABS[k].e,a.x,a.y+1)})}
+  drawMachine(ctx,'sab_'+k,a.x,a.y,t,{alarm:on,hi:hi==='sab'+k+i})})}
 }
 function drawCrew(ctx,p,x,y,o){
  o=o||{};const img=sprite(p,o.mode||'');const h=o.h||96,w=o.mode==='dead'?h*120/140:h*100/144,t=performance.now()/1000;
@@ -1264,7 +1376,7 @@ function frame(now){
  ctx.setTransform(sc,0,0,sc,cv.width/2-ME.x*sc,cv.height/2-ME.y*sc);
  const imp=me.role==='imp',co=commsOut();
  const vis=ghost?9999:imp?VIS_IMP:(V.sab&&V.sab.type==='lights'?VIS_DARK:VIS);
- drawWorld(ctx,{sab:V.sab,mark:co?new Set():new Set(me.tasks.filter(x=>!x.done).map(x=>x.st))});
+ drawWorld(ctx,{sab:V.sab,hi:ACT.use&&ACT.use.hk,mark:co?new Set():new Set(me.tasks.filter(x=>!x.done).map(x=>x.st))});
  V.bodies.forEach(b=>{if(dist(b,ME)<vis+40)drawCrew(ctx,b,b.x,b.y,{mode:'dead',h:96})});
  const list=Object.values(OTH).filter(o=>o.pid!==me.pid&&(!o.dead||ghost)&&!o.vent&&dist(o,ME)<vis+40).sort((a,b)=>a.y-b.y);
  list.forEach(o=>{const p=V.players.find(q=>q.pid===o.pid);if(!p)return;if(o.sc)scanRing(ctx,o.x,o.y);drawCrew(ctx,p,o.x,o.y,{mode:o.dead?'ghost':'',f:o.f,mv:o.mv,name:p.name,nameColor:imp&&p.imp?'#f87171':'#fff',pet:!o.dead})});
@@ -1281,9 +1393,9 @@ function nearest(list,r){let best=null,bd=r;list.forEach(x=>{const d=dist(x,ME);
 function findActs(){
  const me=V.me,imp=me.role==='imp',ghost=!me.alive,a={};
  const opts=[];
- if(!commsOut())me.tasks.filter(x=>!x.done).forEach(x=>{const st=STATIONS[x.st];opts.push({x:st.x,y:st.y,kind:'task',id:x.id,e:KIND[x.k].e})});
- if(V.sab&&!ghost)SABS[V.sab.type].at.forEach((p,i)=>{if(!(V.sab.done&&V.sab.done[i]))opts.push({x:p.x,y:p.y,kind:'fix',type:V.sab.type,i,e:'🛠️'})});
- opts.push({x:ADMIN.x,y:ADMIN.y,kind:'admin',e:'🗺️',r:USE_R+30},{x:CAMS_AT.x,y:CAMS_AT.y,kind:'cams',e:'📺',r:USE_R+20});
+ if(!commsOut())me.tasks.filter(x=>!x.done).forEach(x=>{const st=STATIONS[x.st];opts.push({x:st.x,y:st.y,kind:'task',id:x.id,e:KIND[x.k].e,hk:x.st})});
+ if(V.sab&&!ghost)SABS[V.sab.type].at.forEach((p,i)=>{if(!(V.sab.done&&V.sab.done[i]))opts.push({x:p.x,y:p.y,kind:'fix',type:V.sab.type,i,e:'🛠️',hk:'sab'+V.sab.type+i})});
+ opts.push({x:ADMIN.x,y:ADMIN.y,kind:'admin',e:'🗺️',r:USE_R+30,hk:'admin'},{x:CAMS_AT.x,y:CAMS_AT.y,kind:'cams',e:'📺',r:USE_R+20,hk:'cams'});
  if(!ghost)opts.push({x:BTN.x,y:BTN.y,kind:'btn',e:'🚨',r:USE_R+40});
  a.use=opts.filter(o=>dist(o,ME)<(o.r||USE_R)).sort((p,q)=>dist(p,ME)-dist(q,ME))[0]||null;
  if(!ghost)a.body=nearest(V.bodies,REPORT_R);
@@ -1372,14 +1484,24 @@ function openTask(id){
 }
 /* 미니게임: 전선 잇기 — 왼쪽 전선을 누르고, 같은 색 오른쪽 전선을 눌러요 */
 function mgWires(box,t){
- const C=[['#ef4444','빨강'],['#3b82f6','파랑'],['#facc15','노랑'],['#d946ef','분홍']];
- const L=shuffle([0,1,2,3]),R=shuffle([0,1,2,3]);const done=new Set();let sel=null;
- box.innerHTML=`<h2 class="center" style="padding-top:24px">🔌 같은 색 전선끼리 이어요</h2><div class="small center">왼쪽 전선을 누르고 → 같은 색 오른쪽 전선을 누르세요</div>
-  <div class="wires"><svg id="wsv" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>${L.map((c,i)=>`<button class="wl" data-c="${c}" style="top:${8+i*23}%;background:${C[c][0]}"></button>`).join('')}${R.map((c,i)=>`<button class="wr" data-c="${c}" style="top:${8+i*23}%;background:${C[c][0]}"></button>`).join('')}</div>`;
- const draw=()=>{$('#wsv').innerHTML=[...done].map(c=>`<line x1="12" y1="${14+L.indexOf(c)*23}" x2="88" y2="${14+R.indexOf(c)*23}" stroke="${C[c][0]}" stroke-width="5"/>`).join('')+(sel!=null?`<circle cx="12" cy="${14+L.indexOf(sel)*23}" r="4" fill="#fff"/>`:'')};
- box.querySelectorAll('.wl').forEach(b=>b.onclick=()=>{const c=+b.dataset.c;if(done.has(c))return;sel=c;box.querySelectorAll('.wl').forEach(x=>x.classList.toggle('sel',x===b));draw()});
- box.querySelectorAll('.wr').forEach(b=>b.onclick=()=>{const c=+b.dataset.c;if(sel==null)return toast('왼쪽 전선부터 눌러요','#475569');
-  if(c===sel){done.add(c);sel=null;beep(660+done.size*110,.08,'square',0,.08);draw();if(done.size===4)setTimeout(()=>taskDone(t),350)}else{shake(b);toast('색이 달라요!','#dc2626')}});
+ const C=['#ef4444','#3b82f6','#facc15','#d946ef'];
+ const L=shuffle([0,1,2,3]),R=shuffle([0,1,2,3]);const done=new Set();
+ box.innerHTML=`<h2 class="center" style="padding-top:24px">🔌 끊어진 전선을 같은 색끼리 이어요</h2><div class="small center">왼쪽 전선 끝을 잡고 오른쪽 같은 색까지 끌어다 놓아요</div>
+  <div class="wires" id="wbox"><svg id="wsv" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+  ${L.map((c,i)=>`<div class="wl" data-c="${c}" style="top:${8+i*23}%;background:${C[c]}"><i></i></div>`).join('')}${R.map((c,i)=>`<div class="wr" data-c="${c}" style="top:${8+i*23}%;background:${C[c]}"><i></i></div>`).join('')}</div>`;
+ const wb=$('#wbox');let drag=null;
+ const yOf=(arr,c)=>14+arr.indexOf(c)*23;
+ const draw=()=>{let h='';
+  done.forEach(c=>{h+=`<path d="M12 ${yOf(L,c)} C 50 ${yOf(L,c)}, 50 ${yOf(R,c)}, 88 ${yOf(R,c)}" stroke="${C[c]}" stroke-width="4.5" fill="none" stroke-linecap="round"/>`});
+  if(drag)h+=`<path d="M12 ${yOf(L,drag.c)} C 40 ${yOf(L,drag.c)}, ${drag.x-20} ${drag.y}, ${drag.x} ${drag.y}" stroke="${C[drag.c]}" stroke-width="4.5" fill="none" stroke-linecap="round"/><circle cx="${drag.x}" cy="${drag.y}" r="2.5" fill="#fff"/>`;
+  $('#wsv').innerHTML=h};
+ const pos=e=>{const b=wb.getBoundingClientRect();return{x:(e.clientX-b.left)/b.width*100,y:(e.clientY-b.top)/b.height*100}};
+ box.querySelectorAll('.wl').forEach(el=>el.addEventListener('pointerdown',e=>{const c=+el.dataset.c;if(done.has(c))return;e.preventDefault();drag={c,...pos(e)};wb.setPointerCapture(e.pointerId);beep(300,.04,'square',0,.05);draw()}));
+ wb.addEventListener('pointermove',e=>{if(!drag)return;Object.assign(drag,pos(e));draw()});
+ const drop=e=>{if(!drag)return;const p=pos(e),c=drag.c;drag=null;
+  if(p.x>78){const k=Math.max(0,Math.min(3,Math.round((p.y-14)/23)));if(R[k]===c){done.add(c);beep(500+done.size*120,.12,'square',0,.08);if(done.size===4){draw();setTimeout(()=>taskDone(t),450);return}}else{shake(wb);beep(150,.2,'sawtooth',0,.06)}}
+  draw()};
+ wb.addEventListener('pointerup',drop);wb.addEventListener('pointercancel',()=>{drag=null;draw()});
  draw();
 }
 /* 미니게임: 카드 긁기 — 너무 빠르지도 느리지도 않게 */
@@ -1395,8 +1517,8 @@ function mgSwipe(box,t){
 }
 /* 미니게임: 자료 내려받기 — 끝날 때까지 기다려요 */
 function mgDownload(box,t){
- box.innerHTML=`<h2 class="center" style="padding-top:24px">💾 수업 자료 내려받기</h2><div class="center" style="font-size:80px">📁➡️💾</div><div class="bar" style="height:36px"><i id="dlb" style="width:0%;transition:none"></i></div><p class="center" id="dlt">버튼을 누르고 끝날 때까지 기다려요 (창을 닫으면 처음부터)</p><button class="btn big green" id="dlgo">⬇️ 내려받기 시작</button>`;
- $('#dlgo').onclick=()=>{$('#dlgo').disabled=true;const t0=performance.now(),D=6000;const go=()=>{if(!$('#dlb'))return;const k=Math.min(1,(performance.now()-t0)/D);$('#dlb').style.width=k*100+'%';$('#dlt').textContent=`내려받는 중… ${Math.round(k*100)}%`;if(k<1)requestAnimationFrame(go);else setTimeout(()=>taskDone(t),300)};go()};
+ box.innerHTML=`<h2 class="center" style="padding-top:24px">💾 수업 자료 내려받기</h2><div class="dl"><div class="pc">🖥️<small>우주선 서버</small></div><div class="lane" id="lane"></div><div class="pc">💾<small>내 저장소</small></div></div><div class="bar" style="height:36px"><i id="dlb" style="width:0%;transition:none"></i></div><p class="center" id="dlt">버튼을 누르고 끝날 때까지 기다려요 (창을 닫으면 처음부터)</p><button class="btn big green" id="dlgo">⬇️ 내려받기 시작</button>`;
+ $('#dlgo').onclick=()=>{$('#dlgo').disabled=true;const t0=performance.now(),D=6000;let lastF=0;const go=()=>{if(!$('#dlb'))return;const k=Math.min(1,(performance.now()-t0)/D);if(performance.now()-lastF>350&&k<1){lastF=performance.now();const f=document.createElement('span');f.className='fly';f.textContent=pick(['📄','📊','📝','🖼️']);$('#lane').appendChild(f);setTimeout(()=>f.remove(),1300)}$('#dlb').style.width=k*100+'%';$('#dlt').textContent=`내려받는 중… ${Math.round(k*100)}%`;if(k<1)requestAnimationFrame(go);else setTimeout(()=>taskDone(t),300)};go()};
 }
 /* 미니게임: 몸 스캔 — 다른 친구에게 초록 스캔 빛이 보여요 (임포스터는 못 해요!) */
 function mgScan(box,t){
@@ -1406,16 +1528,33 @@ function mgScan(box,t){
  ME.sc=true;lastSentMv=null;
  const t0=performance.now(),D=8000;const go=()=>{if(!$('#scb')){ME.sc=false;lastSentMv=null;return}const k=Math.min(1,(performance.now()-t0)/D);$('#scb').style.width=k*100+'%';$('#sct').textContent=k<1?`스캔 중… ${Math.round(k*100)}%`:info;if(k<1)requestAnimationFrame(go);else setTimeout(()=>{ME.sc=false;lastSentMv=null;taskDone(t)},900)};go();
 }
-/* 미니게임: 쓰레기 버리기 / 연료 넣기 — 꾹 누르고 있기 */
+/* 미니게임: 쓰레기 버리기 — 레버를 아래로 끌어 내린 채로 버텨요 */
 function mgHold(box,t){
- const tr=t.k==='trash',D=tr?3000:4000;
- box.innerHTML=`<h2 class="center" style="padding-top:24px">${tr?'🗑️ 레버를 꾹 눌러 쓰레기를 버려요':'⛽ 버튼을 꾹 눌러 연료를 가득 채워요'}</h2><div class="center" style="font-size:70px">${tr?'🗑️⬇️🌌':'⛽➡️🚀'}</div>
-  <div class="bar" style="height:40px"><i id="hdb" style="width:0%;transition:none"></i></div><button class="hand" id="hdgo" style="font-size:70px">${tr?'⬇️':'⛽'}</button><p class="center">손을 떼면 멈춰요</p>`;
- let acc=0,last=0,on=false;const b=$('#hdgo');
- const loop=now=>{if(!$('#hdb'))return;if(on){acc+=now-last;last=now;$('#hdb').style.width=Math.min(100,acc/D*100)+'%';if(acc>=D){on=false;taskDone(t);return}}requestAnimationFrame(loop)};
- b.addEventListener('pointerdown',e=>{e.preventDefault();on=true;last=performance.now();b.classList.add('on')});
+ if(t.k==='fuel')return mgFuel(box,t);
+ box.innerHTML=`<h2 class="center" style="padding-top:24px">🗑️ 레버를 아래로 끌어내려 쓰레기를 우주로!</h2>
+  <div class="trash"><div class="chute" id="chute">${Array.from({length:9},(_,i)=>`<span style="left:${10+(i*37)%70}%;top:${8+(i*23)%45}%">${['🥫','🍌','📄','🧃','🥤','🍎','📦','🧻','🍞'][i]}</span>`).join('')}<div class="hatch" id="hatch"></div></div>
+  <div class="lever"><div class="slot"></div><div class="knob" id="knob2"></div></div></div><p class="center" id="trt">빨간 손잡이를 아래 끝까지 끌고 3초 버티기</p>`;
+ const kn=$('#knob2'),slot=kn.previousElementSibling,ch=$('#chute');let drag=false,y0=0,pull=0,acc=0,last=0;
+ const H=()=>slot.clientHeight-kn.clientHeight;
+ kn.addEventListener('pointerdown',e=>{drag=true;y0=e.clientY-pull*H();kn.setPointerCapture(e.pointerId);last=performance.now()});
+ kn.addEventListener('pointermove',e=>{if(!drag)return;pull=Math.max(0,Math.min(1,(e.clientY-y0)/H()));kn.style.top=pull*H()+'px'});
+ const up=()=>{drag=false;pull=0;kn.style.top='0px'};kn.addEventListener('pointerup',up);kn.addEventListener('pointercancel',up);
+ const loop=now=>{if(!$('#chute'))return;const open=pull>.9;$('#hatch').style.transform=open?'scaleY(.05)':'scaleY(1)';
+  if(open){acc+=now-last;ch.querySelectorAll('span').forEach((s,i)=>{if(i<acc/3000*9){s.style.top='130%';s.style.opacity='0'}})}
+  last=now;$('#trt').textContent=open?`쓰레기 버리는 중… ${Math.min(100,Math.round(acc/30))}%`:'빨간 손잡이를 아래 끝까지 끌고 버티기';
+  if(acc>=3000){taskDone(t);return}requestAnimationFrame(loop)};requestAnimationFrame(loop);
+}
+/* 미니게임: 연료 넣기 — 버튼을 누르는 동안 탱크가 차올라요 */
+function mgFuel(box,t){
+ box.innerHTML=`<h2 class="center" style="padding-top:24px">⛽ 연료 탱크를 가득 채워요</h2><div class="fuel"><div class="tank"><i id="fl"></i><div class="lines"></div></div><div class="pipe"><b id="drop"></b></div></div>
+  <button class="hand" id="hdgo" style="width:150px;height:150px;font-size:50px">⛽</button><p class="center" id="flt">버튼을 꾹 누르고 있어요 (손을 떼면 멈춰요)</p>`;
+ let acc=0,last=0,on=false;const b=$('#hdgo'),D=4000;
+ const loop=now=>{if(!$('#fl'))return;if(on){acc+=now-last;$('#drop').style.animationPlayState='running'}else $('#drop').style.animationPlayState='paused';last=now;
+  const k=Math.min(1,acc/D);$('#fl').style.height=k*100+'%';$('#flt').textContent=on?`채우는 중… ${Math.round(k*100)}%`:'버튼을 꾹 누르고 있어요 (손을 떼면 멈춰요)';
+  if(k>=1){beep(880,.2,'sine',0,.12);setTimeout(()=>taskDone(t),300);return}if(on&&((now/120)|0)%3===0)beep(180+k*300,.03,'square',0,.03);requestAnimationFrame(loop)};
+ b.addEventListener('pointerdown',e=>{e.preventDefault();on=true;b.classList.add('on')});
  const off=()=>{on=false;b.classList.remove('on')};b.addEventListener('pointerup',off);b.addEventListener('pointerleave',off);b.addEventListener('pointercancel',off);b.addEventListener('contextmenu',e=>e.preventDefault());
- requestAnimationFrame(loop);
+ requestAnimationFrame(n=>{last=n;loop(n)});
 }
 /* 관리실 지도: 방마다 몇 명 있는지 (누군지는 몰라요) */
 function openAdmin(){
