@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>우리 반 우주선 – 임포스터를 찾아라! (v21)</title>
+<title>우리 반 우주선 – 임포스터를 찾아라! (v22)</title>
 <style>
 @font-face{font-family:'GmarketSans';font-weight:300;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff') format('woff')}
 @font-face{font-family:'GmarketSans';font-weight:500;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff')}
@@ -253,6 +253,7 @@ body.ingame{overflow:hidden;touch-action:none}
 @keyframes knob{25%{transform:translate(28px,-10px)}50%{transform:translate(-20px,24px)}75%{transform:translate(20px,20px)}}
 .sl-btns{display:flex;gap:6px}.sl-btns span{width:64px;height:64px;border-radius:14px;border:3px solid #000;background:#e2e8f0;color:#0f172a;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;line-height:1.3}
 .sl-vid{width:100%;max-width:1000px;display:block;margin:0 auto;border-radius:16px;border:3px solid #6366f1;background:#000}
+.hand-rule{display:inline-block;margin-top:10px;background:#facc15;color:#1e1b4b;font-size:clamp(22px,2.8vw,36px);font-weight:900;padding:10px 22px;border-radius:999px;border:4px solid #000;box-shadow:0 5px 0 #000}
 </style>
 </head>
 <body>
@@ -1128,7 +1129,7 @@ function renderHost(){
   const m=S.meeting;
   h=`<div class="card alarm center"><div class="huge">${m.found?'💀 시체 발견!':'🚨 긴급 회의!'}</div><div style="font-size:28px;font-weight:800">${m.found?`${esc(m.by)} 님이 ${rn(m.found.room)}에서 <span style="color:#fca5a5">${esc(m.found.name)}</span> 님을 발견했어요`:`${esc(m.by)} 님이 비상 버튼을 눌렀어요`}</div></div>
   <div class="card center"><h2>${m.dead.length?`😱 사라진 크루원: <span style="color:#fca5a5">${m.dead.map(esc).join(', ')}</span>`:'🙂 지난 회의 이후 사라진 크루원은 없어요'}</h2>
-  <div style="font-size:24px;margin-top:6px">어디서 무엇을 봤는지 이야기해 보세요! 💬</div><div class="timer" id="htimer">${Math.ceil(S.set.disc)}</div></div>
+  <div class="hand-rule">✋ 말하고 싶은 사람은 <b>손을 들어요</b> → 선생님이 이름을 부르면 <b>한 명씩</b> 발표해요</div><div style="font-size:22px;margin-top:6px">어디서, 누구를, 무엇을 봤는지 말해요 💬 · 👻 유령은 조용히!</div><div class="timer" id="htimer">${Math.ceil(S.set.disc)}</div></div>
   ${tabletHTML('meet')}<p></p>
   ${timeCtl()}<div class="row"><button class="btn big amber" onclick="S.timerEnd=0;startVote()">🗳️ 바로 투표 시작</button></div>`;
  }else if(ph==='vote'){
@@ -1289,7 +1290,7 @@ function renderPlayer(){
   const m=V.meeting;
   h=`${head}<div class="card alarm center"><div style="font-size:60px">${m.found?'💀':'🚨'}</div><h2>${m.found?'시체 발견!':'긴급 회의!'}</h2><div style="font-size:19px">${m.found?`${esc(m.by)} 님이 ${rn(m.found.room)}에서 ${esc(m.found.name)} 님을 발견했어요`:`${esc(m.by)} 님이 비상 버튼을 눌렀어요`}</div></div>
   <div class="card center"><h2>${m.dead.length?'😱 사라진 크루원: '+m.dead.map(esc).join(', '):'🙂 사라진 크루원은 없어요'}</h2>
-  <p style="font-size:20px">${ghost?'👻 유령은 조용히 듣기만 해요 🤫':V.solo?'로봇들의 말을 듣고 누가 거짓말하는지 생각해 봐요!':'어디서 누구를 봤는지 말해 보세요!'}</p><div class="timer" id="ptimer"></div></div>${aiChatHTML()}${memoCard()}`;
+  <p style="font-size:20px">${ghost?'👻 유령은 조용히 듣기만 해요 🤫':V.solo?'로봇들의 말을 듣고 누가 거짓말하는지 생각해 봐요!':'✋ 말하고 싶으면 손을 들어요! 선생님이 부르면 한 명씩 발표해요'}</p><div class="timer" id="ptimer"></div></div>${aiChatHTML()}${memoCard()}`;
  }else if(ph==='vote'){
   if(ghost)h=`${head}<div class="card center"><div style="font-size:60px">👻</div><h2>유령은 투표할 수 없어요</h2><p>투표가 끝날 때까지 기다려요.</p><div class="timer" id="ptimer"></div></div>`;
   else if(me.voted){const tv=me.vote==='skip'?'건너뛰기':(V.players.find(p=>p.pid===me.vote)||{}).name;h=`${head}<div class="card center"><div style="font-size:60px">🗳️</div><h2>투표 완료!</h2><p style="font-size:20px">내 선택: <b>${esc(tv)}</b></p><p>결과를 기다려요… (${V.voted}/${V.aliveN})</p><div class="timer" id="ptimer"></div></div>`}
@@ -1328,13 +1329,13 @@ function roleText(){const me=V.me;if(me.role==='imp'){const mates=V.players.filt
 const SLIDES=[
  {t:'🚀 우리 반 우주선에 오신 걸 환영해요!',b:(ps)=>`<p class="sl-lead">우주선 안에 <b class="r">임포스터</b>가 몰래 숨어 있어요.<br><b class="bl">크루원</b>은 임무를 하며 임포스터를 찾아내고, 임포스터는 들키지 않게 방해해요.</p>
   <div class="line">${ps.slice(0,23).map(p=>`<div class="bob" style="animation-delay:-${(p.name.length%5)*.4}s">${av(p,ps.length>14?44:60)}<div>${esc(p.name)}</div></div>`).join('')}</div>`},
- {t:'🎮 패드 조작법 (영상)',video:1,b:()=>`<video class="sl-vid" src="howto.mp4?v=1" controls autoplay muted playsinline preload="auto"></video><p class="sl-txt">🤫 <b class="r">약속!</b> 내 패드 화면은 절대 친구에게 보여주지 않아요.</p>`},
+ {t:'🎮 패드 조작법 (영상)',video:1,b:()=>`<video class="sl-vid" src="howto.mp4?v=2" controls autoplay muted playsinline preload="auto"></video><p class="sl-txt">🤫 <b class="r">약속!</b> 내 패드 화면은 절대 친구에게 보여주지 않아요.</p>`},
  {t:'🗺️ 우리 우주선 지도',b:()=>`<canvas class="tmap"></canvas><p class="sl-txt">방 14개가 복도로 이어져 있어요. 모두 <b>🍽️ 식당</b>에서 출발해요. 식당 한가운데에는 <b class="r">🔴 비상 버튼</b>이 있어요.</p>`},
  {t:'👩‍🚀 크루원이 하는 일',b:()=>`<div class="sl-mach">${['quiz','wires','swipe','download','scan','trash','fuel'].map(k=>`<div><canvas class="mach" data-k="${k}"></canvas><div>${KIND[k].n}</div></div>`).join('')}</div>
   <ul class="sl-ul"><li>노란 <b class="y">!</b> 가 있는 기계로 가서 <b>[사용]</b> → 임무를 해요. 수업 퀴즈도 있어요!</li><li>🩻 몸 스캔은 친구들 눈에 보여요 → <b>크루원이라는 증거</b></li><li>🏆 <b>모든 임무 완료</b> 또는 <b>임포스터를 모두 추방</b>하면 크루원 승리</li></ul>`},
  {t:'😈 임포스터가 하는 일',b:()=>`<div class="sl-mach">${['sab_lights','sab_comms','sab_reactor','sab_o2','sab_seis'].map(k=>`<div><canvas class="mach" data-k="${k}"></canvas><div>${SABS[k.slice(4)].n}</div></div>`).join('')}</div>
   <ul class="sl-ul"><li>🔪 가까운 크루원을 <b>제거</b> (다시 쓰려면 기다려야 해요)</li><li>🕳️ <b>환풍구</b>로 몰래 이동 · 임무는 <b>하는 척만</b></li><li>💥 <b>방해 공작</b>: 전등·통신·🚪문 잠그기 / <b class="r">치명적</b> ☢️원자로·🫧산소·🌋지반 → <b class="r">0초가 되면 바로 임포스터 승리!</b></li><li>🏆 임포스터 수가 크루원 수와 같아지면 임포스터 승리</li></ul>`},
- {t:'📢 신고와 회의',b:()=>`<div class="sl-steps"><div>💀<b>시체 발견</b>가까이 가서 📢 신고</div><div>🔴<b>비상 버튼</b>식당에서 1인 1번</div><div>✋<b>손 들고 말하기</b>선생님이 지명하면 한 명씩</div><div>🗳️<b>투표</b>가장 많이 뽑힌 사람이 추방</div></div>
+ {t:'📢 신고와 회의',b:()=>`<div class="sl-steps"><div>💀<b>시체 발견</b>가까이 가서 📢 신고</div><div>🔴<b>비상 버튼</b>식당에서 1인 1번</div><div>✋<b>손 들고 발표</b>선생님이 이름을 부르면 한 명씩</div><div>🗳️<b>투표</b>가장 많이 뽑힌 사람이 추방</div></div>
   <ul class="sl-ul"><li>👻 제거된 친구는 <b>유령</b>: 말하면 안 돼요! 대신 임무는 계속할 수 있어요</li><li>"어디서, 누구를, 무엇을 봤는지" 말하면 추리에 도움이 돼요</li></ul>`},
  {t:'🤖 이제 AI 로봇과 연습해요!',b:()=>`<p class="sl-lead">각자 패드에서 <b>AI 로봇 4명</b>과 <b>5분</b> 동안 연습 게임을 해요.<br>절반은 <b class="bl">크루원</b>, 절반은 <b class="r">임포스터</b>로 해 봐요!</p><div style="font-size:120px">🤖🤖🤖🤖</div>`}];
 function slideHTML(i,ps,small){const S0=SLIDES[i];return`<div class="slide ${small?'sm':''}"><div class="sl-n">${i+1} / ${SLIDES.length}</div><h1 class="sl-t">${S0.t}</h1>${S0.b(ps)}</div>`}
