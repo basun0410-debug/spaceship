@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>우리 반 우주선 – 임포스터를 찾아라! (v14)</title>
+<title>우리 반 우주선 – 임포스터를 찾아라! (v15)</title>
 <style>
 @font-face{font-family:'GmarketSans';font-weight:300;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff') format('woff')}
 @font-face{font-family:'GmarketSans';font-weight:500;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff')}
@@ -220,7 +220,10 @@ body.ingame{overflow:hidden;touch-action:none}
 #ping{position:absolute;right:140px;top:22px;z-index:5;font-size:13px;font-weight:800;background:rgba(0,0,0,.5);padding:3px 8px;border-radius:8px}
 .crit{display:inline-block;min-width:2.2em;color:#fde047;animation:critp .5s ease-in-out infinite alternate}@keyframes critp{to{transform:scale(1.25);color:#fff}}
 .seis{background:#0f172a;border:4px solid #000;border-radius:14px;height:110px;margin:12px 0;padding:6px}.seis svg{width:100%;height:100%}
-#musbtn{position:fixed;left:12px;bottom:12px;z-index:95;border:3px solid #000;border-radius:999px;background:#e2e8f0;color:#0f172a;font:inherit;font-weight:900;font-size:16px;padding:8px 14px;box-shadow:0 4px 0 #000}
+#musbtn{position:fixed;right:10px;top:10px;opacity:.85;z-index:95;border:3px solid #000;border-radius:999px;background:#e2e8f0;color:#0f172a;font:inherit;font-weight:900;font-size:13px;padding:5px 10px;box-shadow:0 3px 0 #000}
+.quick{display:flex;flex-wrap:wrap;gap:10px 24px;align-items:center;font-size:20px}.qrow{display:flex;align-items:center;gap:8px}.qrow b{min-width:64px;text-align:center;font-size:24px}
+.qb{min-width:52px;height:46px;border-radius:12px;border:3px solid #000;background:#e2e8f0;font:inherit;font-weight:900;font-size:20px;box-shadow:0 3px 0 #000}
+.tctl .btn{font-size:20px}
 </style>
 </head>
 <body>
@@ -599,13 +602,30 @@ async function startHost(resume){
  window.onbeforeunload=()=>S.phase!=='lobby'&&S.phase!=='end'?'게임이 진행 중이에요':undefined;
 }
 let lastSiren=0;
+/* 선생님 조절: 시간 늘리기·멈추기 */
+function addTime(sec){if(!['meeting','vote'].includes(S.phase))return;if(S.paused!=null)S.paused+=sec*1000;else if(S.timerEnd)S.timerEnd+=sec*1000;toast(`⏱ ${sec}초 늘렸어요`,'#0f766e');bcastAll();hostTick()}
+function togglePause(){if(!['meeting','vote'].includes(S.phase))return;
+ if(S.paused==null){if(!S.timerEnd)return;S.paused=Math.max(0,S.timerEnd-Date.now());S.timerEnd=0;toast('⏸ 시간을 멈췄어요','#475569')}
+ else{S.timerEnd=Date.now()+S.paused;S.paused=null;toast('▶️ 다시 시작!','#0f766e')}
+ bcastAll();renderHost()}
+function timeCtl(){const pz=S.paused!=null;return`<div class="row tctl"><button class="btn" onclick="addTime(30)">⏱ +30초</button><button class="btn" onclick="addTime(60)">⏱ +1분</button><button class="btn ${pz?'green':'gray'}" onclick="togglePause()">${pz?'▶️ 다시 시작':'⏸ 잠깐 멈춤'}</button></div>`}
+/* 선생님 조절: 대기실 빠른 설정 */
+function qset(key,d,mn,mx){S.set[key]=Math.max(mn,Math.min(mx,(+S.set[key]||0)+d));saveSet();saveHost();
+ const q=$('#q_'+key);if(q)q.textContent=S.set[key]+(key==='imp'?'명':'초');const sel=$({imp:'#sImp',disc:'#sDisc',vote:'#sVote'}[key]);if(sel)sel.value=S.set[key];
+ const ih=$('#impHint');if(ih)ih.textContent=impHint()}
+function quickHTML(){const st=S.set,b=(k,d,mn,mx,l)=>`<button class="qb" onclick="qset('${k}',${d},${mn},${mx})">${l}</button>`;
+ return`<div class="card quick"><b>⚡ 빠른 설정</b>
+  <div class="qrow"><span>😈 임포스터</span>${b('imp',-1,1,5,'−')}<b id="q_imp">${st.imp}명</b>${b('imp',1,1,5,'+')}</div>
+  <div class="qrow"><span>💬 토론 시간</span>${b('disc',-15,15,300,'−15')}<b id="q_disc">${st.disc}초</b>${b('disc',15,15,300,'+15')}</div>
+  <div class="qrow"><span>🗳️ 투표 시간</span>${b('vote',-10,10,120,'−10')}<b id="q_vote">${st.vote}초</b>${b('vote',10,10,120,'+10')}</div></div>`}
 function hostTick(){
  if(!S)return;
  botTick();
  if(hostReady)setStatus('');
  if(!S._chk||Date.now()-S._chk>2000){S._chk=Date.now();let ch=false;S.order.forEach(id=>{const p=P(id);if(p&&!p.bot&&p.on&&p.seen&&Date.now()-p.seen>12000){p.on=false;ch=true}});if(ch)renderHost()}
  const t=$('#htimer');
- if(t&&S.timerEnd){const s=Math.max(0,Math.ceil((S.timerEnd-Date.now())/1000));t.textContent=s;t.style.color=s<=10?'#f87171':'#fff'}
+ if(t&&S.paused!=null){t.textContent='⏸ '+Math.ceil(S.paused/1000);t.style.color='#fde68a'}
+ else if(t&&S.timerEnd){const s=Math.max(0,Math.ceil((S.timerEnd-Date.now())/1000));t.textContent=s;t.style.color=s<=10?'#f87171':'#fff'}
  const ns=$('#netsum');if(ns)ns.innerHTML=netSummary();
  if(Date.now()-(window._nbT||0)>3000){window._nbT=Date.now();const pb=$('#plistBox');if(pb&&(S.phase==='lobby'||S.phase==='play'))pb.innerHTML=plistHTML(S.phase==='lobby'?{kick:true}:{showDead:true})}
  if(S.phase==='result'){const rv=$('#resv');if(rv&&rv.dataset.stg!==resStage(S.timerEnd))renderHost()}
@@ -635,7 +655,7 @@ function holdN(){if(!S.sab||!S.sab.holders)return 0;const set=new Set();for(cons
 function viewFor(pid){
  const p=P(pid),inGame=S.phase!=='lobby',imp=p.role==='imp'&&inGame,ghost=!p.alive,seeAll=imp||ghost||S.phase==='end';
  const v={t:'state',phase:S.phase,code:S.code,progress:progress(),
-  left:S.timerEnd?Math.max(0,S.timerEnd-Date.now()):0,
+  left:S.paused!=null?S.paused:S.timerEnd?Math.max(0,S.timerEnd-Date.now()):0,paused:S.paused!=null?1:0,
   me:{pid,name:p.name,color:p.color,look:p.look,role:inGame?p.role:null,alive:p.alive,x:p.x,y:p.y,tpN:p.tpN||0,vent:p.vent||null,tasks:p.tasks,meet:p.meet,cdLeft:Math.max(0,(p.cd||0)-Date.now()),voted:p.vote!=null,vote:p.vote},
   bodies:S.phase==='play'?S.bodies.map(b=>({pid:b.pid,name:P(b.pid).name,color:P(b.pid).color,look:P(b.pid).look,x:b.x,y:b.y})):[],
   sab:S.sab?{type:S.sab.type,left:S.sab.end?Math.max(0,S.sab.end-Date.now()):0,holders:holdN(),done:S.sab.done||null,iHold:S.sab.holders?S.sab.holders[pid]:null}:null,
@@ -815,6 +835,7 @@ function ejectLines(r){return[r.name?(r.reveal?`${r.name} 님은 임포스터${r
 function resStage(end){return end&&end-Date.now()>8000?'tally':'eject'}
 function callMeeting(by,found){
  if(S.phase!=='play')return;
+ S.paused=null;
  const dead=S.deaths.map(id=>P(id)&&P(id).name).filter(Boolean);
  S.deaths.forEach(id=>{if(P(id))P(id).pub=true});S.deaths=[];S.bodies=[];
  S.sab=null;
@@ -830,8 +851,8 @@ function meetSplash(m,sz){
  <div class="line" style="align-items:center">${byP?`<div class="bob">${av(byP,sz)}</div>`:'<div style="font-size:'+sz*.8+'px">👩‍🏫</div>'}${m.found&&fp?`<div style="font-size:${sz*.4}px">➡️</div><div>${av(fp,sz*.8,{dead:true})}</div>`:`<div style="font-size:${sz*.7}px">🔴</div>`}</div>
  <div class="mid">${m.found?`${esc(m.by)} 님이 ${esc(m.found.name)} 님을 발견했어요`:`${esc(m.by)} 님이 비상 버튼을 눌렀어요`}</div>`;
 }
-function startVote(){if(S.phase!=='meeting')return;cineOff();S.order.forEach(id=>{if(P(id).bot)P(id).next=0});S.phase='vote';S.timerEnd=Date.now()+S.set.vote*1000;S.order.forEach(id=>P(id).vote=null);SND.ding();bcastAll();renderHost()}
-function endVote(){
+function startVote(){if(S.phase!=='meeting')return;S.paused=null;cineOff();S.order.forEach(id=>{if(P(id).bot)P(id).next=0});S.phase='vote';S.timerEnd=Date.now()+S.set.vote*1000;S.order.forEach(id=>P(id).vote=null);SND.ding();bcastAll();renderHost()}
+function endVote(){S.paused=null;
  if(S.phase!=='vote')return;
  const cnt={},al=alivePlayers();let skip=0,none=0;
  al.forEach(p=>{if(p.vote==null)none++;else if(p.vote==='skip')skip++;else cnt[p.vote]=(cnt[p.vote]||0)+1});
@@ -996,6 +1017,7 @@ function renderHost(){
     <div id="netsum"></div><div id="plistBox" style="margin-top:10px">${plistHTML({kick:true})}</div>
    </div>
   </div>
+  ${quickHTML()}
   <div class="row"><button class="btn big green" onclick="startGame()">▶️ 게임 시작</button></div>
   <p class="center small" id="impHint">${impHint()}</p>
   <details class="card"><summary>📖 게임 방법 (아이들에게 설명할 때)</summary>
@@ -1047,13 +1069,13 @@ function renderHost(){
   <div class="card center"><h2>${m.dead.length?`😱 사라진 크루원: <span style="color:#fca5a5">${m.dead.map(esc).join(', ')}</span>`:'🙂 지난 회의 이후 사라진 크루원은 없어요'}</h2>
   <div style="font-size:24px;margin-top:6px">어디서 무엇을 봤는지 이야기해 보세요! 💬</div><div class="timer" id="htimer">${Math.ceil(S.set.disc)}</div></div>
   ${tabletHTML('meet')}<p></p>
-  <div class="row"><button class="btn big amber" onclick="S.timerEnd=0;startVote()">🗳️ 바로 투표 시작</button></div>`;
+  ${timeCtl()}<div class="row"><button class="btn big amber" onclick="S.timerEnd=0;startVote()">🗳️ 바로 투표 시작</button></div>`;
  }else if(ph==='vote'){
   const al=alivePlayers();
   h=`<div class="card center"><div class="huge">🗳️ 투표 시간</div><div style="font-size:24px">패드에서 임포스터라고 생각하는 사람을 고르세요</div><div class="timer" id="htimer">${S.set.vote}</div>
   <h2>투표 완료 ${al.filter(p=>p.vote!=null).length} / ${al.length}</h2></div>
   ${tabletHTML('vote')}<p></p>
-  <div class="row"><button class="btn big amber" onclick="S.timerEnd=0;endVote()">⏱ 투표 마감</button></div>`;
+  ${timeCtl()}<div class="row"><button class="btn big amber" onclick="S.timerEnd=0;endVote()">⏱ 투표 마감</button></div>`;
  }else if(ph==='result'){
   const r=S.result,stg=resStage(S.timerEnd);
   if(stg==='tally'){
@@ -1125,7 +1147,7 @@ function onPMsg(m){
  if(m.phase==='play'){m.me.tasks.forEach(t=>{if(!t.done&&doneLocal.has(t.id)){t.done=true;PT.send({t:'task',id:t.id,retry:1})}})}
  if(m.phase==='vote'&&myVote&&!m.me.voted&&m.me.alive){m.me.voted=true;m.me.vote=myVote;PT.send({t:'vote',target:myVote})}
  m.recv=Date.now();
- const old=V;V=m;V.end=m.left?Date.now()+m.left:0;V.cdEnd=Date.now()+(m.me.cdLeft||0);V.sabEnd=m.sab&&m.sab.left?Date.now()+m.sab.left:0;V.sabCdEnd=Date.now()+(m.sabCdLeft||0);V.doorCdEnd=Date.now()+(m.doorCdLeft||0);CLOSED={};for(const k in (m.doors||{}))CLOSED[k]=Date.now()+m.doors[k];
+ const old=V;V=m;V.end=m.left?Date.now()+m.left:0;V.paused=!!m.paused;V.cdEnd=Date.now()+(m.me.cdLeft||0);V.sabEnd=m.sab&&m.sab.left?Date.now()+m.sab.left:0;V.sabCdEnd=Date.now()+(m.sabCdLeft||0);V.doorCdEnd=Date.now()+(m.doorCdLeft||0);CLOSED={};for(const k in (m.doors||{}))CLOSED[k]=Date.now()+m.doors[k];
  if(m.me.tpN!==ME.tp&&m.me.x!=null){ME.tp=m.me.tpN;ME.x=m.me.x;ME.y=m.me.y;ME.vent=m.me.vent}
  if(m.phase!=='play'){ME.vent=null;window._posN=0;for(const k in OTH)delete OTH[k]}
  if(prevAlive===true&&!m.me.alive&&m.phase==='play'){closeOv();killedOv()}
@@ -1143,7 +1165,7 @@ function onPMsg(m){
 function beepMeet(){initAudio();SND.horn();try{navigator.vibrate&&navigator.vibrate([200,100,200])}catch(e){}}
 function pTick(){
  if(!V)return;
- const t=$('#ptimer');if(t&&V.end){t.textContent=Math.max(0,Math.ceil((V.end-Date.now())/1000))}
+ const t=$('#ptimer');if(t&&V.end){if(V.paused){V.end=Date.now()+V.left;t.textContent='⏸ '+Math.ceil(V.left/1000)}else t.textContent=Math.max(0,Math.ceil((V.end-Date.now())/1000))}
  const st=$('#psabt');if(st&&V.sabEnd)st.textContent=Math.max(0,Math.ceil((V.sabEnd-Date.now())/1000))+'초';
  const sc=Math.ceil((V.sabCdEnd-Date.now())/1000);
  document.querySelectorAll('.sbtn').forEach(b=>{b.disabled=sc>0||!!V.sab});
