@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>우리 반 우주선 – 임포스터를 찾아라! (v19)</title>
+<title>우리 반 우주선 – 임포스터를 찾아라! (v20)</title>
 <style>
 @font-face{font-family:'GmarketSans';font-weight:300;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff') format('woff')}
 @font-face{font-family:'GmarketSans';font-weight:500;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff')}
@@ -252,6 +252,7 @@ body.ingame{overflow:hidden;touch-action:none}
 .sl-joy{width:120px;height:120px;border-radius:50%;border:4px solid #fff8;position:relative;animation:joyw 2s ease-in-out infinite}.sl-joy i{position:absolute;left:30px;top:30px;width:56px;height:56px;border-radius:50%;background:#fffc;animation:knob 2s ease-in-out infinite}
 @keyframes knob{25%{transform:translate(28px,-10px)}50%{transform:translate(-20px,24px)}75%{transform:translate(20px,20px)}}
 .sl-btns{display:flex;gap:6px}.sl-btns span{width:64px;height:64px;border-radius:14px;border:3px solid #000;background:#e2e8f0;color:#0f172a;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;line-height:1.3}
+.sl-vid{width:100%;max-width:1000px;display:block;margin:0 auto;border-radius:16px;border:3px solid #6366f1;background:#000}
 </style>
 </head>
 <body>
@@ -1327,6 +1328,7 @@ function roleText(){const me=V.me;if(me.role==='imp'){const mates=V.players.filt
 const SLIDES=[
  {t:'🚀 우리 반 우주선에 오신 걸 환영해요!',b:(ps)=>`<p class="sl-lead">우주선 안에 <b class="r">임포스터</b>가 몰래 숨어 있어요.<br><b class="bl">크루원</b>은 임무를 하며 임포스터를 찾아내고, 임포스터는 들키지 않게 방해해요.</p>
   <div class="line">${ps.slice(0,23).map(p=>`<div class="bob" style="animation-delay:-${(p.name.length%5)*.4}s">${av(p,ps.length>14?44:60)}<div>${esc(p.name)}</div></div>`).join('')}</div>`},
+ {t:'🎮 패드 조작법 (영상)',b:()=>`<video class="sl-vid" src="howto.mp4?v=1" controls autoplay muted playsinline preload="auto"></video><p class="sl-txt">🤫 <b class="r">약속!</b> 내 패드 화면은 절대 친구에게 보여주지 않아요.</p>`},
  {t:'🗺️ 우리 우주선 지도',b:()=>`<canvas class="tmap"></canvas><p class="sl-txt">방 14개가 복도로 이어져 있어요. 모두 <b>🍽️ 식당</b>에서 출발해요. 식당 한가운데에는 <b class="r">🔴 비상 버튼</b>이 있어요.</p>`},
  {t:'👩‍🚀 크루원이 하는 일',b:()=>`<div class="sl-mach">${['quiz','wires','swipe','download','scan','trash','fuel'].map(k=>`<div><canvas class="mach" data-k="${k}"></canvas><div>${KIND[k].n}</div></div>`).join('')}</div>
   <ul class="sl-ul"><li>노란 <b class="y">!</b> 가 있는 기계로 가서 <b>[사용]</b> → 임무를 해요. 수업 퀴즈도 있어요!</li><li>🩻 몸 스캔은 친구들 눈에 보여요 → <b>크루원이라는 증거</b></li><li>🏆 <b>모든 임무 완료</b> 또는 <b>임포스터를 모두 추방</b>하면 크루원 승리</li></ul>`},
@@ -1334,8 +1336,6 @@ const SLIDES=[
   <ul class="sl-ul"><li>🔪 가까운 크루원을 <b>제거</b> (다시 쓰려면 기다려야 해요)</li><li>🕳️ <b>환풍구</b>로 몰래 이동 · 임무는 <b>하는 척만</b></li><li>💥 <b>방해 공작</b>: 전등·통신·🚪문 잠그기 / <b class="r">치명적</b> ☢️원자로·🫧산소·🌋지반 → <b class="r">0초가 되면 바로 임포스터 승리!</b></li><li>🏆 임포스터 수가 크루원 수와 같아지면 임포스터 승리</li></ul>`},
  {t:'📢 신고와 회의',b:()=>`<div class="sl-steps"><div>💀<b>시체 발견</b>가까이 가서 📢 신고</div><div>🔴<b>비상 버튼</b>식당에서 1인 1번</div><div>✋<b>손 들고 말하기</b>선생님이 지명하면 한 명씩</div><div>🗳️<b>투표</b>가장 많이 뽑힌 사람이 추방</div></div>
   <ul class="sl-ul"><li>👻 제거된 친구는 <b>유령</b>: 말하면 안 돼요! 대신 임무는 계속할 수 있어요</li><li>"어디서, 누구를, 무엇을 봤는지" 말하면 추리에 도움이 돼요</li></ul>`},
- {t:'🎮 패드 조작법',b:()=>`<div class="sl-ctrl"><div><div class="sl-joy"><i></i></div><b>화면을 끌면 이동</b></div><div><div class="sl-btns"><span>✋<br>사용</span><span>📢<br>신고</span><span>🔪<br>제거</span><span>💥<br>방해</span><span>🕳️<br>환풍구</span></div><b>가까이 가면 버튼이 켜져요</b></div><div><div style="font-size:60px">🗺️ 🔒</div><b>지도 보기 · 내 역할(꾹 누르기)</b></div></div>
-  <p class="sl-txt">🤫 <b class="r">약속!</b> 내 패드 화면은 절대 친구에게 보여주지 않아요.</p>`},
  {t:'🤖 이제 AI 로봇과 연습해요!',b:()=>`<p class="sl-lead">각자 패드에서 <b>AI 로봇 4명</b>과 <b>5분</b> 동안 연습 게임을 해요.<br>절반은 <b class="bl">크루원</b>, 절반은 <b class="r">임포스터</b>로 해 봐요!</p><div style="font-size:120px">🤖🤖🤖🤖</div>`}];
 function slideHTML(i,ps,small){const S0=SLIDES[i];return`<div class="slide ${small?'sm':''}"><div class="sl-n">${i+1} / ${SLIDES.length}</div><h1 class="sl-t">${S0.t}</h1>${S0.b(ps)}</div>`}
 function paintSlide(root){(root||document).querySelectorAll('canvas.mach').forEach(c=>{const W=c.clientWidth||110,H=W;c.width=W*2;c.height=H*2;c.style.height=H+'px';const x=c.getContext('2d');x.setTransform(c.width/120,0,0,c.height/120,0,0);drawMachine(x,c.dataset.k,60,80,performance.now()/1000,{alarm:c.dataset.k.startsWith('sab')})});
