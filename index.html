@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>우리 반 우주선 – 임포스터를 찾아라! (v13)</title>
+<title>우리 반 우주선 – 임포스터를 찾아라! (v14)</title>
 <style>
 @font-face{font-family:'GmarketSans';font-weight:300;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff') format('woff')}
 @font-face{font-family:'GmarketSans';font-weight:500;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff')}
@@ -218,6 +218,9 @@ body.ingame{overflow:hidden;touch-action:none}
 .nb{font-size:11px;font-weight:700}
 #netsum{font-size:18px;font-weight:800;margin:6px 0}
 #ping{position:absolute;right:140px;top:22px;z-index:5;font-size:13px;font-weight:800;background:rgba(0,0,0,.5);padding:3px 8px;border-radius:8px}
+.crit{display:inline-block;min-width:2.2em;color:#fde047;animation:critp .5s ease-in-out infinite alternate}@keyframes critp{to{transform:scale(1.25);color:#fff}}
+.seis{background:#0f172a;border:4px solid #000;border-radius:14px;height:110px;margin:12px 0;padding:6px}.seis svg{width:100%;height:100%}
+#musbtn{position:fixed;left:12px;bottom:12px;z-index:95;border:3px solid #000;border-radius:999px;background:#e2e8f0;color:#0f172a;font:inherit;font-weight:900;font-size:16px;padding:8px 14px;box-shadow:0 4px 0 #000}
 </style>
 </head>
 <body>
@@ -303,8 +306,10 @@ const KIND={quiz:{n:'수업 퀴즈',e:'📚'},wires:{n:'전선 잇기',e:'🔌'}
 const SABS={lights:{n:'전등 고장',e:'💡',room:'ele',how:'전기실 배전반에서 스위치를 모두 켜세요',at:[{x:450,y:940}]},
  reactor:{n:'원자로 과열',e:'☢️',room:'rea',how:'원자로 손바닥 판 2곳을 두 명이 동시에 누르세요',at:[{x:90,y:700},{x:290,y:700}]},
  comms:{n:'통신 방해',e:'📡',room:'com',how:'통신실에서 주파수를 맞추세요 (관리실 지도·CCTV도 꺼져요)',at:[{x:1360,y:1050}]},
- o2:{n:'산소 고장',e:'🫧',room:'o2',how:'산소실과 관리실 비밀번호판 2곳에 번호를 입력하세요',at:[{x:1540,y:470},{x:860,y:490}],timed:1}};
-SABS.reactor.timed=1;
+ o2:{n:'산소 고갈',e:'🫧',room:'o2',how:'산소실과 관리실 비밀번호판 2곳에 번호를 입력하세요',at:[{x:1540,y:470},{x:860,y:490}],timed:1,two:1},
+ seis:{n:'지반 안정화 장치 이상',e:'🌋',room:'gar',how:'우주 정원과 실험실의 안정화 장치를 각각 꾹 눌러 맞추세요',at:[{x:1770,y:250},{x:1770,y:890}],timed:1,two:1}};
+SABS.reactor.n='원자로 융해';SABS.reactor.timed=1;
+const SAB_LOSE={reactor:'원자로가 녹아내렸어요! ☢️💥',o2:'산소가 모두 바닥났어요! 🫧',seis:'지반이 무너져 우주선이 부서졌어요! 🌋'};
 const rn=r=>ROOMS[r]?ROOMS[r].e+' '+ROOMS[r].n:'복도';
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const inRect=(x,y,r,m)=>x>=r[0]+m&&x<=r[0]+r[2]-m&&y>=r[1]+m&&y<=r[1]+r[3]-m;
@@ -438,6 +443,37 @@ const SND={alarm(){for(let i=0;i<8;i++)beep(i%2?620:880,.26,'square',i*.3,.12)},
  whoosh(){noise(2.2,.12,600)},
  reveal(){[196,262,330,392].forEach((f,i)=>beep(f,.9,'triangle',i*.08,.08))}};
 function noise(d,vol,freq){if(!AC)return;try{const n=AC.sampleRate*d,b=AC.createBuffer(1,n,AC.sampleRate),a=b.getChannelData(0);for(let i=0;i<n;i++)a[i]=(Math.random()*2-1)*(1-i/n);const s=AC.createBufferSource();s.buffer=b;const f=AC.createBiquadFilter();f.type='lowpass';f.frequency.value=freq||1200;const g=AC.createGain();g.gain.value=vol||.2;s.connect(f);f.connect(g);g.connect(AC.destination);s.start()}catch(e){}}
+/* ===== 배경음악 (직접 만든 곡을 소리 합성으로 연주해요) ===== */
+const MUS={on:true,track:'',step:0,next:0,g:null,timer:null,vol:.55};
+const mf=m=>440*Math.pow(2,(m-69)/12);
+function mtone(m,t,d,type,v,atk){const g=MUS.g;if(!AC||!g)return;try{const o=AC.createOscillator(),e=AC.createGain();o.type=type||'triangle';o.frequency.value=mf(m);e.gain.setValueAtTime(0.0001,t);e.gain.exponentialRampToValueAtTime(v,t+(atk||.01));e.gain.exponentialRampToValueAtTime(0.0001,t+d);o.connect(e);e.connect(g);o.start(t);o.stop(t+d+.05)}catch(x){}}
+function mnoise(t,d,v,f){const g=MUS.g;if(!AC||!g)return;try{const n=Math.floor(AC.sampleRate*d),b=AC.createBuffer(1,n,AC.sampleRate),a=b.getChannelData(0);for(let i=0;i<n;i++)a[i]=(Math.random()*2-1)*(1-i/n);const sr=AC.createBufferSource();sr.buffer=b;const fl=AC.createBiquadFilter();fl.type='highpass';fl.frequency.value=f||6000;const e=AC.createGain();e.gain.value=v;sr.connect(fl);fl.connect(e);e.connect(g);sr.start(t)}catch(x){}}
+/* 곡: 박자(bpm), 화음 진행(마디마다), 16칸 패턴 */
+const TRACKS={
+ lobby:{bpm:96,ch:[[57,60,64],[53,57,60],[48,52,55],[55,59,62]],play(st,t,c,dur){const k=st%16,root=c[0];   // 대기실: 느긋한 우주 아르페지오
+  if(k===0)c.forEach(n=>mtone(n+12,t,dur*16,'sine',.05,.4));
+  mtone(c[[0,1,2,1][k%4]]+24+(k>=8&&k%4===3?12:0),t,dur*1.6,'triangle',.07);
+  if(k%8===0)mtone(root-12,t,dur*6,'sine',.12);if(k%4===2)mnoise(t,.03,.025)}},
+ play:{bpm:108,ch:[[50,53,57],[46,50,53],[43,46,50],[45,49,52]],play(st,t,c,dur){const k=st%16,root=c[0];   // 게임 중: 긴장감 있는 베이스
+  if(k%2===0)mtone(root-12+(k%8===6?7:0),t,dur*1.5,'triangle',.11);
+  if(k===0)mtone(root+12,t,dur*16,'sine',.035,.6);
+  if([3,7,10,14].includes(k))mtone(c[(k>>2)%3]+24,t,dur*.9,'sine',.045);
+  if(k%4===0)mnoise(t,.02,.03,8000);if(st%64===62)mtone(root+31,t,dur*4,'sine',.03,.2)}},
+ crit:{bpm:150,ch:[[52,55,59],[53,56,60]],play(st,t,c,dur){const k=st%16;   // 치명적 방해 공작: 빠르고 다급하게
+  mtone(c[0]-12,t,dur*.8,'square',.06);if(k%4===0){mtone(c[2]+12,t,dur*2,'sawtooth',.045);mnoise(t,.05,.05,3000)}
+  if(k%8===4)mtone(c[1]+24,t,dur*3,'square',.03)}},
+ meet:{bpm:76,ch:[[45,48,52,55],[41,45,48,52]],play(st,t,c,dur){const k=st%16;   // 회의·투표: 째깍째깍 추리 음악
+  if(k%4===0)mnoise(t,.025,.06,5000);if(k%4===2)mnoise(t,.015,.03,9000);
+  if(k===0)c.forEach(n=>mtone(n,t,dur*15,'sine',.03,.5));
+  if([0,6,10].includes(k))mtone(c[[0,3,2][[0,6,10].indexOf(k)]]+12,t,dur*3,'triangle',.07)}}};
+function musInit(){if(!AC)return;if(!MUS.g){MUS.g=AC.createGain();MUS.g.gain.value=MUS.on?MUS.vol*.35:0;MUS.g.connect(AC.destination)}if(!MUS.timer)MUS.timer=setInterval(musTick,60)}
+function musSet(tr){if(tr===MUS.track)return;MUS.track=tr;MUS.step=0;if(AC)MUS.next=AC.currentTime+.08}
+function musTick(){if(!AC||!MUS.track||!TRACKS[MUS.track]||!MUS.on)return;const T=TRACKS[MUS.track],dur=60/T.bpm/4;
+ if(MUS.next<AC.currentTime)MUS.next=AC.currentTime+.05;
+ while(MUS.next<AC.currentTime+.3){const c=T.ch[Math.floor(MUS.step/16)%T.ch.length];T.play(MUS.step,MUS.next,c,dur);MUS.next+=dur;MUS.step++}}
+function musToggle(){initAudio();musInit();MUS.on=!MUS.on;if(MUS.g)MUS.g.gain.setTargetAtTime(MUS.on?MUS.vol*.35:0,AC.currentTime,.1);try{localStorage.setItem('ship-music',MUS.on?'1':'0')}catch(e){}musBtn()}
+function musBtn(){let b=$('#musbtn');if(!b){b=document.createElement('button');b.id='musbtn';b.onclick=musToggle;document.body.appendChild(b)}b.textContent=MUS.on?'🎵 배경음악 켜짐':'🔇 배경음악 꺼짐'}
+try{MUS.on=localStorage.getItem('ship-music')!=='0'}catch(e){}
 /* 전체 화면 연출 */
 let cineT=null;
 function cine(cls,html,ms,done){let c=$('#cine');if(!c){c=document.createElement('div');c.id='cine';document.body.appendChild(c)}c.className='cine '+cls;c.innerHTML=html;c.style.display='flex';clearTimeout(cineT);cineT=setTimeout(()=>{c.style.display='none';c.innerHTML='';done&&done()},ms)}
@@ -575,9 +611,10 @@ function hostTick(){
  if(S.phase==='result'){const rv=$('#resv');if(rv&&rv.dataset.stg!==resStage(S.timerEnd))renderHost()}
  const st=$('#hsabt');if(st&&S.sab&&S.sab.end)st.textContent=Math.max(0,Math.ceil((S.sab.end-Date.now())/1000))+'초';
  CLOSED=S.doors||{};
+ musSet(S.phase==='lobby'?'lobby':S.phase==='play'?(S.sab&&SABS[S.sab.type].timed?'crit':'play'):(S.phase==='meeting'||S.phase==='vote')?'meet':'');
  if(S.phase==='play'&&S.sab&&SABS[S.sab.type].timed){
   if(Date.now()-lastSiren>1100){lastSiren=Date.now();SND.siren()}
-  if(Date.now()>=S.sab.end){endGame('imp',S.sab.type==='o2'?'산소가 다 떨어졌어요! 🫧':'원자로가 폭발했어요! 💥');return}
+  if(Date.now()>=S.sab.end){const ty=S.sab.type;S.sabWin=ty;endGame('imp',SAB_LOSE[ty]+' (제한 시간 0초 → 임포스터 즉시 승리)');sabLoseCine(ty);return}
  }
  if(S.timerEnd&&Date.now()>=S.timerEnd){
   S.timerEnd=0;
@@ -605,7 +642,7 @@ function viewFor(pid){
   sabCdLeft:Math.max(0,(S.sabCd||0)-Date.now()),doorCdLeft:Math.max(0,(S.doorCd||0)-Date.now()),
   doors:Object.fromEntries(Object.entries(S.doors||{}).filter(([k,v])=>v>Date.now()).map(([k,v])=>[k,v-Date.now()])),
   players:S.order.map(id=>{const q=P(id);return{pid:id,name:q.name,color:q.color,look:q.look,alive:seeAll||id===pid?q.alive:(q.alive||!q.pub),imp:(imp||S.phase==='end')&&q.role==='imp'}}),
-  meeting:S.meeting,result:S.result,winner:S.winner,reason:S.reason,
+  meeting:S.meeting,result:S.result,winner:S.winner,sabWin:S.phase==='end'?S.sabWin||null:null,reason:S.reason,
   voted:S.phase==='vote'?alivePlayers().filter(q=>q.vote!=null).length:0,
   aliveN:alivePlayers().length,impN:S.impN||0,usedColors:S.order.map(id=>P(id).color)};
  return v;
@@ -677,7 +714,7 @@ function onHostMsg(cid,m){
   startSab(m.type);break;
  case 'fix':
   if(!play||!p.alive||!S.sab||S.sab.type!==m.type||m.type==='reactor')return sendTo(pid);
-  if(m.type==='o2'){const k=+m.i;if(!SABS.o2.at[k]||dist(SABS.o2.at[k],p)>USE_R+90)return sendTo(pid);S.sab.done[k]=true;if(S.sab.done.every(Boolean)){endSab();break}bcastAll();renderHost();break}
+  if(SABS[m.type].two){const k=+m.i,A=SABS[m.type].at;if(!A[k]||dist(A[k],p)>USE_R+90)return sendTo(pid);S.sab.done[k]=true;if(S.sab.done.every(Boolean)){endSab();break}bcastAll();renderHost();break}
   if(!SABS[m.type].at.some(a=>dist(a,p)<USE_R+90))return sendTo(pid);
   endSab();break;
  case 'door':{
@@ -704,7 +741,7 @@ function doKill(k,v){
  if(checkWin())return;
  bcastAll();renderHost();
 }
-function startSab(type){S.sab={type,end:SABS[type].timed?Date.now()+S.set.reactor*1000:0,holders:{},done:type==='o2'?[false,false]:null};SND.alarm();bcastAll();renderHost()}
+function startSab(type){S.sab={type,end:SABS[type].timed?Date.now()+S.set.reactor*1000:0,holders:{},done:SABS[type].two?[false,false]:null};SND.alarm();bcastAll();renderHost()}
 function endSab(){if(!S.sab)return;S.sab=null;S.sabCd=Date.now()+S.set.sabCd*1000;SND.ding();bcastAll();renderHost()}
 
 function hello(cid,name){
@@ -826,7 +863,8 @@ function checkWin(){
  if(t>0&&d>=t)return endGame('crew','크루원들이 모든 임무(퀴즈)를 완료했어요!');
  return false;
 }
-function endGame(w,reason){S.doors={};CLOSED={};S.phase='end';S.winner=w;S.reason=reason;S.timerEnd=0;S.sab=null;S.bodies=[];S.deaths.forEach(id=>{if(P(id))P(id).pub=true});S.deaths=[];w==='crew'?SND.win():SND.lose();bcastAll();renderHost();return true}
+function endGame(w,reason){if(w!=='imp'||!/즉시/.test(reason))S.sabWin=null;S.doors={};CLOSED={};S.phase='end';S.winner=w;S.reason=reason;S.timerEnd=0;S.sab=null;S.bodies=[];S.deaths.forEach(id=>{if(P(id))P(id).pub=true});S.deaths=[];w==='crew'?SND.win():SND.lose();bcastAll();renderHost();return true}
+function sabLoseCine(ty){cine('imp',`<div class="pop" style="font-size:clamp(90px,16vw,200px)">${SABS[ty].e}💥</div><div class="big" style="color:#f87171">${esc(SABS[ty].n)}!</div><div class="mid">제한 시간이 0초가 되었어요 — 임포스터 승리</div>`,3500)}
 function toLobby(){
  S.order.forEach(id=>Object.assign(P(id),{role:'crew',alive:true,pub:true,tasks:[],meet:0,cd:0,vote:null,vent:null}));
  Object.assign(S,{phase:'lobby',deaths:[],bodies:[],sab:null,meeting:null,result:null,winner:null,reason:'',timerEnd:0});
@@ -882,10 +920,10 @@ function botTick(){
   }
   if(b.alive&&b.role==='crew'){const body=S.bodies.find(x=>dist(x,b)<260);if(body&&Math.random()<.5){callMeeting(b.name,{name:P(body.pid).name,room:roomAt(body.x,body.y)});return}}
   if(S.sab&&b.alive&&b.role==='crew'&&S.sab.type!=='reactor'){
-   if(b.fixing||Math.random()<(S.sab.type==='o2'?.45:.2)){b.fixing=true;
-    let k=0;if(S.sab.type==='o2'){k=S.sab.done.findIndex(x=>!x);if(k<0)k=0;if(b.fixK!=null&&!S.sab.done[b.fixK])k=b.fixK;b.fixK=k}
+   if(b.fixing||Math.random()<(SABS[S.sab.type].two?.45:.2)){b.fixing=true;
+    let k=0;if(SABS[S.sab.type].two){k=S.sab.done.findIndex(x=>!x);if(k<0)k=0;if(b.fixK!=null&&!S.sab.done[b.fixK])k=b.fixK;b.fixK=k}
     const at=SABS[S.sab.type].at[k];
-    if(near(b,at,60)){b.fixing=false;b.fixK=null;if(S.sab.type==='o2'){S.sab.done[k]=true;if(S.sab.done.every(Boolean)){endSab();return}bcastAll();renderHost();continue}endSab();return}
+    if(near(b,at,60)){b.fixing=false;b.fixK=null;if(SABS[S.sab.type].two){S.sab.done[k]=true;if(S.sab.done.every(Boolean)){endSab();return}bcastAll();renderHost();continue}endSab();return}
     if(!b.path||!b.path.length)botGo(b,at);continue}
   }else b.fixing=false;
   if(b.role==='imp'){
@@ -933,6 +971,7 @@ function pendHTML(){if(!S.pending.length)return'';return`<div class="pend"><b>�
 function hostMapHTML(){return `<canvas id="bmap" style="width:100%;display:block;border-radius:16px"></canvas>`}
 
 function renderHost(){
+ musBtn();if(AC)musInit();if(!window._musHook){window._musHook=1;document.addEventListener('pointerdown',()=>{initAudio();musInit()},{passive:true})}
  if(!S)return;
  const ph=S.phase;
  if(ph==='lobby'&&$('#lobby')){$('#plistBox').innerHTML=plistHTML({kick:true});$('#pcount').textContent=S.order.length;$('#impHint').textContent=impHint();$('#pendBox').innerHTML=pendHTML();return}
@@ -995,7 +1034,7 @@ function renderHost(){
  if(ph==='play'){
   const{d,t}=crewTasks();const sb=S.sab;
   h=`<div id="playv" data-sig="${playSig()}">
-  ${sb?`<div class="card center ${sb.type==='reactor'?'alarm':''}" style="${sb.type!=='reactor'?'background:#7c2d12':''}"><div style="font-size:clamp(30px,5vw,60px);font-weight:900">${SABS[sb.type].e} ${SABS[sb.type].n}!${sb.end?` <span id="hsabt"></span>`:''}</div><div style="font-size:24px">${SABS[sb.type].how}${sb.type==='reactor'?` (지금 <b id="hholdn">${holdN()}</b>/2명)`:''}</div></div>`:''}
+  ${sb?`<div class="card center ${SABS[sb.type].timed?'alarm':''}" style="${!SABS[sb.type].timed?'background:#7c2d12':''}"><div style="font-size:clamp(30px,5vw,60px);font-weight:900">${SABS[sb.type].e} ${SABS[sb.type].n}!${sb.end?` <span id="hsabt" class="crit"></span>`:''}</div><div style="font-size:24px">${SABS[sb.type].how}${sb.type==='reactor'?` (지금 <b id="hholdn">${holdN()}</b>/2명)`:''}${sb.done?` (고친 곳 ${sb.done.filter(Boolean).length}/2)`:''}</div>${SABS[sb.type].timed?'<div style="font-size:22px;font-weight:900;color:#fde68a;margin-top:6px">⚠️ 0초가 되면 그 즉시 임포스터 승리!</div>':''}</div>`:''}
   <div class="card"><h2 id="ptxt">전체 임무 진행도 ${Math.round(progress()*100)}%</h2><div class="bar"><i id="pbar" style="width:${progress()*100}%"></i></div><div class="small" id="pcnt" style="margin-top:6px">크루원 임무 ${d} / ${t}</div></div>
   <div class="row" style="align-items:flex-start"><div class="card" style="flex:2">${hostMapHTML()}</div>
   <div class="card" style="flex:1"><h2>👩‍🚀 크루</h2><div id="netsum"></div><div id="plistBox">${plistHTML({showDead:true})}</div><div class="small" style="margin-top:8px">누가 어디 있는지는 칠판에 나오지 않아요. 사라진 크루원은 회의 때 공개돼요.</div></div></div>
@@ -1090,7 +1129,7 @@ function onPMsg(m){
  if(m.me.tpN!==ME.tp&&m.me.x!=null){ME.tp=m.me.tpN;ME.x=m.me.x;ME.y=m.me.y;ME.vent=m.me.vent}
  if(m.phase!=='play'){ME.vent=null;window._posN=0;for(const k in OTH)delete OTH[k]}
  if(prevAlive===true&&!m.me.alive&&m.phase==='play'){closeOv();killedOv()}
- if(prevPhase&&prevPhase!==m.phase){if(m.phase!=='play')closeOv();if(m.phase!=='meeting')cineOff();if(m.phase==='meeting'){beepMeet();cine('meet',meetSplash(m.meeting,90),2800)}if(m.phase==='play'&&prevPhase==='lobby')roleIntro()}
+ if(prevPhase&&prevPhase!==m.phase){if(m.phase!=='play')closeOv();if(m.phase!=='meeting')cineOff();if(m.phase==='end'&&m.sabWin)sabLoseCine(m.sabWin);if(m.phase==='meeting'){beepMeet();cine('meet',meetSplash(m.meeting,90),2800)}if(m.phase==='play'&&prevPhase==='lobby')roleIntro()}
  const sabT=m.sab?m.sab.type:null;
  if(m.phase==='play'&&sabT&&sabT!==prevSab){initAudio();SND.alarm();try{navigator.vibrate&&navigator.vibrate([300,100,300])}catch(e){}}
  if(prevSab&&!sabT&&ovKind.startsWith('fix'))closeOv();
@@ -1265,6 +1304,9 @@ function drawMachine(ctx,k,x,y,t,o){
  case 'sab_reactor':{ // 손바닥 판
   box3(ctx,x-26,y-30,52,46,'#64748b','#475569',8);ctx.fillStyle=o.alarm?(blink?'#ef4444':'#991b1b'):'#0e7490';rr(ctx,x-18,y-24,36,30,6);ctx.fill();
   ctx.fillStyle='rgba(255,255,255,.85)';ctx.beginPath();ctx.ellipse(x,y-4,8,9,0,0,7);ctx.fill();for(let i=0;i<4;i++){rr(ctx,x-9+i*5,y-21,4,12,2);ctx.fill()}break}
+ case 'sab_seis':{ // 지진계
+  box3(ctx,x-26,y-40,52,56,'#78716c','#57534e',6);ctx.fillStyle='#0f172a';rr(ctx,x-20,y-34,40,24,3);ctx.fill();ctx.strokeStyle=o.alarm?'#f87171':'#4ade80';ctx.lineWidth=2;ctx.beginPath();for(let i=0;i<=36;i+=3)ctx.lineTo(x-18+i,y-22+Math.sin(i+t*(o.alarm?20:4))*(o.alarm?9:2));ctx.stroke();
+  ctx.fillStyle='#e2e8f0';ctx.beginPath();ctx.arc(x,y+2,7,0,7);ctx.fill();break}
  case 'sab_o2':{ // 비밀번호판
   box3(ctx,x-22,y-40,44,56,'#94a3b8','#64748b',6);ctx.fillStyle='#052e16';rr(ctx,x-16,y-34,32,10,2);ctx.fill();
   for(let i=0;i<9;i++){ctx.fillStyle='#e2e8f0';ctx.fillRect(x-14+(i%3)*10,y-20+((i/3)|0)*9,7,6)}
@@ -1462,7 +1504,7 @@ function updateHUD(){
  const me=V.me,sb=V.sab,co=commsOut();
  $('#gbar').style.width=V.progress*100+'%';
  $('#tlist').innerHTML=co?'<div class="tl bad">📡 통신 방해! 임무 목록이 안 보여요</div>':`${me.role==='imp'?'<div class="tl imp">😈 가짜 임무 — 하는 척만!</div>':''}${!me.alive?'<div class="tl">👻 유령: 벽을 통과해 임무를 계속해요</div>':''}`+me.tasks.map(x=>`<div class="tl ${x.done?'done':''}">${KIND[x.k].e} ${ROOMS[x.room].n}: ${KIND[x.k].n}${x.q&&x.q.s?' ('+esc(x.q.s)+')':''}</div>`).join('');
- $('#sabbar2').innerHTML=sb?`<div class="sabbar ${sb.type}" style="margin:0">${SABS[sb.type].e} ${SABS[sb.type].n}! ${sb.type==='reactor'?`<span id="psabt"></span> · ${sb.holders}/2`:''}${sb.type==='o2'?`<span id="psabt"></span> · ${sb.done.filter(Boolean).length}/2`:''}<div style="font-size:14px;font-weight:700">${SABS[sb.type].how}</div></div>`:'';
+ $('#sabbar2').innerHTML=sb?`<div class="sabbar ${sb.type}" style="margin:0">${SABS[sb.type].e} ${SABS[sb.type].n}! ${sb.type==='reactor'?`<span id="psabt"></span> · ${sb.holders}/2`:''}${sb.done?`<span id="psabt"></span> · ${sb.done.filter(Boolean).length}/2`:''}${SABS[sb.type].timed?'<div style="font-size:13px;color:#fde68a">⚠️ 0초가 되면 즉시 임포스터 승리!</div>':''}<div style="font-size:14px;font-weight:700">${SABS[sb.type].how}</div></div>`:'';
  $('#acts').dataset.sig='';
 }
 function doUse(){const u=ACT.use;if(!u)return;
@@ -1482,7 +1524,7 @@ function openMap(sab){
   <div style="position:relative"><canvas id="mm" style="width:100%;display:block;border-radius:14px"></canvas>
   ${imp?Object.keys(SABS).map(k=>{const r=ROOMS[SABS[k].room].r;return`<button class="sbtn" style="position:absolute;left:${(r[0]+r[2]/2+40)/(MAP_W+80)*100}%;top:${(r[1]+r[3]/2+40)/(MAP_H+80)*100}%;transform:translate(-50%,-50%)" onclick="doSab('${k}');closeOv()" ${V.sab||V.sabCdEnd>Date.now()?'disabled':''}>${SABS[k].e}</button>`}).join(''):''}
   ${imp?RID.map(k=>{const r=ROOMS[k].r;return`<button class="dbtn" style="position:absolute;left:${(r[0]+24+40)/(MAP_W+80)*100}%;top:${(r[1]+24+40)/(MAP_H+80)*100}%;transform:translate(-50%,-50%)" onclick="PT.send({t:'door',room:'${k}'});toast('🚪 ${ROOMS[k].n} 문을 잠갔어요!','#7f1d1d');closeOv()" ${V.doorCdEnd>Date.now()?'disabled':''}>🚪</button>`}).join(''):''}</div>
-  ${imp?'<div class="small" style="margin-top:8px">💡 전등: 크루원 시야가 좁아져요 · 📡 통신: 임무 목록·지도·CCTV가 꺼져요 · ☢️ 원자로 / 🫧 산소: 제한 시간 안에 못 막으면 임포스터 승리! · 🚪 문: 그 방 입구를 10초 동안 잠가요</div>':'<div class="small center" style="margin-top:6px">노란 ! = 내 임무 · 빨간 점 = 나</div>'}
+  ${imp?'<div class="small" style="margin-top:8px">💡 전등: 크루원 시야가 좁아져요 · 📡 통신: 임무 목록·지도·CCTV가 꺼져요 · <b>치명적</b> ☢️ 원자로 융해 / 🫧 산소 고갈 / 🌋 지반 안정화 이상: 제한 시간이 0초가 되면 즉시 임포스터 승리! · 🚪 문: 그 방 입구를 10초 동안 잠가요</div>':'<div class="small center" style="margin-top:6px">노란 ! = 내 임무 · 빨간 점 = 나</div>'}
   <p></p><button class="btn gray big" onclick="closeOv()">닫기</button></div>`,'map');
  const cv=$('#mm'),W=cv.clientWidth,H=W*(MAP_H+80)/(MAP_W+80);cv.width=W*2;cv.height=H*2;cv.style.height=H+'px';
  const draw=()=>{if(ovKind!=='map'||!$('#mm'))return;const ctx=cv.getContext('2d'),s2=cv.width/(MAP_W+80);ctx.setTransform(s2,0,0,s2,40*s2,40*s2);
@@ -1625,6 +1667,15 @@ function shake(el){el.classList.remove('shake');void el.offsetWidth;el.classList
 /* ========= 방해 공작 고치기 ========= */
 let holding=false;
 function openFix(type,idx){
+ if(type==='seis'){
+  if(V.sab&&V.sab.done&&V.sab.done[idx])return toast('여기는 이미 맞췄어요! 다른 장치로 가요','#475569');
+  openOv(`<div class="center" style="padding-top:30px"><h2>🌋 지반 안정화 장치 (${idx===0?'우주 정원':'실험실'})</h2><div class="seis"><svg viewBox="0 0 300 80" preserveAspectRatio="none"><path id="sw" fill="none" stroke="#4ade80" stroke-width="3"/></svg></div><div class="bar" style="height:30px"><i id="sbar" style="width:0%;transition:none"></i></div><button class="hand" id="shold" style="font-size:60px">🖐️</button><p>손바닥을 <b>2.5초</b> 동안 꾹 누르면 흔들림이 잦아들어요</p></div>`,'fixseis');
+  let acc=0,on=false,last=performance.now();const b=$('#shold');
+  const loop=now=>{if(!$('#sw'))return;if(on)acc+=now-last;last=now;const k=Math.min(1,acc/2500);let d='M0 40';for(let x=0;x<=300;x+=6){d+=` L${x} ${40+Math.sin(x/9+now/90)*30*(1-k)*Math.random()}`}$('#sw').setAttribute('d',d);$('#sbar').style.width=k*100+'%';
+   if(k>=1){PT.send({t:'fix',type:'seis',i:idx});toast('🌋 안정화 완료!');setTimeout(closeOv,300);return}requestAnimationFrame(loop)};
+  b.addEventListener('pointerdown',e=>{e.preventDefault();on=true;b.classList.add('on')});const off=()=>{on=false;b.classList.remove('on')};b.addEventListener('pointerup',off);b.addEventListener('pointerleave',off);b.addEventListener('pointercancel',off);
+  requestAnimationFrame(loop);return;
+ }
  if(type==='o2'){
   if(V.sab&&V.sab.done&&V.sab.done[idx])return toast('여기는 이미 입력했어요! 다른 비밀번호판으로 가요','#475569');
   const code=String(10000+Math.random()*90000|0);let typed='';
