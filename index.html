@@ -3,11 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>우리 반 우주선 – 임포스터를 찾아라! (v6)</title>
+<title>우리 반 우주선 – 임포스터를 찾아라! (v7)</title>
 <style>
+@font-face{font-family:'GmarketSans';font-weight:300;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff') format('woff')}
+@font-face{font-family:'GmarketSans';font-weight:500;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff')}
+@font-face{font-family:'GmarketSans';font-weight:700 900;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff')}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%}
-body{font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;color:#eef2ff;
+body{font-family:"GmarketSans","Pretendard","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;color:#eef2ff;
  background-color:#0b1026;background-image:radial-gradient(ellipse at 20% 10%,#1e2a6b 0,transparent 50%),radial-gradient(ellipse at 80% 90%,#3b1a5c 0,transparent 50%);
  background-attachment:fixed;user-select:none;-webkit-user-select:none;overflow-x:hidden}
 body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.6;
@@ -225,7 +228,9 @@ const ROOMS={
 const RID=Object.keys(ROOMS);
 const HALLS=[[680,160,120,110],[320,200,100,110],[140,460,110,100],[320,580,100,100],[490,680,110,140],[680,900,120,110],
  [950,380,120,80],[950,660,120,100],[1220,150,120,110],[1410,320,110,120],[1580,500,140,110],[1410,640,110,220],[1200,920,120,110],[1160,510,180,100]];
-const HALLR=HALLS.map(h=>[h[0]-28,h[1]-28,h[2]+56,h[3]+56]);  // 방과 넉넉히 겹치게
+const HALLR=HALLS.map(h=>{  // 이어지는 방향으로만 방 안쪽까지 70px 늘려요 (몸 반지름 2배보다 커야 지나갈 수 있음)
+ const horiz=RID.some(k=>{const r=ROOMS[k].r;return r[0]+r[2]===h[0]||r[0]===h[0]+h[2]});
+ return horiz?[h[0]-70,h[1],h[2]+140,h[3]]:[h[0],h[1]-70,h[2],h[3]+140]});
 const RECTS=[...RID.map(k=>ROOMS[k].r),...HALLR];
 const BTN={x:1010,y:215,r:46};          // 식당 비상 버튼(탁자)
 const SPAWN=(i,n)=>{const a=i/Math.max(1,n)*Math.PI*2;return{x:BTN.x+Math.cos(a)*120,y:BTN.y+Math.sin(a)*95}};
@@ -261,7 +266,7 @@ const PR=22;                 // 캐릭터 몸 반지름
 const roomAt=(x,y)=>RID.find(k=>inRect(x,y,ROOMS[k].r,0))||null;
 const SPEED=290,GHOST_SPEED=360,USE_R=105,KILL_R=135,REPORT_R=170,VIS=360,VIS_DARK=120,VIS_IMP=470;
 /* 로봇 길찾기: 사각형끼리 겹치는 곳을 지나가요 */
-function ov(a,b){const x1=Math.max(a[0],b[0]),y1=Math.max(a[1],b[1]),x2=Math.min(a[0]+a[2],b[0]+b[2]),y2=Math.min(a[1]+a[3],b[1]+b[3]);return x2>=x1&&y2>=y1?{x:(x1+x2)/2,y:(y1+y2)/2}:null}
+function ov(a,b){const x1=Math.max(a[0],b[0]),y1=Math.max(a[1],b[1]),x2=Math.min(a[0]+a[2],b[0]+b[2]),y2=Math.min(a[1]+a[3],b[1]+b[3]);return x2-x1>=2*PR+20&&y2-y1>=2*PR+20?{x:(x1+x2)/2,y:(y1+y2)/2}:null}  // 지나갈 수 있을 만큼 겹친 곳만
 const RG=RECTS.map((r,i)=>RECTS.map((q,j)=>i!==j?ov(r,q):null));
 function rectOf(x,y){let i=RECTS.findIndex(r=>inRect(x,y,r,0));if(i<0){let bd=1e9;RECTS.forEach((r,j)=>{const d=Math.hypot(x-(r[0]+r[2]/2),y-(r[1]+r[3]/2));if(d<bd){bd=d;i=j}})}return i}
 function pathTo(from,to){
@@ -1122,7 +1127,7 @@ function drawWorld(ctx,o){
  if(sabRoom){const r=ROOMS[sabRoom].r;ctx.fillStyle=`rgba(239,68,68,${.15+.15*Math.sin(t*6)})`;rr(ctx,r[0],r[1],r[2],r[3],14);ctx.fill()}
  // 방 이름
  ctx.textAlign='center';ctx.textBaseline='middle';
- RID.forEach(k=>{const r=ROOMS[k].r;ctx.font=`900 ${o.labelSize||34}px sans-serif`;ctx.fillStyle='rgba(255,255,255,.22)';ctx.fillText(ROOMS[k].n,r[0]+r[2]/2,r[1]+r[3]/2+(k==='caf'?110:0))});
+ RID.forEach(k=>{const r=ROOMS[k].r;ctx.font=`900 ${o.labelSize||34}px GmarketSans,sans-serif`;ctx.fillStyle='rgba(255,255,255,.22)';ctx.fillText(ROOMS[k].n,r[0]+r[2]/2,r[1]+r[3]/2+(k==='caf'?110:0))});
  // 식당 탁자 + 비상 버튼
  ctx.fillStyle='#64748b';ctx.beginPath();ctx.arc(BTN.x,BTN.y,BTN.r+30,0,7);ctx.fill();ctx.strokeStyle='#0f172a';ctx.lineWidth=5;ctx.stroke();
  ctx.fillStyle='#facc15';ctx.beginPath();ctx.arc(BTN.x,BTN.y,BTN.r-8,0,7);ctx.fill();
@@ -1134,19 +1139,19 @@ function drawWorld(ctx,o){
  for(const id in STATIONS){const st=STATIONS[id],m=mark.has(id);
   if(m){ctx.fillStyle=`rgba(250,204,21,${.25+.2*Math.sin(t*5)})`;ctx.beginPath();ctx.arc(st.x,st.y,42,0,7);ctx.fill()}
   ctx.fillStyle=m?'#fde68a':'#94a3b8';rr(ctx,st.x-22,st.y-22,44,44,8);ctx.fill();ctx.strokeStyle='#0f172a';ctx.lineWidth=3;ctx.stroke();
-  ctx.font='24px sans-serif';ctx.fillText(KIND[st.k].e,st.x,st.y+1);
-  if(m){ctx.font='900 30px sans-serif';ctx.fillStyle='#facc15';ctx.strokeStyle='#000';ctx.lineWidth=5;const yy=st.y-48+Math.sin(t*6)*5;ctx.strokeText('!',st.x,yy);ctx.fillText('!',st.x,yy)}}
+  ctx.font='24px GmarketSans,sans-serif';ctx.fillText(KIND[st.k].e,st.x,st.y+1);
+  if(m){ctx.font='900 30px GmarketSans,sans-serif';ctx.fillStyle='#facc15';ctx.strokeStyle='#000';ctx.lineWidth=5;const yy=st.y-48+Math.sin(t*6)*5;ctx.strokeText('!',st.x,yy);ctx.fillText('!',st.x,yy)}}
  // 고장 장치
  for(const k in SABS){SABS[k].at.forEach(a=>{const on=o.sab&&o.sab.type===k;
   ctx.fillStyle=on?`rgba(239,68,68,${.4+.3*Math.sin(t*8)})`:'#475569';rr(ctx,a.x-24,a.y-24,48,48,10);ctx.fill();ctx.strokeStyle='#0f172a';ctx.lineWidth=3;ctx.stroke();
-  ctx.font='26px sans-serif';ctx.fillStyle='#fff';ctx.fillText(k==='reactor'?'✋':SABS[k].e,a.x,a.y+1)})}
+  ctx.font='26px GmarketSans,sans-serif';ctx.fillStyle='#fff';ctx.fillText(k==='reactor'?'✋':SABS[k].e,a.x,a.y+1)})}
 }
 function drawCrew(ctx,p,x,y,o){
  o=o||{};const img=sprite(p,o.mode||'');const h=o.h||96,w=o.mode==='dead'?h*120/140:h*100/144,t=performance.now()/1000;
  const bob=o.mv?Math.abs(Math.sin(t*12))*-6:0;
- if(o.pet&&p.look&&p.look.pet){ctx.font='34px sans-serif';ctx.textAlign='center';ctx.fillText(p.look.pet,x-(o.f||1)*44,y+28+(o.mv?Math.sin(t*14)*3:0))}
+ if(o.pet&&p.look&&p.look.pet){ctx.font='34px GmarketSans,sans-serif';ctx.textAlign='center';ctx.fillText(p.look.pet,x-(o.f||1)*44,y+28+(o.mv?Math.sin(t*14)*3:0))}
  if(img.complete&&img.naturalWidth){ctx.save();ctx.translate(x,y+bob);if((o.f||1)<0&&o.mode!=='dead')ctx.scale(-1,1);ctx.drawImage(img,-w/2,-h*.72,w,h);ctx.restore()}
- if(o.name){ctx.font='800 20px sans-serif';ctx.textAlign='center';ctx.lineWidth=5;ctx.strokeStyle='#000';ctx.fillStyle=o.nameColor||'#fff';ctx.strokeText(o.name,x,y-h*.72-4);ctx.fillText(o.name,x,y-h*.72-4)}
+ if(o.name){ctx.font='800 20px GmarketSans,sans-serif';ctx.textAlign='center';ctx.lineWidth=5;ctx.strokeStyle='#000';ctx.fillStyle=o.nameColor||'#fff';ctx.strokeText(o.name,x,y-h*.72-4);ctx.fillText(o.name,x,y-h*.72-4)}
 }
 /* 칠판용 전체 지도 */
 function boardMap(){
