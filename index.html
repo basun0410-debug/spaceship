@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>우리 반 우주선 – 임포스터를 찾아라! (v26)</title>
+<title>우리 반 우주선 – 임포스터를 찾아라! (v27)</title>
 <style>
 @font-face{font-family:'GmarketSans';font-weight:300;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff') format('woff')}
 @font-face{font-family:'GmarketSans';font-weight:500;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff')}
@@ -244,7 +244,7 @@ body.ingame{overflow:hidden;touch-action:none}
 .sl-txt{font-size:clamp(18px,2.2vw,28px)}.slide.sm .sl-txt{font-size:16px}
 .slide .r{color:#f87171}.slide .bl{color:#60a5fa}.slide .y{color:#facc15}
 .sl-ul{text-align:left;font-size:clamp(18px,2.2vw,28px);line-height:1.7;max-width:1000px;margin:10px auto}.slide.sm .sl-ul{font-size:15px}
-.sl-mach{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}.sl-mach>div{width:clamp(80px,11vw,130px);font-weight:800;font-size:clamp(13px,1.4vw,18px)}.sl-mach canvas{width:100%;display:block}
+.sl-mach{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}.sl-mach>div{width:clamp(80px,11vw,130px);font-weight:800;font-size:clamp(13px,1.4vw,18px)}.sl-mach canvas{width:100%;display:block}.sl-mach.many>div{width:clamp(62px,8.2vw,104px);font-size:clamp(11px,1.15vw,15px)}
 .tmap{width:100%;max-width:1000px;display:block;margin:0 auto;border-radius:14px}
 .sl-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.sl-steps>div{background:#312e81;border-radius:16px;padding:12px;font-size:clamp(40px,5vw,64px);display:flex;flex-direction:column;align-items:center;gap:4px}.sl-steps b{font-size:clamp(16px,2vw,26px)}.sl-steps>div{font-size:clamp(14px,1.6vw,20px)}.sl-steps>div:first-line{font-size:48px}
 .slide.sm .sl-steps{grid-template-columns:1fr 1fr}
@@ -254,6 +254,56 @@ body.ingame{overflow:hidden;touch-action:none}
 .sl-btns{display:flex;gap:6px}.sl-btns span{width:64px;height:64px;border-radius:14px;border:3px solid #000;background:#e2e8f0;color:#0f172a;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;line-height:1.3}
 .sl-vid{width:100%;max-width:1000px;display:block;margin:0 auto;border-radius:16px;border:3px solid #6366f1;background:#000}
 .hand-rule{display:inline-block;margin-top:10px;background:#facc15;color:#1e1b4b;font-size:clamp(22px,2.8vw,36px);font-weight:900;padding:10px 22px;border-radius:999px;border:4px solid #000;box-shadow:0 5px 0 #000}
+.mga{position:relative;width:min(92vw,720px);height:min(52vh,380px);margin:14px auto;border-radius:20px;overflow:hidden;background:radial-gradient(ellipse at 30% 40%,#1e1b4b,#020617 75%);border:4px solid #334155;touch-action:none;cursor:crosshair}
+.mga .cross{position:absolute;inset:0;background:linear-gradient(#22d3ee33,#22d3ee33) 50% 0/2px 100% no-repeat,linear-gradient(#22d3ee33,#22d3ee33) 0 50%/100% 2px no-repeat;pointer-events:none}
+.mga .rock{position:absolute;left:0;top:0;line-height:1;pointer-events:none;user-select:none}
+.mga .shot{position:absolute;width:46px;height:46px;margin:-23px;border:4px solid #f87171;border-radius:50%;animation:shot .3s ease-out forwards;pointer-events:none}
+@keyframes shot{from{transform:scale(.3);opacity:1}to{transform:scale(1.4);opacity:0}}
+.mgsh{display:block;width:min(80vw,380px);margin:14px auto;touch-action:none}
+.mgsh .hx{fill:#f8fafc;stroke:#0f172a;stroke-width:1.6;cursor:pointer;transition:fill .2s}
+.mgsh .hx.red{fill:#ef4444}.mgsh.on .hx{fill:#7dd3fc}
+.mgnum{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;width:min(92vw,560px);margin:20px auto}
+.mgnum button{font:900 34px GmarketSans,sans-serif;aspect-ratio:1;border-radius:16px;border:4px solid #0f172a;background:#cbd5e1;color:#0f172a;cursor:pointer}
+.mgnum button.on{background:#22c55e;color:#fff}
+.lights{display:flex;gap:10px;justify-content:center;margin:12px 0}.lights i{width:30px;height:14px;border-radius:7px;background:#334155}.lights i.on{background:#22c55e}
+.simon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:min(80vw,330px);margin:8px auto}
+.simon button{aspect-ratio:1;border-radius:14px;border:4px solid #0f172a;background:#1e293b;cursor:pointer;transition:background .1s}
+.simon button.fl{background:#38bdf8;box-shadow:0 0 24px #38bdf8}.simon button.me{background:#a3e635}
+.steer{position:relative;width:min(80vw,380px);aspect-ratio:1;margin:16px auto;border-radius:50%;background:radial-gradient(#0c4a6e,#082f49);border:6px solid #64748b;touch-action:none;overflow:hidden}
+.steer .ring{position:absolute;inset:30%;border:3px dashed #7dd3fc88;border-radius:50%}
+.steer .mid{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font:900 46px sans-serif;color:#7dd3fc}
+.steer .aim{position:absolute;width:64px;height:64px;transform:translate(-50%,-50%);border:6px solid #f8fafc;border-radius:50%;box-shadow:0 0 0 3px #0f172a}
+.steer .aim::after{content:'';position:absolute;inset:40%;background:#f8fafc;border-radius:50%}.steer .aim.good{border-color:#4ade80}
+.filt{position:relative;width:min(92vw,680px);height:min(48vh,340px);margin:16px auto;border-radius:18px;background:repeating-linear-gradient(90deg,#334155 0 3px,#1e293b 3px 22px);border:4px solid #64748b;touch-action:none;overflow:hidden}
+.filt .suck{position:absolute;left:0;top:0;bottom:0;width:18%;background:#020617;color:#94a3b8;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:900}
+.filt .leaf{position:absolute;font-size:52px;transform:translate(-50%,-50%);cursor:grab;user-select:none;transition:opacity .3s}
+.filt .leaf.hold{transform:translate(-50%,-50%) scale(1.25)}.filt .leaf.gone{opacity:0;transform:translate(-200%,-50%) scale(.2);transition:all .3s}
+.divert{display:flex;gap:10px;justify-content:center;margin:18px auto;width:min(94vw,640px)}
+.divert .lv{flex:1;text-align:center}.divert small{display:block;font-weight:700;font-size:13px;margin-top:6px}
+.divert .track{position:relative;height:min(40vh,260px);width:34px;margin:auto;border-radius:17px;background:#1e293b;border:3px solid #475569;touch-action:none}
+.divert .hd{position:absolute;left:-12px;right:-12px;bottom:0;height:40px;border-radius:10px;background:#64748b;border:3px solid #0f172a}
+.divert .lit .track{border-color:#facc15;box-shadow:0 0 18px #facc15}.divert .lit .hd{background:#facc15;cursor:grab}.divert .done .hd{background:#22c55e}
+.calib{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin:18px auto}
+.cal{text-align:center;opacity:.5}.cal.cur,.cal.ok{opacity:1}
+.cal .dial{position:relative;width:150px;height:150px;border-radius:50%;background:#0f172a;border:6px solid #475569;margin-bottom:10px;overflow:hidden}
+.cal .zone{position:absolute;left:50%;top:0;width:50%;height:50%;transform-origin:0 100%;background:conic-gradient(from 0deg at 0 100%,#facc15 0 44deg,transparent 44deg)}
+.cal .ndl{position:absolute;left:50%;top:8%;width:6px;height:42%;margin-left:-3px;background:#f8fafc;border-radius:3px;transform-origin:50% 100%}
+.cal.ok .dial{border-color:#22c55e}
+.align{position:relative;width:min(92vw,640px);height:min(46vh,320px);margin:16px auto;border-radius:18px;background:#0f172a;border:4px solid #475569;overflow:hidden;touch-action:none}
+.align .eng{position:absolute;left:4%;top:50%;transform:translateY(-50%) rotate(45deg);font-size:54px}
+.align .beam{position:absolute;left:16%;top:50%;width:66%;height:16px;margin-top:-8px;background:linear-gradient(90deg,#f97316,#fde68a);border-radius:8px;transform-origin:0 50%}
+.align .beam.good{background:linear-gradient(90deg,#16a34a,#86efac)}
+.align .mline{position:absolute;left:16%;right:12%;top:50%;border-top:3px dashed #4ade80}
+.align .rail{position:absolute;right:3%;top:8%;bottom:8%;width:56px;border-radius:28px;background:#1e293b;border:3px solid #64748b}
+.align .hd{position:absolute;left:4px;right:4px;height:46px;margin-top:-23px;border-radius:14px;background:#facc15;border:3px solid #0f172a}
+.tubes{display:flex;gap:16px;justify-content:center;margin:24px auto}
+.tube{width:56px;height:170px;border-radius:0 0 28px 28px;border:4px solid #cbd5e1;background:#0f172a55;position:relative;overflow:hidden;cursor:pointer;padding:0}
+.tube i{position:absolute;left:0;right:0;bottom:0;height:0;background:#60a5fa;transition:height 1.2s}
+.tube.fill i{height:62%}.tube.bad i{background:#ef4444}.tube.ok{border-color:#22c55e}
+.pots{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;width:min(94vw,640px);margin:20px auto}
+.pot{text-align:center;padding:12px 4px;border-radius:16px;background:#14532d55;border:3px solid #166534;touch-action:none;user-select:none;cursor:pointer}
+.pot .pl{font-size:52px}.pot .cup{font-size:40px;margin-top:-10px}.pot .pb{height:10px;border-radius:5px;background:#1e293b;margin:6px 8px;overflow:hidden}.pot .pb i{display:block;height:100%;width:0;background:#38bdf8}
+.pot.wet{background:#0c4a6e88}.pot.done{border-color:#4ade80;background:#16653488}
 </style>
 </head>
 <body>
@@ -332,11 +382,16 @@ const STATIONS={
  s21:{room:'caf',x:860,y:100,k:'quiz'},s22:{room:'caf',x:1170,y:100,k:'wires'},
  s23:{room:'med',x:520,y:260,k:'scan'},s24:{room:'sto',x:1010,y:1050,k:'trash'},s25:{room:'eng',x:110,y:410,k:'fuel'},
  s26:{room:'gar',x:1760,y:110,k:'quiz'},s27:{room:'gar',x:1940,y:260,k:'trash'},
- s28:{room:'lab',x:1940,y:900,k:'quiz'},s29:{room:'lab',x:1760,y:1040,k:'download'}};
+ s28:{room:'lab',x:1940,y:900,k:'quiz'},s29:{room:'lab',x:1760,y:1040,k:'download'},
+ s30:{room:"wep",x:1450,y:250,k:"asteroids"},s31:{room:'com',x:1450,y:990,k:'shields'},s32:{room:'rea',x:250,y:610,k:'manifold'},s33:{room:'rea',x:110,y:610,k:'simon'},
+ s34:{room:'nav',x:1800,y:640,k:'steer'},s35:{room:'o2',x:1400,y:610,k:'leaves'},s36:{room:'ele',x:545,y:850,k:'divert'},s37:{room:'ele',x:560,y:975,k:'calib'},
+ s38:{room:'eng',x:270,y:215,k:'align'},s39:{room:'lab',x:1930,y:1040,k:'samples'},s40:{room:'gar',x:1920,y:140,k:'water'}};
 /* 정보 장치: 관리실 지도 테이블, 보안실 CCTV */
 const ADMIN={x:1000,y:560},CAMS_AT={x:560,y:560};
 const CAMS=[{n:'의무실 복도',x:740,y:215},{n:'엔진실 복도',x:195,y:510},{n:'관리실 복도',x:1010,y:420},{n:'통신실 복도',x:1465,y:750}];
-const KIND={quiz:{n:'수업 퀴즈',e:'📚'},wires:{n:'전선 잇기',e:'🔌'},swipe:{n:'카드 긁기',e:'💳'},download:{n:'자료 내려받기',e:'💾'},scan:{n:'몸 스캔',e:'🩻'},trash:{n:'쓰레기 버리기',e:'🗑️'},fuel:{n:'연료 넣기',e:'⛽'}};
+const KIND={quiz:{n:'수업 퀴즈',e:'📚'},wires:{n:'전선 잇기',e:'🔌'},swipe:{n:'카드 긁기',e:'💳'},download:{n:'자료 내려받기',e:'💾'},scan:{n:'몸 스캔',e:'🩻'},trash:{n:'쓰레기 버리기',e:'🗑️'},fuel:{n:'연료 넣기',e:'⛽'},
+ asteroids:{n:'소행성 부수기',e:'☄️'},shields:{n:'보호막 켜기',e:'🛡️'},manifold:{n:'매니폴드 열기',e:'🔢'},simon:{n:'원자로 가동하기',e:'⚛️'},steer:{n:'항로 조정하기',e:'🧭'},
+ leaves:{n:'산소 필터 청소',e:'🍃'},divert:{n:'전력 보내기',e:'⚡'},calib:{n:'배전기 보정하기',e:'🎯'},align:{n:'엔진 출력 맞추기',e:'🔥'},samples:{n:'샘플 분석하기',e:'🧪'},water:{n:'화분 물 주기',e:'🌱'}};
 const SABS={lights:{n:'전등 고장',e:'💡',room:'ele',how:'전기실 배전반에서 스위치를 모두 켜세요',at:[{x:450,y:940}]},
  reactor:{n:'원자로 과열',e:'☢️',room:'rea',how:'원자로 손바닥 판 2곳을 두 명이 동시에 누르세요',at:[{x:90,y:700},{x:290,y:700}]},
  comms:{n:'통신 방해',e:'📡',room:'com',how:'통신실에서 주파수를 맞추세요 (관리실 지도·CCTV도 꺼져요)',at:[{x:1360,y:1050}]},
@@ -845,7 +900,7 @@ function genTasks(n){
  let quiz=parseQuiz(S.set.quiz);if(!quiz.length)quiz=parseQuiz(DEFAULT_QUIZ);
  const ids=Object.keys(STATIONS);
  // 모든 임무 = 퀴즈를 풀고 → 기계 조작(미니게임)까지 해야 끝나요
- const GAMES=['wires','swipe','download'];
+ const GAMES=['wires','swipe','download','shields','manifold','calib','simon'];
  const rooms=new Set(),pickd=[];
  for(const st of shuffle(ids)){if(pickd.length>=n)break;if(rooms.has(STATIONS[st].room)&&ids.length-rooms.size>n)continue;rooms.add(STATIONS[st].room);pickd.push(st)}
  for(const st of shuffle(ids)){if(pickd.length>=n)break;if(!pickd.includes(st))pickd.push(st)}
@@ -1334,7 +1389,7 @@ const SLIDES=[
   <div class="line">${ps.slice(0,23).map(p=>`<div class="bob" style="animation-delay:-${(p.name.length%5)*.4}s">${av(p,ps.length>14?44:60)}<div>${esc(p.name)}</div></div>`).join('')}</div>`},
  {t:'🎮 패드 조작법 (영상)',video:1,b:()=>`<video class="sl-vid" src="howto.mp4?v=4" controls autoplay playsinline preload="auto" onplay="this.volume=.6"></video><p class="sl-txt">🤫 <b class="r">약속!</b> 내 패드 화면은 절대 친구에게 보여주지 않아요.</p>`},
  {t:'🗺️ 우리 우주선 지도',b:()=>`<canvas class="tmap"></canvas><p class="sl-txt">방 14개가 복도로 이어져 있어요. 모두 <b>🍽️ 식당</b>에서 출발해요. 식당 한가운데에는 <b class="r">🔴 비상 버튼</b>이 있어요.</p>`},
- {t:'👩‍🚀 크루원이 하는 일',b:()=>`<div class="sl-mach">${['quiz','wires','swipe','download','scan','trash','fuel'].map(k=>`<div><canvas class="mach" data-k="${k}"></canvas><div>${KIND[k].n}</div></div>`).join('')}</div>
+ {t:'👩‍🚀 크루원이 하는 일',b:()=>`<div class="sl-mach many">${Object.keys(KIND).map(k=>`<div><canvas class="mach" data-k="${k}"></canvas><div>${KIND[k].n}</div></div>`).join('')}</div>
   <ul class="sl-ul"><li>노란 <b class="y">!</b> 가 있는 기계로 가서 <b>[사용]</b> → <b>① 수업 퀴즈</b>를 맞히고 <b>② 기계를 고치면</b> 임무 하나 끝!</li><li>🩻 몸 스캔은 친구들 눈에 보여요 → <b>크루원이라는 증거</b></li><li>🏆 <b>모든 임무 완료</b> 또는 <b>임포스터를 모두 추방</b>하면 크루원 승리</li></ul>`},
  {t:'😈 임포스터가 하는 일',b:()=>`<div class="sl-mach">${['sab_lights','sab_comms','sab_reactor','sab_o2','sab_seis'].map(k=>`<div><canvas class="mach" data-k="${k}"></canvas><div>${SABS[k.slice(4)].n}</div></div>`).join('')}</div>
   <ul class="sl-ul"><li>🔪 가까운 크루원을 <b>제거</b> (다시 쓰려면 기다려야 해요)</li><li>🕳️ <b>환풍구</b>로 몰래 이동 · 임무는 <b>하는 척만</b></li><li>💥 <b>방해 공작</b>: 전등·통신·🚪문 잠그기 / <b class="r">치명적</b> ☢️원자로·🫧산소·🌋지반 → <b class="r">0초가 되면 바로 임포스터 승리!</b></li><li>🏆 임포스터 수가 크루원 수와 같아지면 임포스터 승리</li></ul>`},
@@ -1494,6 +1549,50 @@ function drawMachine(ctx,k,x,y,t,o){
   ctx.fillStyle='#b45309';rr(ctx,x-26,y-50,52,66,20);ctx.fill();ctx.strokeStyle='#0b1220';ctx.lineWidth=3;ctx.stroke();
   ctx.fillStyle='#fde68a';rr(ctx,x-20,y-44,10,52,4);ctx.fill();ctx.fillStyle='#16a34a';const lv=.3+.2*Math.sin(t);ctx.fillRect(x-20,y+8-52*lv,10,52*lv);
   ctx.fillStyle='#78350f';ctx.fillRect(x+2,y-30,16,4);ctx.fillRect(x+2,y-20,16,4);ctx.fillRect(x+2,y-10,16,4);break}
+ case 'asteroids':{ // 포탑 조종석: 레이더 화면
+  box3(ctx,x-30,y-14,60,30,'#7f1d1d','#5b1515',6);
+  ctx.fillStyle='#0b1220';rr(ctx,x-28,y-56,56,40,6);ctx.fill();ctx.fillStyle='#052e16';rr(ctx,x-24,y-52,48,32,4);ctx.fill();
+  ctx.strokeStyle='#22c55e';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(x,y-36,12,0,7);ctx.stroke();ctx.beginPath();ctx.moveTo(x,y-36);ctx.lineTo(x+Math.cos(t*3)*13,y-36+Math.sin(t*3)*13);ctx.stroke();
+  ctx.fillStyle=o.task&&blink?'#f87171':'#a3e635';ctx.beginPath();ctx.arc(x+8+Math.sin(t)*4,y-42,2.5,0,7);ctx.fill();
+  ctx.fillStyle='#334155';ctx.fillRect(x-4,y-10,8,10);ctx.fillStyle='#ef4444';ctx.beginPath();ctx.arc(x,y-10,5,0,7);ctx.fill();break}
+ case 'shields':{ // 육각형 보호막 패널
+  box3(ctx,x-28,y-50,56,64,'#64748b','#475569',6);
+  for(let i=0;i<7;i++){const P=[[0,0],[0,-14],[0,14],[-12,-7],[12,-7],[-12,7],[12,7]][i];ctx.fillStyle=o.task&&(i+((t*2)|0))%3===0?'#ef4444':'#e2e8f0';
+   ctx.beginPath();for(let k=0;k<6;k++){const a=Math.PI/3*k;ctx.lineTo(x+P[0]+6.5*Math.cos(a),y-20+P[1]+7*Math.sin(a))}ctx.closePath();ctx.fill()}break}
+ case 'manifold':{ // 숫자판
+  box3(ctx,x-28,y-46,56,58,'#57534e','#44403c',5);ctx.fillStyle='#0f172a';rr(ctx,x-23,y-42,46,36,4);ctx.fill();
+  ctx.font='700 8px GmarketSans,sans-serif';for(let i=0;i<10;i++){const cx=x-17+(i%5)*8.5,cy=y-33+((i/5)|0)*16;ctx.fillStyle=o.task&&blink&&i===((t*3)|0)%10?'#facc15':'#cbd5e1';rr(ctx,cx-3.5,cy-5,7,10,2);ctx.fill()}break}
+ case 'simon':{ // 원자로 시동 패널 (3x3 불빛)
+  box3(ctx,x-30,y-48,60,62,'#3f6212','#365314',6);ctx.fillStyle='#0b1220';rr(ctx,x-24,y-42,48,40,4);ctx.fill();
+  const on=((t*2.5)|0)%9;for(let i=0;i<9;i++){ctx.fillStyle=i===on&&(o.task||blink)?'#38bdf8':'#1e3a5f';rr(ctx,x-20+(i%3)*14,y-38+((i/3)|0)*12,11,9,2);ctx.fill()}break}
+ case 'steer':{ // 조종 화면 + 조준점
+  box3(ctx,x-32,y-14,64,28,'#475569','#334155',6);ctx.fillStyle='#0c4a6e';ctx.beginPath();ctx.ellipse(x,y-38,30,22,0,0,7);ctx.fill();ctx.strokeStyle='#0b1220';ctx.lineWidth=3;ctx.stroke();
+  ctx.strokeStyle='#7dd3fc';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(x-8,y-38);ctx.lineTo(x+8,y-38);ctx.moveTo(x,y-46);ctx.lineTo(x,y-30);ctx.stroke();
+  ctx.strokeStyle=o.task?'#fff':'#94a3b8';ctx.lineWidth=2;ctx.beginPath();ctx.arc(x+Math.cos(t)*12,y-38+Math.sin(t*1.3)*8,5,0,7);ctx.stroke();break}
+ case 'leaves':{ // 산소 필터 상자 + 나뭇잎
+  box3(ctx,x-30,y-40,60,54,'#0f766e','#115e59',6);ctx.fillStyle='#134e4a';rr(ctx,x-24,y-34,48,30,4);ctx.fill();
+  ctx.strokeStyle='#5eead4';ctx.lineWidth=1;for(let i=0;i<6;i++){ctx.beginPath();ctx.moveTo(x-22+i*9,y-34);ctx.lineTo(x-22+i*9,y-4);ctx.stroke()}
+  ctx.fillStyle='#65a30d';for(let i=0;i<(o.task?4:1);i++){ctx.beginPath();ctx.ellipse(x-10+i*8,y-22+Math.sin(t*2+i)*3,5,3,i,0,7);ctx.fill()}break}
+ case 'divert':{ // 전력 분배 레버 줄
+  box3(ctx,x-32,y-50,64,62,'#713f12','#57300d',5);
+  for(let i=0;i<5;i++){const lx=x-22+i*11,lit=o.task&&i===2;ctx.fillStyle='#1c1917';ctx.fillRect(lx-2,y-44,4,40);ctx.fillStyle=lit?(blink?'#facc15':'#fde68a'):'#78716c';ctx.fillRect(lx-5,y-14-(lit?0:4),10,7)}break}
+ case 'calib':{ // 배전기 다이얼 3개
+  box3(ctx,x-34,y-40,68,50,'#57534e','#44403c',6);
+  for(let i=0;i<3;i++){const cx=x-20+i*20,cy=y-22;ctx.fillStyle='#0f172a';ctx.beginPath();ctx.arc(cx,cy,8,0,7);ctx.fill();ctx.strokeStyle='#facc15';ctx.lineWidth=2;ctx.beginPath();ctx.arc(cx,cy,8,-1.9,-1.2);ctx.stroke();
+   const a=t*(2+i)+i;ctx.strokeStyle=o.task?'#fff':'#94a3b8';ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.sin(a)*7,cy-Math.cos(a)*7);ctx.stroke()}break}
+ case 'align':{ // 엔진 출력 화면 + 레일
+  box3(ctx,x-30,y-46,60,60,'#334155','#1e293b',6);ctx.fillStyle='#0b1220';rr(ctx,x-24,y-40,36,36,4);ctx.fill();
+  ctx.strokeStyle='#4ade80';ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(x-22,y-22);ctx.lineTo(x+10,y-22);ctx.stroke();ctx.setLineDash([]);
+  const v=Math.sin(t*1.5)*(o.task?.5:.1);ctx.strokeStyle='#f97316';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x-22,y-22);ctx.lineTo(x+10,y-22+v*20);ctx.stroke();
+  ctx.fillStyle='#1e293b';ctx.fillRect(x+16,y-40,8,36);ctx.fillStyle='#facc15';ctx.fillRect(x+14,y-24+v*14,12,6);break}
+ case 'samples':{ // 시험관 거치대
+  box3(ctx,x-32,y-20,64,30,'#e2e8f0','#94a3b8',6);
+  for(let i=0;i<5;i++){const tx=x-22+i*11;ctx.fillStyle='rgba(203,213,225,.5)';rr(ctx,tx-4,y-50,8,30,4);ctx.fill();ctx.fillStyle=o.task&&i===((t|0)%5)?'#ef4444':'#60a5fa';rr(ctx,tx-3,y-36,6,15,3);ctx.fill()}break}
+ case 'water':{ // 화분 + 물뿌리개
+  for(let i=0;i<3;i++){const px=x-20+i*20;ctx.fillStyle='#9a3412';ctx.beginPath();ctx.moveTo(px-8,y-14);ctx.lineTo(px+8,y-14);ctx.lineTo(px+6,y+2);ctx.lineTo(px-6,y+2);ctx.closePath();ctx.fill();
+   ctx.strokeStyle='#15803d';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(px,y-14);ctx.quadraticCurveTo(px+(o.task?6:0),y-26,px+(o.task?9:2),y-32+(o.task?6:0));ctx.stroke();
+   ctx.fillStyle=o.task?'#a16207':'#f472b6';ctx.beginPath();ctx.arc(px+(o.task?9:2),y-32+(o.task?6:0),4.5,0,7);ctx.fill()}
+  if(o.task&&blink){ctx.fillStyle='#38bdf8';ctx.beginPath();ctx.arc(x+24,y-40,3,0,7);ctx.fill()}break}
  case 'admin':{ // 관리실 홀로그램 지도 탁자
   ctx.fillStyle='#134e4a';rr(ctx,x-70,y-36,140,72,16);ctx.fill();ctx.strokeStyle='#0b1220';ctx.lineWidth=4;ctx.stroke();
   ctx.fillStyle=`rgba(45,212,191,${.35+.15*Math.sin(t*2)})`;rr(ctx,x-58,y-26,116,52,10);ctx.fill();
@@ -1614,7 +1713,7 @@ const ME={x:0,y:0,f:1,mv:false,tp:-1,vent:null};
 const OTH={};
 let G=null,joy={on:false,id:null,ox:0,oy:0,dx:0,dy:0},keys={},lastSend=0,lastSentMv=false,actT=0,ACT={};
 function ensureGame(){
- if($('#game'))return;
+ if(G&&$('#game'))return;
  document.body.classList.add('ingame');
  app.innerHTML=`<div id="game"><canvas id="cv"></canvas>
   <div id="sabbar2"></div>
@@ -1634,7 +1733,7 @@ function ensureGame(){
  addEventListener('pointerup',end);addEventListener('blur',()=>{joy={on:false,id:null,dx:0,dy:0};$('#joy')&&($('#joy').style.display='none')});
  G={last:performance.now()};requestAnimationFrame(frame);
 }
-function leaveGame(){if(G){G=null;document.body.classList.remove('ingame')}}
+function leaveGame(){joy={on:false,id:null,dx:0,dy:0};ME.sc=false;if(G){G=null;document.body.classList.remove('ingame')}const g=$('#game');if(g)g.remove()}
 addEventListener('keydown',e=>{keys[e.key]=true;if(G&&(e.key==='e'||e.key===' ')){const b=$('#acts .use');b&&!b.disabled&&b.click()}});
 addEventListener('keyup',e=>{keys[e.key]=false});
 function frozen(){return $('#ov').classList.contains('show')||($('#cine')&&$('#cine').style.display==='flex')}
@@ -1803,6 +1902,8 @@ function openGame(box,t){const g=tGame(t),G={...t,k:g};
  if(g==='download')return mgDownload(b2,G);
  if(g==='scan')return mgScan(b2,G);
  if(g==='trash'||g==='fuel')return mgHold(b2,G);
+ const NEW={asteroids:mgAsteroids,shields:mgShields,manifold:mgManifold,simon:mgSimon,steer:mgSteer,leaves:mgLeaves,divert:mgDivert,calib:mgCalib,align:mgAlign,samples:mgSamples,water:mgWater};
+ if(NEW[g])return NEW[g](b2,G);
  taskDone(t)}
 function openTask(id){
  const t=V.me.tasks.find(x=>x.id===id);if(!t||t.done||V.phase!=='play')return;
@@ -1921,6 +2022,127 @@ function openCams(){
   if(V.me.alive&&!ME.vent&&dist(ME,c)<300)drawCrew(ctx,V.me,ME.x,ME.y,{f:ME.f,name:V.me.name});
   ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle='rgba(0,255,120,.06)';ctx.fillRect(0,0,cv.width,cv.height);ctx.fillStyle='#ef4444';ctx.font='900 26px GmarketSans,sans-serif';ctx.textAlign='left';ctx.fillText('● REC',14,34)});
   requestAnimationFrame(draw)};draw();
+}
+/* ========= 새 임무 미니게임 (나무위키 '활동' 참고, 우리 반에 맞게 쉽게) ========= */
+const mgHead=(title,sub)=>`<h2 class="center" style="padding-top:20px;margin-bottom:4px">${title}</h2><div class="small center" style="font-size:17px">${sub}</div>`;
+const mgOK=t=>{beep(1046,.15,'sine',0,.12);setTimeout(()=>taskDone(t),450)};
+const mgAlive=id=>!!document.getElementById(id);
+/* 소행성 부수기: 날아오는 돌을 8개 톡톡 */
+function mgAsteroids(box,t){
+ const N=8;let hit=0,live=[],last=performance.now(),spawn=0;
+ box.innerHTML=mgHead('☄️ 소행성 부수기','날아오는 소행성을 손가락으로 톡! 8개 부숴요')+`<div class="mga" id="ast"><div class="cross"></div></div><p class="center mgt" id="astn">0 / ${N}</p>`;
+ const A=$('#ast');
+ A.addEventListener('pointerdown',e=>{const b=A.getBoundingClientRect(),x=e.clientX-b.left,y=e.clientY-b.top;
+  const shot=document.createElement('i');shot.className='shot';shot.style.left=x+'px';shot.style.top=y+'px';A.appendChild(shot);setTimeout(()=>shot.remove(),300);
+  const r=live.find(r=>Math.hypot(r.x-x,r.y-y)<r.s*.75);
+  if(r){r.el.textContent='💥';r.dead=true;setTimeout(()=>r.el.remove(),250);live=live.filter(q=>q!==r);hit++;$('#astn').textContent=`${hit} / ${N}`;beep(220,.08,'square',0,.06);if(hit>=N)mgOK(t)}else beep(500,.03,'sine',0,.03)});
+ const loop=now=>{if(!mgAlive('ast'))return;const dt=(now-last)/1000;last=now;spawn-=dt;const W=A.clientWidth,H=A.clientHeight;
+  if(spawn<=0&&live.length<4&&hit<N){spawn=.7+Math.random()*.6;const s=56+Math.random()*24,el=document.createElement('span');el.className='rock';el.textContent='🪨';el.style.fontSize=s+'px';A.appendChild(el);
+   live.push({el,s,x:W+s,y:s+Math.random()*(H-2*s),vx:-(110+Math.random()*90),vy:(Math.random()-.5)*60,rot:0})}
+  live.forEach(r=>{r.x+=r.vx*dt;r.y+=r.vy*dt;r.rot+=dt*90;r.el.style.transform=`translate(${r.x-r.s/2}px,${r.y-r.s/2}px) rotate(${r.rot}deg)`;if(r.x<-r.s){r.el.remove();r.gone=1}});
+  live=live.filter(r=>!r.gone);requestAnimationFrame(loop)};requestAnimationFrame(loop);
+}
+/* 보호막 켜기: 빨간 육각형을 눌러 모두 하얗게 */
+function mgShields(box,t){
+ const P=[[50,50],[50,18],[50,82],[22,34],[78,34],[22,66],[78,66]];const red=new Set(shuffle([0,1,2,3,4,5,6]).slice(0,4+(Math.random()*2|0)));
+ const hex=(cx,cy,i)=>{const pts=[...Array(6)].map((_,k)=>{const a=Math.PI/3*k;return`${cx+14.5*Math.cos(a)},${cy+16*Math.sin(a)}`}).join(' ');return`<polygon data-i="${i}" points="${pts}" class="hx ${red.has(i)?'red':''}"/>`};
+ box.innerHTML=mgHead('🛡️ 보호막 켜기','빨간 칸을 눌러서 모두 하얗게 만들어요')+`<svg class="mgsh" viewBox="0 0 100 100">${P.map(([x,y],i)=>hex(x,y,i)).join('')}</svg>`;
+ box.querySelectorAll('.hx').forEach(h=>h.addEventListener('pointerdown',()=>{const i=+h.dataset.i;if(!red.has(i))return;red.delete(i);h.classList.remove('red');beep(600+(7-red.size)*80,.07,'sine',0,.08);if(!red.size){box.querySelector('.mgsh').classList.add('on');mgOK(t)}}));
+}
+/* 매니폴드 열기: 1부터 10까지 차례로 */
+function mgManifold(box,t){
+ const nums=shuffle([1,2,3,4,5,6,7,8,9,10]);let next=1;
+ box.innerHTML=mgHead('🔢 매니폴드 열기','1부터 10까지 순서대로 눌러요. 틀리면 처음부터!')+`<div class="mgnum" id="mfd">${nums.map(n=>`<button data-n="${n}">${n}</button>`).join('')}</div>`;
+ box.querySelectorAll('#mfd button').forEach(b=>b.onclick=()=>{const n=+b.dataset.n;if(b.classList.contains('on'))return;
+  if(n===next){b.classList.add('on');beep(400+n*60,.06,'square',0,.05);next++;if(next>10)mgOK(t)}
+  else{shake($('#mfd'));toast(`${next}번을 찾아요!`,'#dc2626');next=1;box.querySelectorAll('#mfd button').forEach(x=>x.classList.remove('on'))}});
+}
+/* 원자로 가동하기: 깜빡인 칸을 같은 순서로 (3단계) */
+function mgSimon(box,t){
+ let seq=[],round=0,inp=0,busy=true;const ROUNDS=3;
+ box.innerHTML=mgHead('⚛️ 원자로 가동하기','파랗게 깜빡이는 칸을 잘 보고, 같은 순서로 눌러요')+`<div class="lights" id="smr">${[0,1,2].map(i=>`<i class="${i?'':'on'}"></i>`).join('')}</div><div class="simon" id="sim">${[...Array(9)].map((_,i)=>`<button data-i="${i}"></button>`).join('')}</div><p class="center mgt" id="smt">잘 보세요 👀</p>`;
+ const B=[...box.querySelectorAll('#sim button')];
+ const flash=(i,c='fl')=>{B[i].classList.add(c);beep(330+i*55,.12,'sine',0,.08);setTimeout(()=>B[i]&&B[i].classList.remove(c),380)};
+ const play=()=>{busy=true;inp=0;$('#smt').textContent='잘 보세요 👀';[...$('#smr').children].forEach((x,k)=>x.className=k<=round?'on':'');
+  seq.slice(0,round+3).forEach((i,k)=>setTimeout(()=>{if(mgAlive('sim'))flash(i)},700+k*650));
+  setTimeout(()=>{if(!mgAlive('sim'))return;busy=false;$('#smt').textContent='이제 따라 눌러요 👆'},700+(round+3)*650)};
+ const reset=()=>{seq=[...Array(ROUNDS+2)].map(()=>Math.random()*9|0);round=0;play()};
+ B.forEach((b,i)=>b.onclick=()=>{if(busy)return;flash(i,'me');
+  if(seq[inp]!==i){busy=true;shake($('#sim'));toast('앗! 처음부터 다시 봐요','#dc2626');setTimeout(()=>{if(mgAlive('sim'))reset()},900);return}
+  inp++;if(inp===round+3){round++;if(round>=ROUNDS){busy=true;$('#smt').textContent='원자로 가동! ⚛️';mgOK(t)}else setTimeout(()=>{if(mgAlive('sim'))play()},600)}});
+ reset();
+}
+/* 항로 조정하기: 조준점을 가운데로 끌어오기 */
+function mgSteer(box,t){
+ const a=Math.random()*Math.PI*2,d=28+Math.random()*10;let p={x:50+Math.cos(a)*d,y:50+Math.sin(a)*d},drag=false;
+ box.innerHTML=mgHead('🧭 항로 조정하기','동그란 조준점을 화면 한가운데(+)로 끌어와요')+`<div class="steer" id="str"><div class="ring"></div><div class="mid">+</div><div class="aim" id="aim"></div></div>`;
+ const S=$('#str'),am=$('#aim');const put=()=>{am.style.left=p.x+'%';am.style.top=p.y+'%'};put();
+ const pos=e=>{const b=S.getBoundingClientRect();return{x:Math.max(5,Math.min(95,(e.clientX-b.left)/b.width*100)),y:Math.max(5,Math.min(95,(e.clientY-b.top)/b.height*100))}};
+ S.addEventListener('pointerdown',e=>{drag=true;S.setPointerCapture(e.pointerId);p=pos(e);put()});
+ S.addEventListener('pointermove',e=>{if(!drag)return;p=pos(e);put();am.classList.toggle('good',Math.hypot(p.x-50,p.y-50)<6)});
+ const up=()=>{if(!drag)return;drag=false;if(Math.hypot(p.x-50,p.y-50)<6){p={x:50,y:50};put();mgOK(t)}};S.addEventListener('pointerup',up);S.addEventListener('pointercancel',up);
+}
+/* 산소 필터 청소하기: 나뭇잎을 왼쪽 구멍으로 */
+function mgLeaves(box,t){
+ const N=6;let left=N;
+ box.innerHTML=mgHead('🍃 산소 필터 청소하기','필터에 낀 나뭇잎을 왼쪽 빨아들이는 구멍으로 끌어다 넣어요')+`<div class="filt" id="flt"><div class="suck">◀◀<br>구멍</div>${[...Array(N)].map((_,i)=>`<span class="leaf" style="left:${45+Math.random()*45}%;top:${10+Math.random()*75}%">${i%2?'🍂':'🍃'}</span>`).join('')}</div><p class="center mgt" id="flc">남은 잎: ${N}</p>`;
+ const F=$('#flt');
+ F.querySelectorAll('.leaf').forEach(l=>{let drag=false;
+  l.addEventListener('pointerdown',e=>{drag=true;l.setPointerCapture(e.pointerId);l.classList.add('hold')});
+  l.addEventListener('pointermove',e=>{if(!drag)return;const b=F.getBoundingClientRect();l.style.left=((e.clientX-b.left)/b.width*100)+'%';l.style.top=((e.clientY-b.top)/b.height*100)+'%'});
+  const up=()=>{if(!drag)return;drag=false;l.classList.remove('hold');if(parseFloat(l.style.left)<20){l.classList.add('gone');beep(300,.1,'sine',0,.06);left--;$('#flc').textContent=`남은 잎: ${left}`;setTimeout(()=>l.remove(),300);if(!left)mgOK(t)}};
+  l.addEventListener('pointerup',up);l.addEventListener('pointercancel',up)});
+}
+/* 전력 보내기: 불이 들어온 레버만 위로 */
+function mgDivert(box,t){
+ const N=7,k=Math.random()*N|0,names=['엔진','무기고','산소실','조종실','통신실','정원','실험실'];
+ box.innerHTML=mgHead('⚡ 전력 보내기','노랗게 빛나는 레버 하나를 위 끝까지 밀어 올려요')+`<div class="divert">${[...Array(N)].map((_,i)=>`<div class="lv ${i===k?'lit':''}"><div class="track"><div class="hd" ${i===k?'id="dvk"':''}></div></div><small>${names[i]}</small></div>`).join('')}</div>`;
+ const hd=$('#dvk'),tr=hd.parentElement;let drag=false,y0=0,v=0;const H=()=>tr.clientHeight-hd.clientHeight;
+ const set=()=>{hd.style.bottom=v*H()+'px'};set();
+ hd.addEventListener('pointerdown',e=>{drag=true;y0=e.clientY+v*H();hd.setPointerCapture(e.pointerId)});
+ hd.addEventListener('pointermove',e=>{if(!drag)return;v=Math.max(0,Math.min(1,(y0-e.clientY)/H()));set();if(v>.95){drag=false;v=1;set();tr.parentElement.classList.add('done');mgOK(t)}});
+ const up=()=>{if(!drag)return;drag=false;v=0;set()};hd.addEventListener('pointerup',up);hd.addEventListener('pointercancel',up);
+ box.querySelectorAll('.lv:not(.lit) .hd').forEach(h=>h.addEventListener('pointerdown',()=>{shake(h.closest('.lv'));toast('빛나는 레버를 찾아요 ✨','#dc2626')}));
+}
+/* 배전기 보정하기: 돌아가는 바늘이 노란 칸에 오면 꾹! (3개) */
+function mgCalib(box,t){
+ let cur=0;const sp=[150,190,230],tg=[...Array(3)].map(()=>40+Math.random()*280);const ang=[0,90,200];let last=performance.now();
+ box.innerHTML=mgHead('🎯 배전기 보정하기','바늘이 노란 칸에 들어왔을 때 [멈춰!] 버튼을 눌러요')+`<div class="calib">${[0,1,2].map(i=>`<div class="cal ${i?'':'cur'}" id="cal${i}"><div class="dial"><div class="zone" style="transform:rotate(${tg[i]-22}deg)"></div><div class="ndl" id="nd${i}"></div></div><button class="btn sm" id="cb${i}" ${i?'disabled':''}>멈춰!</button></div>`).join('')}</div>`;
+ const diff=(a,b)=>{let d=Math.abs(((a-b)%360+360)%360);return Math.min(d,360-d)};
+ [0,1,2].forEach(i=>$('#cb'+i).onclick=()=>{if(i!==cur)return;
+  if(diff(ang[i],tg[i])<=24){beep(700+i*120,.1,'sine',0,.1);$('#cal'+i).classList.add('ok');$('#cal'+i).classList.remove('cur');$('#cb'+i).disabled=true;cur++;if(cur<3){$('#cal'+cur).classList.add('cur');$('#cb'+cur).disabled=false}else mgOK(t)}
+  else{shake($('#cal'+i));beep(160,.12,'square',0,.06)}});
+ const loop=now=>{if(!mgAlive('nd0'))return;const dt=(now-last)/1000;last=now;for(let i=0;i<3;i++){if(i>=cur){ang[i]=(ang[i]+sp[i]*dt)%360}$('#nd'+i).style.transform=`rotate(${ang[i]}deg)`}requestAnimationFrame(loop)};requestAnimationFrame(loop);
+}
+/* 엔진 출력 맞추기: 화살표를 가운데 줄에 */
+function mgAlign(box,t){
+ let v=Math.random()<.5?.08+Math.random()*.25:.67+Math.random()*.25,drag=false;
+ box.innerHTML=mgHead('🔥 엔진 출력 맞추기','오른쪽 손잡이를 위아래로 움직여 불꽃을 가운데 초록 줄에 맞춰요')+`<div class="align" id="aln"><div class="eng">🚀</div><div class="beam" id="bm"></div><div class="mline"></div><div class="rail" id="rl"><div class="hd" id="alh"></div></div></div>`;
+ const rl=$('#rl'),hd=$('#alh'),bm=$('#bm');
+ const set=()=>{hd.style.top=(v*100)+'%';const ang=(v-.5)*50;bm.style.transform=`rotate(${ang}deg)`;const g=Math.abs(v-.5)<.035;bm.classList.toggle('good',g);return g};set();
+ rl.addEventListener('pointerdown',e=>{drag=true;rl.setPointerCapture(e.pointerId)});
+ rl.addEventListener('pointermove',e=>{if(!drag)return;const b=rl.getBoundingClientRect();v=Math.max(0,Math.min(1,(e.clientY-b.top)/b.height));set()});
+ const up=()=>{if(!drag)return;drag=false;if(set()){v=.5;set();mgOK(t)}else toast('조금만 더! 초록 줄에 딱 맞춰요','#d97706')};rl.addEventListener('pointerup',up);rl.addEventListener('pointercancel',up);
+}
+/* 샘플 분석하기: 시약 넣기 → 10초 기다리기 → 빨간 시험관 고르기 */
+function mgSamples(box,t){
+ const N=5,bad=Math.random()*N|0;
+ const draw=(st)=>{box.innerHTML=mgHead('🧪 샘플 분석하기',st==='go'?'[시약 넣기]를 누르고 결과를 기다려요':st==='wait'?'분석하는 중… 조금만 기다려요 ⏳':'빨갛게 변한 시험관 하나를 골라요!')+
+  `<div class="tubes" id="tbs">${[...Array(N)].map((_,i)=>`<button class="tube ${st==='pick'&&i===bad?'bad':''} ${st!=='go'?'fill':''}" data-i="${i}"><i></i></button>`).join('')}</div>
+  <div class="center">${st==='go'?'<button class="btn big" id="smgo">💧 시약 넣기</button>':st==='wait'?'<div class="bar" style="width:80%;margin:auto;height:22px"><i id="smb" style="width:0%"></i></div>':''}</div>`};
+ draw('go');
+ $('#smgo').onclick=()=>{draw('wait');const t0=performance.now(),D=10000;const go=()=>{if(!$('#smb'))return;const k=Math.min(1,(performance.now()-t0)/D);$('#smb').style.width=k*100+'%';if(k<1)return requestAnimationFrame(go);
+   draw('pick');beep(880,.15,'sine',0,.1);box.querySelectorAll('.tube').forEach(b=>b.onclick=()=>{if(+b.dataset.i===bad){b.classList.add('ok');mgOK(t)}else{shake(b);toast('빨간 시험관을 골라요! 🔴','#dc2626')}})};requestAnimationFrame(go)};
+}
+/* 화분에 물 주기: 시든 화분을 꾹 눌러 물 주기 (4개) */
+function mgWater(box,t){
+ const N=4;let left=N;
+ box.innerHTML=mgHead('🌱 우주 정원 물 주기','시든 화분을 1초 동안 꾹 눌러 물을 줘요')+`<div class="pots">${[...Array(N)].map((_,i)=>`<div class="pot" data-i="${i}"><div class="pl">🥀</div><div class="pb"><i></i></div><div class="cup">🪴</div></div>`).join('')}</div>`;
+ box.querySelectorAll('.pot').forEach(p=>{let on=false,acc=0,last=0;const bar=p.querySelector('.pb i');
+  const loop=now=>{if(!on||!p.isConnected)return;acc+=now-last;last=now;bar.style.width=Math.min(100,acc/10)+'%';if(((now/150)|0)%2)beep(900+Math.random()*200,.02,'sine',0,.02);
+   if(acc>=1000){on=false;p.classList.add('done');p.querySelector('.pl').textContent='🌷';beep(990,.12,'sine',0,.1);left--;if(!left)mgOK(t);return}requestAnimationFrame(loop)};
+  p.addEventListener('pointerdown',e=>{if(p.classList.contains('done'))return;on=true;last=performance.now();p.classList.add('wet');p.setPointerCapture(e.pointerId);requestAnimationFrame(loop)});
+  const up=()=>{if(p.classList.contains('done'))return;on=false;p.classList.remove('wet')};p.addEventListener('pointerup',up);p.addEventListener('pointercancel',up)});
 }
 function shake(el){el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake')}
 
