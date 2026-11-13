@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>우리 반 우주선 – 임포스터를 찾아라! (v23)</title>
+<title>우리 반 우주선 – 임포스터를 찾아라! (v24)</title>
 <style>
 @font-face{font-family:'GmarketSans';font-weight:300;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff') format('woff')}
 @font-face{font-family:'GmarketSans';font-weight:500;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff')}
@@ -663,7 +663,7 @@ function hostTick(){
  const st=$('#hsabt');if(st&&S.sab&&S.sab.end)st.textContent=Math.max(0,Math.ceil((S.sab.end-Date.now())/1000))+'초';
  CLOSED=S.doors||{};
  if(S.tut&&S.tut.mode==='ai'){const e=$('#tutel');if(e){const el=Math.floor((Date.now()-S.tut.start)/1000);e.textContent=`${Math.floor(el/60)}:${String(el%60).padStart(2,'0')}`}}
- if(S.solo&&S.soloEnd&&S.phase!=='end'&&S.phase!=='lobby'&&Date.now()>=S.soloEnd){S.soloEnd=0;endGame('crew','⏱ 5분이 지났어요! 임포스터가 시간 안에 이기지 못했어요');return}
+ if(S.solo&&S.soloEnd&&S.phase!=='end'&&S.phase!=='lobby'&&Date.now()>=S.soloEnd){S.soloEnd=0;endGame('crew','⏱ 3분이 지났어요! 임포스터가 시간 안에 이기지 못했어요');return}
  if(S.phase==='play'&&S.practice){const pt=$('#prt');const l=Math.max(0,Math.ceil((S.practiceEnd-Date.now())/1000));if(pt)pt.textContent=`${Math.floor(l/60)}:${String(l%60).padStart(2,'0')}`;if(l<=0){endGame('crew','🎓 연습 시간이 끝났어요!');return}}
  musSet(S.phase==='lobby'&&S.tut&&S.tut.mode==='slides'&&SLIDES[S.tut.i].video?'':S.phase==='lobby'?'lobby':S.phase==='play'?(S.sab&&SABS[S.sab.type].timed?'crit':'play'):(S.phase==='meeting'||S.phase==='vote')?'meet':'');
  if(S.phase==='play'&&S.sab&&SABS[S.sab.type].timed){
@@ -1183,7 +1183,7 @@ function tutHostHTML(){
   <div class="row" style="max-width:1100px;margin:14px auto"><button class="btn big gray" onclick="tutSlide(-1)" ${T.i?'':'disabled'}>◀ 이전</button>${T.i<SLIDES.length-1?`<button class="btn big" onclick="tutSlide(1)">다음 ▶</button>`:`<button class="btn big green" onclick="tutAI()">🤖 AI 연습 시작 (모든 패드)</button>`}</div>
   <div class="center"><button class="btn gray sm" onclick="tutEnd()">✖ 튜토리얼 그만하고 대기실로</button></div></div>`;
  const hs=ps.filter(p=>!p.bot),done=hs.filter(p=>p.aiN>0).length,el=Math.floor((Date.now()-T.start)/1000);
- return`<div id="tutv" data-k="ai"><div class="card center"><h1 style="margin:0">🤖 AI 로봇과 연습 중 <span id="tutel" style="color:#fde68a">${Math.floor(el/60)}:${String(el%60).padStart(2,'0')}</span></h1><p style="font-size:22px">각자 패드에서 5분 연습 게임을 하고 있어요 · <b>한 판 끝낸 친구 <span id="tutdone">${done}</span> / ${hs.length}명</b></p></div>
+ return`<div id="tutv" data-k="ai"><div class="card center"><h1 style="margin:0">🤖 AI 로봇과 연습 중 <span id="tutel" style="color:#fde68a">${Math.floor(el/60)}:${String(el%60).padStart(2,'0')}</span></h1><p style="font-size:22px">각자 패드에서 3분 연습 게임을 하고 있어요 · <b>한 판 끝낸 친구 <span id="tutdone">${done}</span> / ${hs.length}명</b></p></div>
   <div class="card"><div class="crewgrid" id="aigrid">${aiGridHTML()}</div></div>
   <div class="row" style="max-width:1100px;margin:14px auto"><button class="btn big gray" onclick="S.tut={mode:'slides',i:0,id:Date.now()};bcastAll();renderHost()">↩ 설명 다시 보기</button><button class="btn big green" onclick="tutEnd();startGame()">▶️ 연습 끝! 진짜 게임 시작</button></div></div>`;
 }
@@ -1337,7 +1337,7 @@ const SLIDES=[
   <ul class="sl-ul"><li>🔪 가까운 크루원을 <b>제거</b> (다시 쓰려면 기다려야 해요)</li><li>🕳️ <b>환풍구</b>로 몰래 이동 · 임무는 <b>하는 척만</b></li><li>💥 <b>방해 공작</b>: 전등·통신·🚪문 잠그기 / <b class="r">치명적</b> ☢️원자로·🫧산소·🌋지반 → <b class="r">0초가 되면 바로 임포스터 승리!</b></li><li>🏆 임포스터 수가 크루원 수와 같아지면 임포스터 승리</li></ul>`},
  {t:'📢 신고와 회의',b:()=>`<div class="sl-steps"><div>💀<b>시체 발견</b>가까이 가서 📢 신고</div><div>🔴<b>비상 버튼</b>식당에서 1인 1번</div><div>✋<b>손 들고 발표</b>선생님이 이름을 부르면 한 명씩</div><div>🗳️<b>투표</b>가장 많이 뽑힌 사람이 추방</div></div>
   <ul class="sl-ul"><li>👻 제거된 친구는 <b>유령</b>: 말하면 안 돼요! 대신 임무는 계속할 수 있어요</li><li>"어디서, 누구를, 무엇을 봤는지" 말하면 추리에 도움이 돼요</li></ul>`},
- {t:'🤖 이제 AI 로봇과 연습해요!',b:()=>`<p class="sl-lead">각자 패드에서 <b>AI 로봇 4명</b>과 <b>5분</b> 동안 연습 게임을 해요.<br>절반은 <b class="bl">크루원</b>, 절반은 <b class="r">임포스터</b>로 해 봐요!</p><div style="font-size:120px">🤖🤖🤖🤖</div>`}];
+ {t:'🤖 이제 AI 로봇과 연습해요!',b:()=>`<p class="sl-lead">각자 패드에서 <b>AI 로봇 4명</b>과 <b>3분</b> 동안 연습 게임을 해요.<br>절반은 <b class="bl">크루원</b>, 절반은 <b class="r">임포스터</b>로 해 봐요!</p><div style="font-size:120px">🤖🤖🤖🤖</div>`}];
 function slideHTML(i,ps,small){const S0=SLIDES[i];return`<div class="slide ${small?'sm':''}"><div class="sl-n">${i+1} / ${SLIDES.length}</div><h1 class="sl-t">${S0.t}</h1>${S0.b(ps)}</div>`}
 function paintSlide(root){(root||document).querySelectorAll('canvas.mach').forEach(c=>{const W=c.clientWidth||110,H=W;c.width=W*2;c.height=H*2;c.style.height=H+'px';const x=c.getContext('2d');x.setTransform(c.width/120,0,0,c.height/120,0,0);drawMachine(x,c.dataset.k,60,80,performance.now()/1000,{alarm:c.dataset.k.startsWith('sab')})});
  (root||document).querySelectorAll('canvas.tmap').forEach(c=>{const W=c.clientWidth||600,H=W*(MAP_H+80)/(MAP_W+80);c.width=W*2;c.height=H*2;c.style.height=H+'px';const x=c.getContext('2d'),s2=c.width/(MAP_W+80);x.setTransform(s2,0,0,s2,40*s2,40*s2);drawWorld(x,{labelSize:52})})}
@@ -1958,12 +1958,12 @@ function openFix(type,idx){
 function soloHostBoot(){
  window.initAudio=()=>{};AC=null;
  const want=Q.get('role')==='imp'?'imp':'crew';
- S={code:Q.get('solo'),phase:'lobby',solo:true,set:Object.assign({},DEF,{imp:1,tasks:5,disc:25,vote:15,cd:22,meet:1,reactor:50,sabCd:40,quiz:DEFAULT_QUIZ}),P:{},order:[],cid:{},pc:{},seq:0,pending:[],deaths:[],bodies:[],sab:null,sabCd:0,meeting:null,timerEnd:0,result:null,winner:null,reason:''};
+ S={code:Q.get('solo'),phase:'lobby',solo:true,set:Object.assign({},DEF,{imp:1,tasks:4,disc:25,vote:15,cd:22,meet:1,reactor:50,sabCd:40,quiz:DEFAULT_QUIZ}),P:{},order:[],cid:{},pc:{},seq:0,pending:[],deaths:[],bodies:[],sab:null,sabCd:0,meeting:null,timerEnd:0,result:null,winner:null,reason:''};
  HT=hostTransport(S.code,(cid,m)=>{onHostMsg(cid,m);
    if(m&&m.t==='hello'&&S.phase==='lobby'&&!S._started){S._started=1;setTimeout(()=>{addBots();startGame();
     const ps=S.order.map(P),me=ps.find(p=>!p.bot);ps.forEach(p=>p.role='crew');
     if(want==='imp')me.role='imp';else pick(ps.filter(p=>p.bot)).role='imp';
-    S.impN=1;S.soloEnd=Date.now()+5*60000;ps.filter(p=>p.bot).forEach(b=>{b.cd=Date.now()+S.set.cd*1000});bcastAll()},400)}},
+    S.impN=1;S.soloEnd=Date.now()+3*60000;ps.filter(p=>p.bot).forEach(b=>{b.cd=Date.now()+S.set.cd*1000});bcastAll()},400)}},
   ()=>{hostReady=true},()=>{},true);
  hostReady=true;app.innerHTML='';
  setInterval(hostTick,250);setInterval(posTick,60);
