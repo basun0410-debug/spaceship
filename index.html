@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>우리 반 우주선 – 임포스터를 찾아라! (v30)</title>
+<title>우리 반 우주선 – 임포스터를 찾아라! (v31)</title>
 <style>
 @font-face{font-family:'GmarketSans';font-weight:300;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff') format('woff')}
 @font-face{font-family:'GmarketSans';font-weight:500;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff')}
@@ -440,7 +440,7 @@ const DEFAULT_QUIZ=`[도덕] 지구가 빠르게 뜨거워지며 생기는 위�
 [수학] 0.9 × 0.7 = ? / 0.63 / 6.3 / 0.063 / 힌트: 소수 한 자리 × 소수 한 자리 = 소수 두 자리!
 [수학] 37×21=777일 때, 3.7 × 2.1 = ? / 7.77 / 77.7 / 0.777 / 힌트: 3.7과 2.1은 둘 다 소수 한 자리. 777에서 소수점을 왼쪽으로 두 칸!
 [수학] 곱하는 수가 10배가 되면 곱의 소수점은? / 오른쪽으로 한 칸 / 왼쪽으로 한 칸 / 그대로 / 힌트: 수가 커지려면 소수점이 어느 쪽으로 가야 할까요?
-[수학] 0.5 × 2 = ? / 1 / 0.1 / 10 / 힌트: 0.5는 반(1/2)이에요. 반이 두 개면?
+[수학] 0.5 × 2 = ? / 1 / 0.1 / 10 / 힌트: 0.5는 1의 반이에요. 반이 두 개 모이면?
 [수학] 할리갈리: 0.1×2 와 0.2×4 카드가 나왔어요. 종을 칠까요? / 친다 / 안 친다 / 힌트: 0.2 + 0.8을 계산해 보세요. 합이 1이면 종을 쳐요!
 [국어] 짜장면과 짬뽕을 둘 다 만족시키는 '메뉴 합치기' 방법은? / 짬짜면 / 탕수육 / 김밥 / 힌트: 두 메뉴 이름을 반씩 합친 이름이에요.
 [국어] 서로 양보하고 생각을 합쳐 모두가 동의하는 결정을 만드는 것은? / 의견 조정 / 의견 무시 / 억지 결정 / 힌트: 서로의 생각을 '조정'해서 맞추는 거예요.
@@ -513,7 +513,8 @@ function setStatus(t){let s=$('#status');if(!t){s&&s.remove();return}if(!s){s=do
 function loadScript(src){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
 let peerLib=null;
 function needPeer(){if(LOCAL)return Promise.resolve();if(!peerLib)peerLib=loadScript('./peerjs.min.js?v=1.5.4').catch(()=>loadScript('https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js')).catch(()=>loadScript('https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js'));return peerLib}
-function parseQuiz(txt){return String(txt||'').split('\n').map(l=>{l=l.trim();let s='';const m=l.match(/^\[([^\]]+)\]\s*/);if(m){s=m[1];l=l.slice(m[0].length)}l=l.replace(/\(\s*[OoＯ○]\s*[\/／]\s*[XxＸ×]\s*\)/g,'(O, X)');let a=l.split('/').map(x=>x.trim()).filter(Boolean);const hi=a.find(x=>/^힌트\s*[:：]/.test(x));a=a.filter(x=>x!==hi);return a.length>=2?{s,q:a[0],a:a[1],w:a.slice(2),h:hi?hi.replace(/^힌트\s*[:：]\s*/,''):''}:null}).filter(Boolean)}
+function parseQuiz(txt){return String(txt||'').split('\n').map(l=>{l=l.trim();let s='';const m=l.match(/^\[([^\]]+)\]\s*/);if(m){s=m[1];l=l.slice(m[0].length)}l=l.replace(/\(\s*[OoＯ○]\s*[\/／]\s*[XxＸ×]\s*\)/g,'(O, X)');let hi='';const hm=l.match(/\/\s*힌트\s*[:：]/);if(hm){hi=l.slice(hm.index+1).trim();l=l.slice(0,hm.index)}  // '힌트:' 뒤는 / 가 있어도 통째로 힌트
+ let a=l.split('/').map(x=>x.trim()).filter(Boolean);return a.length>=2?{s,q:a[0],a:a[1],w:a.slice(2),h:hi?hi.replace(/^힌트\s*[:：]\s*/,''):''}:null}).filter(Boolean)}
 
 /* 소리 */
 let AC=null;
@@ -688,6 +689,9 @@ function loadSet(){try{let raw=localStorage.getItem('ship-set-v5');if(!raw){cons
  // 예전 기본 퀴즈(힌트 없음)를 그대로 저장해 둔 경우 힌트 있는 새 기본 퀴즈로 바꿔요
  const plain=DEFAULT_QUIZ.split('\n').map(l=>l.replace(/\s*\/\s*힌트:.*$/,'').trim());
  if(!/힌트\s*:/.test(o.quiz)&&o.quiz.split('\n').map(l=>l.trim()).filter(Boolean).every(l=>plain.includes(l)))o.quiz=DEFAULT_QUIZ;
+ // 예전 버전 기본 문제(O/X 오류 등)를 그대로 저장해 둔 경우에도 새 문제로 바꿔요 (선생님이 고친 문제는 그대로)
+ {const now=DEFAULT_QUIZ.split('\n').map(l=>l.trim()),OLDQ=["[과학] 열 전구 빛이 비친 검은색 판의 온도는? / 더 높아요 / 더 낮아요 / 똑같아요 / 힌트: 검은색은 빛을 잘 흡수해요.", "[국어] 다수가 손을 들면 소수는 무조건 따라야 한다. (O/X) / X / O / 힌트: 적은 사람의 의견도 존중해야 해요.", "[도덕] 환경 위기는 동식물과 우리 삶 모두에 영향을 준다. (O/X) / O / X / 힌트: 환경이 망가지면 사람도 동식물도 함께 힘들어져요.", "[사회] '태백산 호랑이'라 불린 의병장은? / 신돌석 / 안중근 / 세종대왕 / 힌트: 평민 출신 의병장, 경상도 영덕 사람이에요. 이름에 '돌'이 들어가요.", "[사회] 교육과 산업으로 나라의 힘을 기르자는 운동은? / 애국 계몽 운동 / 의병 운동 / 줄넘기 운동 / 힌트: 백성들을 '계몽(깨우침)'해서 나라를 사랑하게 하자는 운동이에요.", "[사회] 을사늑약이 부당함을 알리려고 헤이그에 보낸 사람들은? / 헤이그 특사 / 의병 / 보조견 / 힌트: 네덜란드 헤이그 만국 평화 회의에 보낸 특별한 사절!", "[사회] 일본에 진 빚을 국민의 힘으로 갚자는 운동은? / 국채 보상 운동 / 새마을 운동 / 환경 운동 / 힌트: 나랏빚(國債)을 갚아서 은혜에 보답(報償)하자는 운동!", "[수학] 0.5 × 2 = ? / 1 / 0.1 / 10 / 힌트: 0.5는 반(1/2)이에요. 반이 두 개면?", "[수학] 직육면체에는 삼각형 모양의 면이 있다. (O/X) / X / O / 힌트: 직육면체의 면은 모두 직사각형이에요.", "[수학] 할리갈리: ● 0.1×2 와 ● 0.2×4 가 나왔어요. 종을 칠까요? / 친다 (합이 1) / 안 친다 / 모르겠다 / 힌트: 0.2 + 0.8을 계산해 보세요. 합이 1이면 종을 쳐요!", "[실과] 소는 먹을거리로도, 원료·재료로도 활용된다. (O/X) / O / X / 힌트: 고기·우유도 주고, 가죽으로 신발도 만들어요."];
+  const ls=o.quiz.split('\n').map(l=>l.trim()).filter(Boolean);if(ls.some(l=>OLDQ.includes(l))&&ls.every(l=>now.includes(l)||OLDQ.includes(l)))o.quiz=DEFAULT_QUIZ}
  return o}catch(e){return{...DEF}}}
 function saveSet(){if(SOLO_HOST)return;try{localStorage.setItem('ship-set-v5',JSON.stringify(S.set))}catch(e){}}
 function hostSaved(){try{const s=JSON.parse(localStorage.getItem('ship-host-v2')||'null');return s&&s.order&&s.order.length?s:null}catch(e){return null}}
