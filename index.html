@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>우리 반 우주선 – 임포스터를 찾아라! (v27)</title>
+<title>우리 반 우주선 – 임포스터를 찾아라! (v28)</title>
 <style>
 @font-face{font-family:'GmarketSans';font-weight:300;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff') format('woff')}
 @font-face{font-family:'GmarketSans';font-weight:500;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff')}
@@ -574,17 +574,40 @@ function floatersHTML(){return `<div class="floaters">${COLORS.slice(0,6).map((c
 function hostTransport(code,onMsg,onReady,onErr,forceLocal){
  if(LOCAL||forceLocal){const bc=new BroadcastChannel('ship-'+code);bc.onmessage=e=>{const m=e.data;if(m&&m.to==='host')onMsg(m.from,m.data)};setTimeout(onReady,0);
   return{send(cid,data){bc.postMessage({to:cid,data})},close(){bc.close()}}}
- const peer=new Peer(PREFIX+code);const conns={};
- peer.on('open',onReady);
- peer.on('error',e=>onErr(e));
- peer.on('disconnected',()=>{setTimeout(()=>{try{peer.reconnect()}catch(e){}},1500)});
- setInterval(()=>{if(!peer.destroyed&&peer.disconnected){try{peer.reconnect()}catch(e){}}},5000);
- window.addEventListener('online',()=>{if(!peer.destroyed&&peer.disconnected){try{peer.reconnect()}catch(e){}}});
- const fast={};  // 위치 전용 빠른 채널 (잃어버려도 괜찮은 정보)
- peer.on('connection',c=>{
-  if(c.label==='fast'){c.on('data',d=>{if(d&&d.cid){fast[d.cid]=c;if(d.t!=='fasthi')onMsg(d.cid,d)}});c.on('close',()=>{for(const k in fast)if(fast[k]===c)delete fast[k]});return}
-  c.on('data',d=>{if(d&&d.cid){conns[d.cid]=c;onMsg(d.cid,d)}});c.on('close',()=>{for(const k in conns)if(conns[k]===c){delete conns[k];onMsg(k,{t:'bye'})}})});
- return{send(cid,data,isFast){const f=isFast&&fast[cid];const c=f&&f.open?f:conns[cid];if(c&&c.open){try{c.send(data)}catch(e){}}},close(){peer.destroy()}};
+ // 칠판 연결: 서버와 끊기면 다시 붙고, 연결 객체가 망가지면 같은 방 번호로 새로 만들어요
+ let peer=null,dead=false,first=true,rebuildT=null;const conns={},fast={},pend={},seen={};
+ const rebuild=ms=>{if(dead||rebuildT)return;rebuildT=setTimeout(()=>{rebuildT=null;make()},ms)};
+ function make(){
+  try{peer&&!peer.destroyed&&peer.destroy()}catch(e){}
+  const pr=new Peer(PREFIX+code);peer=pr;
+  pr.on('open',()=>{if(peer!==pr)return;if(first){first=false;onReady()}else{onReady&&onReady()}});
+  pr.on('error',e=>{if(peer!==pr)return;
+   if(e.type==='unavailable-id'){if(first){onErr(e);return}rebuild(3000);return}   // 새로고침 직후엔 서버가 예전 연결을 잠깐 붙잡고 있어요
+   if(e.type==='peer-unavailable')return;
+   onErr(e);if(pr.destroyed)rebuild(2000)});
+  pr.on('disconnected',()=>{if(peer!==pr||dead)return;setTimeout(()=>{if(peer===pr&&!pr.destroyed&&pr.disconnected){try{pr.reconnect()}catch(e){rebuild(1000)}}},1000)});
+  pr.on('close',()=>{if(peer===pr&&!dead)rebuild(2000)});
+  pr.on('connection',c=>{
+   if(c.label==='fast'){c.on('data',d=>{if(d&&d.cid){fast[d.cid]=c;seen[d.cid]=Date.now();if(d.t!=='fasthi')onMsg(d.cid,d)}});c.on('close',()=>{for(const k in fast)if(fast[k]===c)delete fast[k]});c.on('error',()=>{});return}
+   c.on('data',d=>{if(d&&d.cid){if(conns[d.cid]!==c){const o=conns[d.cid];conns[d.cid]=c;if(o&&o!==c)setTimeout(()=>{try{o.close()}catch(e){}},500)}seen[d.cid]=Date.now();onMsg(d.cid,d)}});
+   c.on('close',()=>{for(const k in conns)if(conns[k]===c){delete conns[k];onMsg(k,{t:'bye'})}});c.on('error',()=>{})});
+ }
+ make();
+ setInterval(()=>{if(dead)return;
+  if(!peer||peer.destroyed)rebuild(500);else if(peer.disconnected){try{peer.reconnect()}catch(e){rebuild(500)}}
+  const now=Date.now();for(const k in conns)if(seen[k]&&now-seen[k]>20000){const c=conns[k];delete conns[k];try{c.close()}catch(e){}onMsg(k,{t:'bye'})}  // 20초 동안 소식이 없으면 끊긴 연결로 보고 정리해요(패드가 새로 붙어요)
+ },4000);
+ window.addEventListener('online',()=>{if(!dead&&peer&&!peer.destroyed&&peer.disconnected){try{peer.reconnect()}catch(e){rebuild(500)}}});
+ // 보낼 게 너무 쌓이면(와이파이가 잠깐 느릴 때) 최신 화면 정보만 남겨 두었다가 보내요 → 채널이 터지지 않아요
+ const BIG=512*1024;let pendT=null;
+ const flushPend=()=>{pendT=null;for(const k in pend){const c=conns[k];if(!c||!c.open){delete pend[k];continue}const dc=c.dataChannel;if(dc&&dc.bufferedAmount>BIG)continue;try{c.send(pend[k])}catch(e){}delete pend[k]}if(Object.keys(pend).length)pendT=setTimeout(flushPend,150)};
+ return{send(cid,data,isFast){
+   if(isFast){const f=fast[cid];if(f&&f.open){const dc=f.dataChannel;if(dc&&dc.bufferedAmount>64*1024)return;try{f.send(data)}catch(e){}return}}
+   const c=conns[cid];if(!c||!c.open)return;const dc=c.dataChannel;
+   if(dc&&dc.bufferedAmount>BIG){if(data&&data.t==='state'){pend[cid]=data;if(!pendT)pendT=setTimeout(flushPend,150)}else if(data&&data.t==='pos'){}else{if(dc.bufferedAmount<8*BIG)try{c.send(data)}catch(e){}}return}
+   if(pend[cid]&&data&&data.t==='state')delete pend[cid];
+   try{c.send(data)}catch(e){}},
+  close(){dead=true;try{peer&&peer.destroy()}catch(e){}}};
 }
 function playerTransport(code,cid,onMsg,onOpen,onLost,onErr,forceLocal){
  let out=[],alive=false,lastHeard=0;
@@ -598,7 +621,8 @@ function playerTransport(code,cid,onMsg,onOpen,onLost,onErr,forceLocal){
   return T}
  let peer=null,conn=null,fconn=null,timer=null,opened=false,openTimer=null,lostShown=false;const T={rtt:null};
  const raw=d=>{d.cid=cid;try{conn.send(d)}catch(e){out.push(d)}};
- const lost=()=>{alive=false;if(!lostShown){lostShown=true;onLost()}};
+ let lostSince=0;
+ const lost=()=>{alive=false;if(!lostSince)lostSince=Date.now();if(!lostShown){lostShown=true;onLost()}};
  const retry=ms=>{if(timer)return;timer=setTimeout(()=>{timer=null;connect()},ms??(1200+Math.random()*1500))};
  function newPeer(){try{peer&&peer.destroy()}catch(e){}peer=new Peer();
   peer.on('open',()=>connect());
@@ -612,7 +636,7 @@ function playerTransport(code,cid,onMsg,onOpen,onLost,onErr,forceLocal){
   try{conn&&conn.close()}catch(e){}
   const c=peer.connect(PREFIX+code,{reliable:true});conn=c;
   clearTimeout(openTimer);openTimer=setTimeout(()=>{if(conn===c&&!c.open){lost();retry(500)}},8000);
-  c.on('open',()=>{if(conn!==c)return;clearTimeout(openTimer);opened=true;alive=true;lostShown=false;lastHeard=Date.now();onOpen();flush(raw);openFast()});
+  c.on('open',()=>{if(conn!==c)return;clearTimeout(openTimer);opened=true;alive=true;lostShown=false;lostSince=0;lastHeard=Date.now();onOpen();flush(raw);openFast()});
   c.on('data',d=>{if(conn!==c)return;lastHeard=Date.now();if(d&&d.t==='pong'){if(d.ts)T.rtt=Date.now()-d.ts;return}onMsg(d)});
   c.on('close',()=>{if(conn!==c)return;lost();retry()});
   c.on('error',()=>{if(conn!==c)return;lost();retry()});
@@ -623,7 +647,9 @@ function playerTransport(code,cid,onMsg,onOpen,onLost,onErr,forceLocal){
    f.on('data',d=>{if(fconn!==f)return;lastHeard=Date.now();onMsg(d)});
    f.on('close',()=>{if(fconn===f)fconn=null});f.on('error',()=>{if(fconn===f)fconn=null})}catch(e){fconn=null}}
  function kick(){lost();clearTimeout(timer);timer=null;if(!peer||peer.destroyed||peer.disconnected)newPeer();else connect()}
- setInterval(()=>{if(alive&&conn&&conn.open)raw({t:'ping',ts:Date.now(),rtt:T.rtt});if(alive&&conn&&conn.open&&!(fconn&&fconn.open)&&Math.random()<.3)openFast();if(opened&&Date.now()-lastHeard>10000&&!timer)kick()},3000);
+ setInterval(()=>{if(alive&&conn&&conn.open)raw({t:'ping',ts:Date.now(),rtt:T.rtt});if(alive&&conn&&conn.open&&!(fconn&&fconn.open)&&Math.random()<.3)openFast();if(opened&&Date.now()-lastHeard>10000&&!timer)kick();
+  // 마지막 방법: 1분 넘게 못 붙으면 페이지를 새로 열어요 (내 정보는 기억하고 있어서 바로 이어서 해요)
+  if(opened&&lostSince&&Date.now()-lostSince>60000&&document.visibilityState==='visible'&&!SOLO&&!TUT){try{sessionStorage.setItem('ship-reload',String(Date.now()))}catch(e){}location.reload()}},3000);
  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){if(!(conn&&conn.open)||Date.now()-lastHeard>5000)kick();else raw({t:'hello',name:myName})}});
  window.addEventListener('online',()=>kick());
  newPeer();
@@ -640,6 +666,8 @@ document.addEventListener('pointerdown',keepAwake,{passive:true});
 /* ========= 첫 화면 ========= */
 function home(){
  const saved=hostSaved();
+ // 칠판이 실수로 새로고침되면(15분 안) 하던 게임을 바로 이어서 열어요
+ if(saved&&saved.phase!=='end'&&Date.now()-(saved.savedAt||0)<15*60000&&!Q.has('new')){startHost(saved);setTimeout(()=>toast('↩️ 하던 게임을 이어서 열었어요 (방 코드 '+saved.code+')','#0f766e'),800);return}
  app.innerHTML=`${floatersHTML()}<h1 class="logo" style="font-size:clamp(40px,8vw,96px);margin-top:30px">우리 반 우주선</h1><p class="sub" style="font-size:22px">우주선 안에 숨어 있는 <b style="color:#f87171">임포스터</b>를 찾아라!</p>
  <div class="card" style="max-width:560px;margin:24px auto">
   <button class="btn big purple" id="bHost">🖥️ 선생님 화면으로 시작 (전자칠판)</button>
@@ -663,9 +691,16 @@ function loadSet(){try{let raw=localStorage.getItem('ship-set-v4');if(!raw){cons
  return o}catch(e){return{...DEF}}}
 function saveSet(){if(SOLO_HOST)return;try{localStorage.setItem('ship-set-v4',JSON.stringify(S.set))}catch(e){}}
 function hostSaved(){try{const s=JSON.parse(localStorage.getItem('ship-host-v2')||'null');return s&&s.order&&s.order.length?s:null}catch(e){return null}}
-function saveHost(){if(SOLO_HOST)return;try{localStorage.setItem('ship-host-v2',JSON.stringify(S))}catch(e){}}
+let lastSave=0;function saveHost(force){if(SOLO_HOST||!S)return;const n=Date.now();if(!force&&n-lastSave<700){clearTimeout(saveHost.t);saveHost.t=setTimeout(()=>saveHost(true),720);return}lastSave=n;try{S.savedAt=n;localStorage.setItem('ship-host-v2',JSON.stringify(S))}catch(e){}}
+addEventListener('pagehide',()=>{if(S&&!SOLO_HOST&&HT)saveHost(true)});
 const rand4=()=>String(1000+Math.random()*9000|0);
 
+/* 칠판 시계: 다른 창(PPT 등)으로 넘어가도 브라우저가 게임 시계를 늦추지 못하게, 작은 일꾼(Worker)이 박자를 줘요 */
+function hostClock(){
+ let n=0;const beat=()=>{n++;try{posTick()}catch(e){console.error(e)}if(bcPend&&Date.now()-bcAt>40)flushBc();if(n%4===0){try{hostTick()}catch(e){console.error(e)}}};
+ try{const w=new Worker(URL.createObjectURL(new Blob(['setInterval(()=>postMessage(0),62)'],{type:'text/javascript'})));w.onmessage=beat;window._hostWorker=w}
+ catch(e){setInterval(beat,62)}
+}
 async function startHost(resume){
  S=resume||{code:rand4(),phase:'lobby',set:loadSet(),P:{},order:[],cid:{},pc:{},seq:0,pending:[],deaths:[],bodies:[],sab:null,sabCd:0,meeting:null,timerEnd:0,result:null,winner:null,reason:''};
  S.pending=[];keepAwake();
@@ -679,12 +714,12 @@ async function startHost(resume){
    if(e&&e.type==='unavailable-id'){
     try{HT.close()}catch(x){}
     if(!resume&&S.phase==='lobby'&&!S.order.length){S.code=rand4();open()}
-    else if(++tries<20){setStatus('이전 연결 정리 중… 잠시만요 ('+tries+')');setTimeout(open,3000)}
+    else if(++tries<60){setStatus('이전 연결 정리 중… 잠시만요 ('+tries+')');setTimeout(open,3000)}
    }else if(e&&(e.type==='network'||e.type==='server-error'||e.type==='socket-error')){setStatus('⚠️ 인터넷 연결이 불안정해요. 다시 연결하는 중…')}
   });
  };
  open();
- setInterval(hostTick,250);setInterval(posTick,60);
+ hostClock();
  window.onbeforeunload=()=>S.phase!=='lobby'&&S.phase!=='end'?'게임이 진행 중이에요':undefined;
 }
 let lastSiren=0;
@@ -735,7 +770,9 @@ function hostTick(){
 const P=pid=>S.P[pid];
 function sendTo(pid){const c=S.pc[pid];if(c&&HT)HT.send(c,viewFor(pid))}
 let bcT=null;
-function bcastAll(){if(bcT)return;bcT=setTimeout(()=>{bcT=null;if(!S)return;S.order.forEach(sendTo);saveHost()},25)}  // 짧은 순간 여러 번 불려도 한 번만 보내요
+let bcPend=false,bcAt=0;
+function flushBc(){clearTimeout(bcT);bcT=null;bcPend=false;if(!S)return;S.order.forEach(id=>{try{sendTo(id)}catch(e){console.error(e)}});saveHost()}
+function bcastAll(){if(bcPend)return;bcPend=true;bcAt=Date.now();bcT=setTimeout(flushBc,25)}  // 짧은 순간 여러 번 불려도 한 번만 보내요
 function crewTasks(){let d=0,t=0;S.order.forEach(id=>{const p=P(id);if(p&&p.role==='crew'){p.tasks.forEach(k=>{t++;if(k.done)d++})}});return{d,t}}
 function progress(){const{d,t}=crewTasks();return t?d/t:0}
 function alivePlayers(){return S.order.map(P).filter(p=>p&&p.alive)}
@@ -876,6 +913,7 @@ function hello(cid,name){
   S.order.push(pid);S.cid[cid]=pid;S.pc[pid]=cid;
   sendTo(pid);renderHost();saveHost();
  }else{
+  if(ex&&!ex.bot&&!ex.on){for(const k in S.cid)if(S.cid[k]===ex.pid)delete S.cid[k];S.cid[cid]=ex.pid;S.pc[ex.pid]=cid;ex.on=true;ex.seen=Date.now();S.pending=S.pending.filter(r=>r.pid!==ex.pid);sendTo(ex.pid);renderHost();saveHost();return}  // 끊겼던 친구가 다른 창으로 돌아오면 바로 이어서
   if(ex&&!ex.bot){if(!S.pending.find(r=>r.cid===cid))S.pending.push({cid,pid:ex.pid,name});HT.send(cid,{t:'wait',msg:'선생님 화면에서 [허용]을 눌러주면 다시 들어갈 수 있어요.'});renderHost()}
   else HT.send(cid,{t:'err',msg:'게임이 이미 시작됐어요. 다음 판에 같이 해요!'});
  }
@@ -1739,6 +1777,10 @@ addEventListener('keyup',e=>{keys[e.key]=false});
 function frozen(){return $('#ov').classList.contains('show')||($('#cine')&&$('#cine').style.display==='flex')}
 function frame(now){
  if(!G||!V||V.phase!=='play')return;
+ try{frameBody(now)}catch(e){console.error(e);try{const c=$('#cv');c&&c.getContext('2d').restore()}catch(x){}}  // 한 번 오류가 나도 게임은 계속 돌아가요
+ requestAnimationFrame(frame);
+}
+function frameBody(now){
  const dt=Math.min(.05,(now-G.last)/1000);G.last=now;
  const me=V.me,ghost=!me.alive;
  // 이동
@@ -1776,7 +1818,6 @@ function frame(now){
  if(!ghost){ctx.setTransform(1,0,0,1,0,0);const cx=cv.width/2,cy=cv.height/2,R=vis*sc;
   const g=ctx.createRadialGradient(cx,cy,R*.7,cx,cy,R);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,.9)');ctx.fillStyle=g;ctx.fillRect(0,0,cv.width,cv.height)}
  if(t-actT>180){actT=t;updateActs()}
- requestAnimationFrame(frame);
 }
 function unstick(){for(let r=4;r<400;r+=4)for(let a=0;a<16;a++){const x=ME.x+Math.cos(a/16*Math.PI*2)*r,y=ME.y+Math.sin(a/16*Math.PI*2)*r;if(walkable(x,y)){ME.x=x;ME.y=y;return}}}
 function scanRing(ctx,x,y){const t=performance.now()/1000;ctx.strokeStyle='#4ade80';ctx.lineWidth=5;for(let i=0;i<3;i++){const yy=y+20-((t*60+i*30)%90);ctx.globalAlpha=.8;ctx.beginPath();ctx.ellipse(x,yy,40,12,0,0,7);ctx.stroke()}ctx.globalAlpha=1}
@@ -2203,6 +2244,9 @@ function soloHostBoot(){
  hostReady=true;app.innerHTML='';
  setInterval(hostTick,250);setInterval(posTick,60);
 }
+/* 안전망: 한 친구의 메시지나 한 번의 계산 오류 때문에 게임 전체가 멈추지 않게 */
+['onPMsg','onHostMsg','hostTick','posTick','renderHost','renderPlayer','pTick','sendTo','tutTick','updateHUD','liveOv'].forEach(n=>{let f;try{f=eval(n)}catch(e){return}if(typeof f!=='function')return;const w=function(){try{return f.apply(this,arguments)}catch(e){console.error('['+n+']',e);(window._errs=window._errs||[]).push(n+': '+(e&&e.message))}};try{eval(n+'=w')}catch(e){}});
+window.addEventListener('unhandledrejection',e=>{try{e.preventDefault()}catch(x){}});
 (function boot(){
  if(SOLO_HOST){soloHostBoot();return}
  if(Q.get('join')){const c=ST.getItem('ship-code'),n=ST.getItem('ship-name');if(c===Q.get('join')&&n)startPlayer(c,n);else joinForm('');return}
