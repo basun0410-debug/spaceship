@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>우리 반 우주선 – 임포스터를 찾아라! (v25)</title>
+<title>우리 반 우주선 – 임포스터를 찾아라! (v26)</title>
 <style>
 @font-face{font-family:'GmarketSans';font-weight:300;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff') format('woff')}
 @font-face{font-family:'GmarketSans';font-weight:500;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff')}
@@ -844,10 +844,12 @@ function nextQuiz(all){if(!quizPool.length)quizPool=shuffle(all);return quizPool
 function genTasks(n){
  let quiz=parseQuiz(S.set.quiz);if(!quiz.length)quiz=parseQuiz(DEFAULT_QUIZ);
  const ids=Object.keys(STATIONS);
- // 퀴즈를 먼저, 미니게임은 1/3 정도 섞어요
- const qz=shuffle(ids.filter(k=>STATIONS[k].k==='quiz')),mg=shuffle(ids.filter(k=>STATIONS[k].k!=='quiz'));
- const nm=Math.min(mg.length,Math.round(n/3)),pickd=[...mg.slice(0,nm),...qz.slice(0,n-nm)];
- return shuffle(pickd).slice(0,n).map((st,i)=>{const S0=STATIONS[st];return{id:'t'+i,st,room:S0.room,k:S0.k,done:false,q:S0.k==='quiz'?nextQuiz(quiz):null}});
+ // 모든 임무 = 퀴즈를 풀고 → 기계 조작(미니게임)까지 해야 끝나요
+ const GAMES=['wires','swipe','download'];
+ const rooms=new Set(),pickd=[];
+ for(const st of shuffle(ids)){if(pickd.length>=n)break;if(rooms.has(STATIONS[st].room)&&ids.length-rooms.size>n)continue;rooms.add(STATIONS[st].room);pickd.push(st)}
+ for(const st of shuffle(ids)){if(pickd.length>=n)break;if(!pickd.includes(st))pickd.push(st)}
+ return pickd.map((st,i)=>{const S0=STATIONS[st];return{id:'t'+i,st,room:S0.room,k:S0.k,g:S0.k==='quiz'?GAMES[Math.random()*GAMES.length|0]:S0.k,done:false,q:nextQuiz(quiz)}});
 }
 function maxImp(n){return Math.max(1,Math.floor((n-1)/3))}
 function startGame(practice){
@@ -1016,7 +1018,7 @@ function botTick(){
   const t=b.tasks.find(x=>!x.done);
   if(!t){if(b.alive&&(!b.path||!b.path.length)){b.next=now+2000;botGo(b,STATIONS[pick(Object.keys(STATIONS))])}continue}
   const st=STATIONS[t.st];
-  if(near(b,st,45)){if(!b.work)b.work=now+(S.solo?6500+Math.random()*3000:2500);if(now>=b.work){b.work=0;t.done=true;if(checkWin())return;bcastAll();renderHost()}}
+  if(near(b,st,45)){if(!b.work)b.work=now+(S.solo?9000+Math.random()*4000:4000+Math.random()*3000);if(now>=b.work){b.work=0;t.done=true;if(checkWin())return;bcastAll();renderHost()}}
   else if(!b.path||!b.path.length)botGo(b,st);
  }
 }
@@ -1085,7 +1087,7 @@ function renderHost(){
   <details class="card"><summary>📖 게임 방법 (아이들에게 설명할 때)</summary>
    <ul style="font-size:18px;line-height:1.7">
     <li>모두 <b>🍽️ 식당</b>에서 출발해요. 패드 화면을 손가락으로 끌면 <b>조이스틱</b>처럼 내 캐릭터가 움직여요.</li>
-    <li><b>크루원</b>: 노란 <b>!</b> 기계 앞에 가서 [사용] → 수업 퀴즈·전선 잇기·카드 긁기·자료 내려받기. 모두 끝내면 승리!</li>
+    <li><b>크루원</b>: 노란 <b>!</b> 기계 앞에 가서 [사용] → 수업 퀴즈를 맞히면 전선 잇기·카드 긁기 같은 기계 고치기가 이어져요. 모두 끝내면 승리!</li>
     <li><b>임포스터</b>: 가까이 있는 크루원을 몰래 제거해요. 🕳️ 환풍구로 숨어서 이동하고, 💥 방해 공작도 할 수 있어요.</li>
     <li>쓰러진 친구를 발견하면 <b>💀 신고</b>! 식당의 <b>🔴 비상 버튼</b>으로도 회의를 열 수 있어요.</li>
     <li>☢️ 원자로 과열이 되면 <b>원자로의 손바닥 판 2곳을 두 명이 동시에</b> 눌러야 막을 수 있어요.</li>
@@ -1333,7 +1335,7 @@ const SLIDES=[
  {t:'🎮 패드 조작법 (영상)',video:1,b:()=>`<video class="sl-vid" src="howto.mp4?v=4" controls autoplay playsinline preload="auto" onplay="this.volume=.6"></video><p class="sl-txt">🤫 <b class="r">약속!</b> 내 패드 화면은 절대 친구에게 보여주지 않아요.</p>`},
  {t:'🗺️ 우리 우주선 지도',b:()=>`<canvas class="tmap"></canvas><p class="sl-txt">방 14개가 복도로 이어져 있어요. 모두 <b>🍽️ 식당</b>에서 출발해요. 식당 한가운데에는 <b class="r">🔴 비상 버튼</b>이 있어요.</p>`},
  {t:'👩‍🚀 크루원이 하는 일',b:()=>`<div class="sl-mach">${['quiz','wires','swipe','download','scan','trash','fuel'].map(k=>`<div><canvas class="mach" data-k="${k}"></canvas><div>${KIND[k].n}</div></div>`).join('')}</div>
-  <ul class="sl-ul"><li>노란 <b class="y">!</b> 가 있는 기계로 가서 <b>[사용]</b> → 임무를 해요. 수업 퀴즈도 있어요!</li><li>🩻 몸 스캔은 친구들 눈에 보여요 → <b>크루원이라는 증거</b></li><li>🏆 <b>모든 임무 완료</b> 또는 <b>임포스터를 모두 추방</b>하면 크루원 승리</li></ul>`},
+  <ul class="sl-ul"><li>노란 <b class="y">!</b> 가 있는 기계로 가서 <b>[사용]</b> → <b>① 수업 퀴즈</b>를 맞히고 <b>② 기계를 고치면</b> 임무 하나 끝!</li><li>🩻 몸 스캔은 친구들 눈에 보여요 → <b>크루원이라는 증거</b></li><li>🏆 <b>모든 임무 완료</b> 또는 <b>임포스터를 모두 추방</b>하면 크루원 승리</li></ul>`},
  {t:'😈 임포스터가 하는 일',b:()=>`<div class="sl-mach">${['sab_lights','sab_comms','sab_reactor','sab_o2','sab_seis'].map(k=>`<div><canvas class="mach" data-k="${k}"></canvas><div>${SABS[k.slice(4)].n}</div></div>`).join('')}</div>
   <ul class="sl-ul"><li>🔪 가까운 크루원을 <b>제거</b> (다시 쓰려면 기다려야 해요)</li><li>🕳️ <b>환풍구</b>로 몰래 이동 · 임무는 <b>하는 척만</b></li><li>💥 <b>방해 공작</b>: 전등·통신·🚪문 잠그기 / <b class="r">치명적</b> ☢️원자로·🫧산소·🌋지반 → <b class="r">0초가 되면 바로 임포스터 승리!</b></li><li>🏆 임포스터 수가 크루원 수와 같아지면 임포스터 승리</li></ul>`},
  {t:'📢 신고와 회의',b:()=>`<div class="sl-steps"><div>💀<b>시체 발견</b>가까이 가서 📢 신고</div><div>🔴<b>비상 버튼</b>식당에서 1인 1번</div><div>✋<b>손 들고 발표</b>선생님이 이름을 부르면 한 명씩</div><div>🗳️<b>투표</b>가장 많이 뽑힌 사람이 추방</div></div>
@@ -1751,7 +1753,7 @@ function updateHUD(){
  if(!$('#game'))return;
  const me=V.me,sb=V.sab,co=commsOut();
  $('#gbar').style.width=V.progress*100+'%';
- $('#tlist').innerHTML=co?'<div class="tl bad">📡 통신 방해! 임무 목록이 안 보여요</div>':`${me.role==='imp'?'<div class="tl imp">😈 가짜 임무 — 하는 척만!</div>':''}${!me.alive?'<div class="tl">👻 유령: 벽을 통과해 임무를 계속해요</div>':''}`+me.tasks.map(x=>`<div class="tl ${x.done?'done':''}">${KIND[x.k].e} ${ROOMS[x.room].n}: ${KIND[x.k].n}${x.q&&x.q.s?' ('+esc(x.q.s)+')':''}</div>`).join('');
+ $('#tlist').innerHTML=co?'<div class="tl bad">📡 통신 방해! 임무 목록이 안 보여요</div>':`${me.role==='imp'?'<div class="tl imp">😈 가짜 임무 — 하는 척만!</div>':''}${!me.alive?'<div class="tl">👻 유령: 벽을 통과해 임무를 계속해요</div>':''}`+me.tasks.map(x=>{const g=x.g||(x.k!=='quiz'?x.k:null);return`<div class="tl ${x.done?'done':''}">${ROOMS[x.room].n}: ${x.q?'📚'+(x.q.s?esc(x.q.s):'퀴즈'):''}${x.q&&g?' ➜ ':''}${g?KIND[g].e+' '+KIND[g].n:''}</div>`}).join('');
  $('#sabbar2').innerHTML=sb?`<div class="sabbar ${sb.type}" style="margin:0">${SABS[sb.type].e} ${SABS[sb.type].n}! ${sb.type==='reactor'?`<span id="psabt"></span> · ${sb.holders}/2`:''}${sb.done?`<span id="psabt"></span> · ${sb.done.filter(Boolean).length}/2`:''}${SABS[sb.type].timed?'<div style="font-size:13px;color:#fde68a">⚠️ 0초가 되면 즉시 임포스터 승리!</div>':''}<div style="font-size:14px;font-weight:700">${SABS[sb.type].how}</div></div>`:'';
  $('#acts').dataset.sig='';
 }
@@ -1790,25 +1792,35 @@ function liveOv(){ // 열려 있는 고치기 화면을 최신 상태로
 
 /* ========= 임무: 수업 퀴즈 ========= */
 function taskDone(t){if(!$('#ov').classList.contains('show'))return;closeOv();doneLocal.add(t.id);PT.send({t:'task',id:t.id});t.done=true;updateHUD();toast('✅ 임무 완료!');initAudio();beep(1046,.15,'sine',0,.15)}
+const quizOk=new Set();
+const tKey=t=>`${V.code}|${t.id}|${t.st}|${t.q?t.q.q:''}`;
+const tGame=t=>t.g||(t.k!=='quiz'?t.k:null);
+function stepBar(n){return`<div class="center" style="padding-top:12px;font-weight:900;font-size:16px"><span style="opacity:${n===1?1:.45}">① 📚 퀴즈 풀기</span> <span style="opacity:.5">➜</span> <span style="opacity:${n===2?1:.45}">② 🔧 기계 고치기</span></div>`}
+function openGame(box,t){const g=tGame(t),G={...t,k:g};
+ const b2=document.createElement('div');box.innerHTML=t.q?stepBar(2):'';box.appendChild(b2);
+ if(g==='wires')return mgWires(b2,G);
+ if(g==='swipe')return mgSwipe(b2,G);
+ if(g==='download')return mgDownload(b2,G);
+ if(g==='scan')return mgScan(b2,G);
+ if(g==='trash'||g==='fuel')return mgHold(b2,G);
+ taskDone(t)}
 function openTask(id){
  const t=V.me.tasks.find(x=>x.id===id);if(!t||t.done||V.phase!=='play')return;
  openOv(`<div id="mg"></div>`,'task'+id);
  const box=$('#mg');
- if(t.k==='wires')return mgWires(box,t);
- if(t.k==='swipe')return mgSwipe(box,t);
- if(t.k==='download')return mgDownload(box,t);
- if(t.k==='scan')return mgScan(box,t);
- if(t.k==='trash'||t.k==='fuel')return mgHold(box,t);
- const q=t.q||{q:'1+1은?',a:'2',w:['3','11']};
+ if(!t.q||quizOk.has(tKey(t)))return openGame(box,t);
+ const q=t.q;const hasG=!!tGame(t);
  const opts=shuffle([q.a,...q.w]);
- box.innerHTML=`<div class="center" style="padding-top:20px">${q.s?`<span class="subj">${esc(q.s)}</span>`:''}<p class="mgt">${esc(q.q)}</p></div>${opts.map(o=>`<button class="opt">${esc(o)}</button>`).join('')}
+ box.innerHTML=`${hasG?stepBar(1):''}<div class="center" style="padding-top:20px">${q.s?`<span class="subj">${esc(q.s)}</span>`:''}<p class="mgt">${esc(q.q)}</p></div>${opts.map(o=>`<button class="opt">${esc(o)}</button>`).join('')}
   <div class="center" style="margin-top:12px">${q.h?`<button class="btn amber sm" id="hintb">💡 힌트 보기</button>`:`<button class="btn amber sm" id="hintb">💡 힌트 (보기 하나 지우기)</button>`}<div id="hintt" class="hint" style="display:none"></div></div>`;
  const showHint=()=>{const hb=$('#hintb'),ht=$('#hintt');if(!hb||hb.disabled)return;hb.disabled=true;
   if(q.h){ht.textContent='💡 '+q.h;ht.style.display='block'}
   else{const bad=[...box.querySelectorAll('.opt')].filter((b,k)=>opts[k]!==q.a&&!b.disabled);if(bad.length){const b=bad[0];b.classList.add('bad');b.disabled=true}ht.textContent='💡 틀린 보기 하나를 지웠어요!';ht.style.display='block'}};
  $('#hintb').onclick=showHint;
  box.querySelectorAll('.opt').forEach((b,k)=>b.onclick=()=>{
-  if(opts[k]===q.a){b.style.background='#16a34a';setTimeout(()=>{if(box.isConnected)taskDone(t)},400)}
+  if(opts[k]===q.a){b.style.background='#16a34a';quizOk.add(tKey(t));box.querySelectorAll('.opt').forEach(x=>x.disabled=true);
+   if(hasG){toast('⭕ 정답! 이제 기계를 고쳐요 🔧','#16a34a');beep(880,.1,'sine',0,.12);setTimeout(()=>{if(box.isConnected)openGame(box,t)},700)}
+   else setTimeout(()=>{if(box.isConnected)taskDone(t)},400)}
   else{b.classList.add('bad');b.disabled=true;shake(b);toast('다시 생각해 봐요! 💡 힌트를 읽어 봐요','#dc2626');showHint()}
  });
 }
