@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>우리 반 우주선 – 임포스터를 찾아라! (v28)</title>
+<title>우리 반 우주선 – 임포스터를 찾아라! (v29)</title>
 <style>
 @font-face{font-family:'GmarketSans';font-weight:300;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff') format('woff')}
 @font-face{font-family:'GmarketSans';font-weight:500;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff')}
@@ -683,13 +683,13 @@ function home(){
    선생님(호스트)
    ===================================================== */
 let S=null,HT=null,hostReady=false;
-const DEF={imp:4,disc:90,vote:30,cd:20,tasks:5,meet:1,reveal:true,anon:true,sabCd:35,reactor:35,quiz:DEFAULT_QUIZ};
-function loadSet(){try{let raw=localStorage.getItem('ship-set-v4');if(!raw){const v3=localStorage.getItem('ship-set-v3');if(v3){const o3=JSON.parse(v3);delete o3.cd;delete o3.reactor;raw=JSON.stringify(o3)}else{const old=JSON.parse(localStorage.getItem('ship-set-v2')||'{}');raw=JSON.stringify(old.quiz?{quiz:old.quiz}:{})}}const o=Object.assign({},DEF,JSON.parse(raw||'{}'));
+const DEF={imp:4,disc:90,vote:30,cd:35,tasks:7,meet:1,reveal:true,anon:true,sabCd:50,reactor:45,quiz:DEFAULT_QUIZ};
+function loadSet(){try{let raw=localStorage.getItem('ship-set-v5');if(!raw){const v3=localStorage.getItem('ship-set-v4')||localStorage.getItem('ship-set-v3');if(v3){const o3=JSON.parse(v3);['cd','reactor','tasks','sabCd'].forEach(k=>delete o3[k]);raw=JSON.stringify(o3)}else{const old=JSON.parse(localStorage.getItem('ship-set-v2')||'{}');raw=JSON.stringify(old.quiz?{quiz:old.quiz}:{})}}const o=Object.assign({},DEF,JSON.parse(raw||'{}'));
  // 예전 기본 퀴즈(힌트 없음)를 그대로 저장해 둔 경우 힌트 있는 새 기본 퀴즈로 바꿔요
  const plain=DEFAULT_QUIZ.split('\n').map(l=>l.replace(/\s*\/\s*힌트:.*$/,'').trim());
  if(!/힌트\s*:/.test(o.quiz)&&o.quiz.split('\n').map(l=>l.trim()).filter(Boolean).every(l=>plain.includes(l)))o.quiz=DEFAULT_QUIZ;
  return o}catch(e){return{...DEF}}}
-function saveSet(){if(SOLO_HOST)return;try{localStorage.setItem('ship-set-v4',JSON.stringify(S.set))}catch(e){}}
+function saveSet(){if(SOLO_HOST)return;try{localStorage.setItem('ship-set-v5',JSON.stringify(S.set))}catch(e){}}
 function hostSaved(){try{const s=JSON.parse(localStorage.getItem('ship-host-v2')||'null');return s&&s.order&&s.order.length?s:null}catch(e){return null}}
 let lastSave=0;function saveHost(force){if(SOLO_HOST||!S)return;const n=Date.now();if(!force&&n-lastSave<700){clearTimeout(saveHost.t);saveHost.t=setTimeout(()=>saveHost(true),720);return}lastSave=n;try{S.savedAt=n;localStorage.setItem('ship-host-v2',JSON.stringify(S))}catch(e){}}
 addEventListener('pagehide',()=>{if(S&&!SOLO_HOST&&HT)saveHost(true)});
