@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>우리 반 우주선 – 임포스터를 찾아라! (v24)</title>
+<title>우리 반 우주선 – 임포스터를 찾아라! (v25)</title>
 <style>
 @font-face{font-family:'GmarketSans';font-weight:300;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff') format('woff')}
 @font-face{font-family:'GmarketSans';font-weight:500;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff')}
@@ -600,13 +600,13 @@ function home(){
    선생님(호스트)
    ===================================================== */
 let S=null,HT=null,hostReady=false;
-const DEF={imp:4,disc:90,vote:30,cd:25,tasks:5,meet:1,reveal:true,anon:true,sabCd:35,reactor:45,quiz:DEFAULT_QUIZ};
-function loadSet(){try{let raw=localStorage.getItem('ship-set-v3');if(!raw){const old=JSON.parse(localStorage.getItem('ship-set-v2')||'{}');raw=JSON.stringify(old.quiz?{quiz:old.quiz}:{})}const o=Object.assign({},DEF,JSON.parse(raw||'{}'));
+const DEF={imp:4,disc:90,vote:30,cd:20,tasks:5,meet:1,reveal:true,anon:true,sabCd:35,reactor:35,quiz:DEFAULT_QUIZ};
+function loadSet(){try{let raw=localStorage.getItem('ship-set-v4');if(!raw){const v3=localStorage.getItem('ship-set-v3');if(v3){const o3=JSON.parse(v3);delete o3.cd;delete o3.reactor;raw=JSON.stringify(o3)}else{const old=JSON.parse(localStorage.getItem('ship-set-v2')||'{}');raw=JSON.stringify(old.quiz?{quiz:old.quiz}:{})}}const o=Object.assign({},DEF,JSON.parse(raw||'{}'));
  // 예전 기본 퀴즈(힌트 없음)를 그대로 저장해 둔 경우 힌트 있는 새 기본 퀴즈로 바꿔요
  const plain=DEFAULT_QUIZ.split('\n').map(l=>l.replace(/\s*\/\s*힌트:.*$/,'').trim());
  if(!/힌트\s*:/.test(o.quiz)&&o.quiz.split('\n').map(l=>l.trim()).filter(Boolean).every(l=>plain.includes(l)))o.quiz=DEFAULT_QUIZ;
  return o}catch(e){return{...DEF}}}
-function saveSet(){if(SOLO_HOST)return;try{localStorage.setItem('ship-set-v3',JSON.stringify(S.set))}catch(e){}}
+function saveSet(){if(SOLO_HOST)return;try{localStorage.setItem('ship-set-v4',JSON.stringify(S.set))}catch(e){}}
 function hostSaved(){try{const s=JSON.parse(localStorage.getItem('ship-host-v2')||'null');return s&&s.order&&s.order.length?s:null}catch(e){return null}}
 function saveHost(){if(SOLO_HOST)return;try{localStorage.setItem('ship-host-v2',JSON.stringify(S))}catch(e){}}
 const rand4=()=>String(1000+Math.random()*9000|0);
@@ -1272,6 +1272,7 @@ function renderPlayer(){
  const head=`<div class="row" style="align-items:center;flex-wrap:nowrap"><div style="flex:0 0 auto">${av(me,52)}</div><div style="font-size:22px;font-weight:900">${esc(me.name)} ${ghost?'👻':''}</div><div style="flex:0 0 auto" class="small">${V.solo?'🤖 AI 연습 <b id="soloH"></b> <button class="btn gray sm" onclick="soloExit()">그만하기</button>':'방 '+esc(V.code)}</div></div>`;
  let h='';
  if(ph==='lobby'&&V.tut&&V.tut.mode==='slides'&&SLIDES[V.tut.i].video){app.innerHTML=`${head}<div class="card center" style="padding:50px 20px"><div style="font-size:110px">📺👀</div><h1 style="margin:10px 0">앞 칠판을 봐요!</h1><p style="font-size:24px">다 같이 조작법 영상을 볼 거예요</p></div>`;return}
+ if(ph==='lobby'&&(V.solo||SOLO)){app.innerHTML=`${head}<div class="card center" style="padding:60px 20px"><div style="font-size:100px">🤖</div><h1 style="margin:10px 0">AI 로봇들을 깨우는 중…</h1><p style="font-size:22px">잠깐만 기다려요!</p></div>`;return}
  if(ph==='lobby'&&V.tut&&V.tut.mode==='slides'){h=`${head}<div class="card center small" style="font-size:18px;opacity:1">👀 칠판을 보면서 함께 들어요</div>${slideHTML(V.tut.i,V.players,true)}`;app.innerHTML=h;paintSlide(app);return}
  if(ph==='lobby'&&V.tut&&V.tut.mode==='ai'&&!SOLO&&!TUT&&lastAutoAI!==V.tut.id){lastAutoAI=V.tut.id;const r=V.tut.role||'crew';
   app.innerHTML=`${head}<div class="card center"><div style="font-size:80px">🤖</div><h2>AI 연습 게임을 시작해요!</h2><p style="font-size:22px">이번에 나는 <b style="color:${r==='imp'?'#f87171':'#60a5fa'}">${r==='imp'?'😈 임포스터':'👩‍🚀 크루원'}</b>로 연습해요</p></div>`;
@@ -1329,7 +1330,7 @@ function roleText(){const me=V.me;if(me.role==='imp'){const mates=V.players.filt
 const SLIDES=[
  {t:'🚀 우리 반 우주선에 오신 걸 환영해요!',b:(ps)=>`<p class="sl-lead">우주선 안에 <b class="r">임포스터</b>가 몰래 숨어 있어요.<br><b class="bl">크루원</b>은 임무를 하며 임포스터를 찾아내고, 임포스터는 들키지 않게 방해해요.</p>
   <div class="line">${ps.slice(0,23).map(p=>`<div class="bob" style="animation-delay:-${(p.name.length%5)*.4}s">${av(p,ps.length>14?44:60)}<div>${esc(p.name)}</div></div>`).join('')}</div>`},
- {t:'🎮 패드 조작법 (영상)',video:1,b:()=>`<video class="sl-vid" src="howto.mp4?v=3" controls autoplay playsinline preload="auto" onplay="this.volume=.6"></video><p class="sl-txt">🤫 <b class="r">약속!</b> 내 패드 화면은 절대 친구에게 보여주지 않아요.</p>`},
+ {t:'🎮 패드 조작법 (영상)',video:1,b:()=>`<video class="sl-vid" src="howto.mp4?v=4" controls autoplay playsinline preload="auto" onplay="this.volume=.6"></video><p class="sl-txt">🤫 <b class="r">약속!</b> 내 패드 화면은 절대 친구에게 보여주지 않아요.</p>`},
  {t:'🗺️ 우리 우주선 지도',b:()=>`<canvas class="tmap"></canvas><p class="sl-txt">방 14개가 복도로 이어져 있어요. 모두 <b>🍽️ 식당</b>에서 출발해요. 식당 한가운데에는 <b class="r">🔴 비상 버튼</b>이 있어요.</p>`},
  {t:'👩‍🚀 크루원이 하는 일',b:()=>`<div class="sl-mach">${['quiz','wires','swipe','download','scan','trash','fuel'].map(k=>`<div><canvas class="mach" data-k="${k}"></canvas><div>${KIND[k].n}</div></div>`).join('')}</div>
   <ul class="sl-ul"><li>노란 <b class="y">!</b> 가 있는 기계로 가서 <b>[사용]</b> → 임무를 해요. 수업 퀴즈도 있어요!</li><li>🩻 몸 스캔은 친구들 눈에 보여요 → <b>크루원이라는 증거</b></li><li>🏆 <b>모든 임무 완료</b> 또는 <b>임포스터를 모두 추방</b>하면 크루원 승리</li></ul>`},
