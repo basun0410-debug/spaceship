@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>우리 반 우주선 – 임포스터를 찾아라! (v32)</title>
+<title>어몽어스 – 임포스터를 찾아라! (v33)</title>
 <style>
 @font-face{font-family:'GmarketSans';font-weight:300;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff') format('woff')}
 @font-face{font-family:'GmarketSans';font-weight:500;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff')}
@@ -669,7 +669,7 @@ function home(){
  const saved=hostSaved();
  // 칠판이 실수로 새로고침되면(15분 안) 하던 게임을 바로 이어서 열어요
  if(saved&&saved.phase!=='end'&&Date.now()-(saved.savedAt||0)<15*60000&&!Q.has('new')){startHost(saved);setTimeout(()=>toast('↩️ 하던 게임을 이어서 열었어요 (방 코드 '+saved.code+')','#0f766e'),800);return}
- app.innerHTML=`${floatersHTML()}<h1 class="logo" style="font-size:clamp(40px,8vw,96px);margin-top:30px">우리 반 우주선</h1><p class="sub" style="font-size:22px">우주선 안에 숨어 있는 <b style="color:#f87171">임포스터</b>를 찾아라!</p>
+ app.innerHTML=`${floatersHTML()}<h1 class="logo" style="font-size:clamp(40px,8vw,96px);margin-top:30px">어몽어스</h1><p class="sub" style="font-size:22px">우주선 안에 숨어 있는 <b style="color:#f87171">임포스터</b>를 찾아라!</p>
  <div class="card" style="max-width:560px;margin:24px auto">
   <button class="btn big purple" id="bHost">🖥️ 선생님 화면으로 시작 (전자칠판)</button>
   ${saved?`<p></p><button class="btn big amber" id="bResume">↩️ 진행 중이던 게임 이어하기 (방 코드 ${esc(saved.code)})</button>`:''}
@@ -710,7 +710,7 @@ async function startHost(resume){
  S.pending=[];keepAwake();
  Object.values(S.P).forEach(p=>p.on=!!p.bot);
  if(resume){if(S.timerEnd)S.timerEnd=Date.now()+15000;if(S.sab&&S.sab.end)S.sab.end=Math.max(S.sab.end,Date.now()+20000)}
- app.innerHTML=`<h1>🚀 우리 반 우주선</h1><p class="sub">연결 준비 중…</p>`;
+ app.innerHTML=`<h1>🚀 어몽어스</h1><p class="sub">연결 준비 중…</p>`;
  try{await needPeer()}catch(e){app.innerHTML=`<div class="card center"><h2>⚠️ 인터넷 연결을 확인해주세요</h2><p>게임 연결 모듈을 불러오지 못했어요.</p></div>`;return}
  let tries=0;
  const open=()=>{
@@ -1162,7 +1162,7 @@ function renderHost(){
  let h='';
  if(ph==='lobby'){
   const st=S.set;
-  h=`<div id="lobby">${floatersHTML()}<h1 class="logo">우리 반 우주선 <span style="font-size:.55em">— 임포스터를 찾아라!</span></h1>
+  h=`<div id="lobby">${floatersHTML()}<h1 class="logo">어몽어스 <span style="font-size:.55em">— 임포스터를 찾아라!</span></h1>
   <div class="row" style="align-items:stretch">
    <div class="card center" style="flex:1">
     <div style="font-size:22px;font-weight:800">패드로 접속해서 방 코드를 입력하세요</div>
@@ -1298,7 +1298,7 @@ let doneLocal=new Set(),myVote=null,moving=false,padStg="";
 let V=null,PT=null,lastSig='',prevAlive=null,prevPhase=null,prevSab=null,prevBodies=0,notes={},myCode='',myName='',joined=false,ovKind='';
 function joinForm(err,code){
  const c=code||Q.get('join')||'';
- app.innerHTML=`<h1>🚀 우리 반 우주선</h1><div class="card" style="max-width:520px;margin:20px auto">
+ app.innerHTML=`<h1>🚀 어몽어스</h1><div class="card" style="max-width:520px;margin:20px auto">
   <h2>📱 참가하기</h2>
   ${err?`<p style="color:#fca5a5;font-weight:800;font-size:19px">${esc(err)}</p>`:''}
   <label>방 코드 (칠판에 있는 숫자 4개)</label><input id="jc" inputmode="numeric" maxlength="4" value="${esc(c)}" placeholder="예: 1234">
@@ -1306,7 +1306,7 @@ function joinForm(err,code){
   <p></p><button class="btn big green" id="jb">🚀 우주선 타기</button></div>`;
  $('#jb').onclick=()=>{const code=$('#jc').value.trim(),name=$('#jn').value.trim();if(!/^\d{4}$/.test(code))return toast('방 코드 4자리를 입력하세요','#dc2626');if(!name)return toast('이름을 입력하세요','#dc2626');startPlayer(code,name)};
 }
-function msgScreen(t,sub){app.innerHTML=`<h1>🚀 우리 반 우주선</h1><div class="card center" style="max-width:560px;margin:20px auto"><h2>${t}</h2>${sub?`<p style="font-size:19px">${sub}</p>`:''}</div>`}
+function msgScreen(t,sub){app.innerHTML=`<h1>🚀 어몽어스</h1><div class="card center" style="max-width:560px;margin:20px auto"><h2>${t}</h2>${sub?`<p style="font-size:19px">${sub}</p>`:''}</div>`}
 async function startPlayer(code,name){
  myCode=code;myName=name;
  let cid=ST.getItem('ship-cid-'+code);if(!cid){cid=rid();ST.setItem('ship-cid-'+code,cid)}
@@ -1427,7 +1427,7 @@ function renderPlayer(){
 function roleText(){const me=V.me;if(me.role==='imp'){const mates=V.players.filter(p=>p.imp&&p.pid!==me.pid).map(p=>p.name);return`😈 당신은 임포스터!<div style="font-size:17px;font-weight:700;margin-top:6px">${mates.length?'동료 임포스터: '+mates.map(esc).join(', '):'혼자 활동하는 임포스터예요'}<br>같은 방의 크루원을 몰래 제거하고, 퀴즈는 푸는 척만 하세요.</div>`}return`🧑‍🚀 당신은 크루원!<div style="font-size:17px;font-weight:700;margin-top:6px">❗ 방을 돌며 퀴즈를 풀고, 임포스터를 찾아내세요!</div>`}
 /* ===== 튜토리얼 설명 슬라이드 (칠판·패드 공용) ===== */
 const SLIDES=[
- {t:'🚀 우리 반 우주선에 오신 걸 환영해요!',b:(ps)=>`<p class="sl-lead">우주선 안에 <b class="r">임포스터</b>가 몰래 숨어 있어요.<br><b class="bl">크루원</b>은 임무를 하며 임포스터를 찾아내고, 임포스터는 들키지 않게 방해해요.</p>
+ {t:'🚀 어몽어스에 오신 걸 환영해요!',b:(ps)=>`<p class="sl-lead">우주선 안에 <b class="r">임포스터</b>가 몰래 숨어 있어요.<br><b class="bl">크루원</b>은 임무를 하며 임포스터를 찾아내고, 임포스터는 들키지 않게 방해해요.</p>
   <div class="line">${ps.slice(0,23).map(p=>`<div class="bob" style="animation-delay:-${(p.name.length%5)*.4}s">${av(p,ps.length>14?44:60)}<div>${esc(p.name)}</div></div>`).join('')}</div>`},
  {t:'🎮 패드 조작법 (영상)',video:1,b:()=>`<video class="sl-vid" src="howto.mp4?v=4" controls autoplay playsinline preload="auto" onplay="this.volume=.6"></video><p class="sl-txt">🤫 <b class="r">약속!</b> 내 패드 화면은 절대 친구에게 보여주지 않아요.</p>`},
  {t:'🗺️ 우리 우주선 지도',b:()=>`<canvas class="tmap"></canvas><p class="sl-txt">방 14개가 복도로 이어져 있어요. 모두 <b>🍽️ 식당</b>에서 출발해요. 식당 한가운데에는 <b class="r">🔴 비상 버튼</b>이 있어요.</p>`},
