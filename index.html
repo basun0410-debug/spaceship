@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>어몽어스 – 임포스터를 찾아라! (v33)</title>
+<title>어몽어스 – 임포스터를 찾아라! (v34)</title>
 <style>
 @font-face{font-family:'GmarketSans';font-weight:300;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff') format('woff')}
 @font-face{font-family:'GmarketSans';font-weight:500;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff')}
@@ -304,6 +304,53 @@ body.ingame{overflow:hidden;touch-action:none}
 .pot{text-align:center;padding:12px 4px;border-radius:16px;background:#14532d55;border:3px solid #166534;touch-action:none;user-select:none;cursor:pointer}
 .pot .pl{font-size:52px}.pot .cup{font-size:40px;margin-top:-10px}.pot .pb{height:10px;border-radius:5px;background:#1e293b;margin:6px 8px;overflow:hidden}.pot .pb i{display:block;height:100%;width:0;background:#38bdf8}
 .pot.wet{background:#0c4a6e88}.pot.done{border-color:#4ade80;background:#16653488}
+body.lt-on #musbtn{opacity:.35}
+.lt{position:fixed;inset:0;overflow:hidden;z-index:40;background:radial-gradient(ellipse at 50% 110%,#7c2d5f 0,#3b1a5c 32%,#141236 62%,#05061a 100%);display:flex;align-items:center;justify-content:center}
+.lt.pad{overflow-y:auto;align-items:flex-start;padding:18px 0 40px}
+.lt-star{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;box-shadow:0 0 6px #fff;animation:ltTw 3.2s ease-in-out infinite}
+@keyframes ltTw{0%,100%{opacity:.25}50%{opacity:1}}
+.lt-heart{position:absolute;bottom:-40px;font-style:normal;animation:ltUp linear infinite;opacity:.85;pointer-events:none}
+@keyframes ltUp{0%{transform:translateY(0) rotate(-10deg)}50%{transform:translateY(-55vh) translateX(18px) rotate(10deg)}100%{transform:translateY(-115vh) rotate(-8deg);opacity:0}}
+.lt-crews{position:absolute;inset:0;pointer-events:none}
+.lt-crew{position:absolute;text-align:center;font-weight:800;color:#fde68a;font-size:14px;opacity:0;animation:ltBob ease-in-out infinite alternate,ltIn .9s ease-out forwards}
+.lt.board .lt-crew{font-size:18px}.lt-crew span{display:block;text-shadow:0 2px 0 #000}
+.lt-crew.l{left:1.2%}.lt-crew.r{right:1.2%}
+.lt.pad .lt-crew{display:none}
+@keyframes ltBob{from{transform:translateY(-6px) rotate(-6deg)}to{transform:translateY(6px) rotate(6deg)}}
+@keyframes ltIn{to{opacity:1}}
+/* 봉투 */
+.lt-env{position:absolute;left:50%;top:50%;width:min(60vw,440px);aspect-ratio:1.55;transform:translate(-50%,-50%);animation:ltEnvOut .8s 2.6s ease-in forwards;z-index:3}
+.lt-env-back{position:absolute;inset:0;background:#f9a8d4;border-radius:12px;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.lt-env-paper{position:absolute;left:8%;right:8%;top:8%;bottom:6%;background:#fffaf0;border-radius:6px;z-index:2;box-shadow:0 0 0 3px #fbcfe8 inset;animation:ltPeek 1s 1.2s ease-out forwards}
+.lt-env-paper::before{content:'';position:absolute;left:12%;right:12%;top:16%;height:6px;border-radius:3px;background:#f9a8d4;box-shadow:0 14px 0 #fbcfe8,0 28px 0 #fbcfe8}
+@keyframes ltPeek{to{transform:translateY(-62%)}}
+.lt-env-front{position:absolute;inset:0;border-radius:12px;background:linear-gradient(to top right,#f472b6 49.6%,transparent 50%) left/50.5% 100% no-repeat,linear-gradient(to top left,#ec4899 49.6%,transparent 50%) right/50.5% 100% no-repeat;z-index:3}
+.lt-env-flap{position:absolute;left:0;right:0;top:0;height:62%;background:linear-gradient(to bottom,#db2777,#ec4899);clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;z-index:4;animation:ltFlap .9s .6s ease-in-out forwards}
+.lt-seal{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);font-size:min(12vw,84px);z-index:5;animation:ltSeal .5s .4s ease-in forwards}
+@keyframes ltSeal{to{transform:translate(-50%,-50%) scale(0);opacity:0}}
+@keyframes ltFlap{to{transform:rotateX(180deg);z-index:1}}
+@keyframes ltEnvOut{to{transform:translate(-50%,40%) scale(.85);opacity:0}}
+/* 편지지 */
+.lt-paper{position:relative;z-index:4;width:min(94vw,1500px);height:min(92vh,1000px);background:#fffaf0;border-radius:18px;box-shadow:0 30px 80px rgba(0,0,0,.55),inset 0 0 0 10px #fff,inset 0 0 0 12px #fbcfe8;
+ background-image:radial-gradient(circle at 0 0,#fde2e4 0,transparent 30%),radial-gradient(circle at 100% 100%,#e0f2fe 0,transparent 32%);
+ transform:translateY(30vh) scale(.35);opacity:0;animation:ltPaper 1.3s 1.6s cubic-bezier(.2,1.2,.3,1) forwards;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
+.lt.pad .lt-paper{height:auto;margin:0 auto;width:92vw;display:block}
+@keyframes ltPaper{60%{opacity:1}to{transform:none;opacity:1}}
+.lt-tape{position:absolute;width:140px;height:34px;background:rgba(253,224,71,.65);top:-6px;box-shadow:0 2px 4px rgba(0,0,0,.08)}
+.lt-tape.a{left:40px;transform:rotate(-8deg)}.lt-tape.b{right:40px;transform:rotate(7deg);background:rgba(147,197,253,.65)}
+.lt-in{position:relative;box-sizing:border-box;padding:3.2% 6% 2.6%;color:#3f2a22;font-family:'Gowun Batang','Nanum Myeongjo',serif;font-size:28px;line-height:1.85;overflow:hidden;word-break:keep-all}
+.lt.pad .lt-in{font-size:clamp(17px,2.6vw,22px);height:auto;padding:30px 22px 26px}
+.lt-to{font-family:'Nanum Pen Script','GmarketSans',cursive;font-weight:400;font-size:2.15em;color:#be185d;margin:0 0 .35em;line-height:1.2;text-align:center;opacity:0;animation:ltFade 1s 2.8s ease-out forwards}
+.lt-p{margin:0 0 .55em;text-indent:.6em;opacity:0;transform:translateY(10px);animation:ltFade .9s ease-out forwards}
+.lt-p:first-of-type{text-indent:0;font-weight:700}
+.lt-p:last-of-type{font-weight:700;color:#be185d}
+.lt-sign{text-align:right;margin-top:.6em;opacity:0;animation:ltFade 1s ease-out forwards;font-size:.95em}
+.lt-from{font-family:'Nanum Pen Script','GmarketSans',cursive;font-size:1.7em;color:#9d174d;line-height:1.3}
+.lt-hrt{display:inline-block;color:#ec4899;animation:ltBeat 1.1s ease-in-out infinite}
+@keyframes ltBeat{0%,100%{transform:scale(1)}30%{transform:scale(1.35)}}
+@keyframes ltFade{to{opacity:1;transform:none}}
+.lt-back{position:fixed;right:14px;bottom:14px;z-index:60;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:20px;cursor:pointer;opacity:.4}
+.lt-back:hover{opacity:1}
 </style>
 </head>
 <body>
@@ -540,6 +587,10 @@ function mtone(m,t,d,type,v,atk){const g=MUS.g;if(!AC||!g)return;try{const o=AC.
 function mnoise(t,d,v,f){const g=MUS.g;if(!AC||!g)return;try{const n=Math.floor(AC.sampleRate*d),b=AC.createBuffer(1,n,AC.sampleRate),a=b.getChannelData(0);for(let i=0;i<n;i++)a[i]=(Math.random()*2-1)*(1-i/n);const sr=AC.createBufferSource();sr.buffer=b;const fl=AC.createBiquadFilter();fl.type='highpass';fl.frequency.value=f||6000;const e=AC.createGain();e.gain.value=v;sr.connect(fl);fl.connect(e);e.connect(g);sr.start(t)}catch(x){}}
 /* 곡: 박자(bpm), 화음 진행(마디마다), 16칸 패턴 */
 const TRACKS={
+ letter:{bpm:72,ch:[[60,64,67],[55,59,62],[57,60,64],[53,57,60]],play(st,t,c,dur){const k=st%16;   // 편지: 오르골처럼 잔잔하게
+  if(k%2===0)mtone(c[[0,1,2,1,0,2,1,2][(k>>1)%8]]+24,t,dur*3,'sine',.06,.5);
+  if(k===0){mtone(c[0]-12,t,dur*16,'sine',.08,.3);mtone(c[2]+12,t,dur*12,'triangle',.025,.5)}
+  if(k===12)mtone(c[0]+36,t,dur*4,'sine',.03,.4)}},
  lobby:{bpm:96,ch:[[57,60,64],[53,57,60],[48,52,55],[55,59,62]],play(st,t,c,dur){const k=st%16,root=c[0];   // 대기실: 느긋한 우주 아르페지오
   if(k===0)c.forEach(n=>mtone(n+12,t,dur*16,'sine',.05,.4));
   mtone(c[[0,1,2,1][k%4]]+24+(k>=8&&k%4===3?12:0),t,dur*1.6,'triangle',.07);
@@ -759,7 +810,7 @@ function hostTick(){
  if(S.tut&&S.tut.mode==='ai'){const e=$('#tutel');if(e){const el=Math.floor((Date.now()-S.tut.start)/1000);e.textContent=`${Math.floor(el/60)}:${String(el%60).padStart(2,'0')}`}}
  if(S.solo&&S.soloEnd&&S.phase!=='end'&&S.phase!=='lobby'&&Date.now()>=S.soloEnd){S.soloEnd=0;endGame('crew','⏱ 3분이 지났어요! 임포스터가 시간 안에 이기지 못했어요');return}
  if(S.phase==='play'&&S.practice){const pt=$('#prt');const l=Math.max(0,Math.ceil((S.practiceEnd-Date.now())/1000));if(pt)pt.textContent=`${Math.floor(l/60)}:${String(l%60).padStart(2,'0')}`;if(l<=0){endGame('crew','🎓 연습 시간이 끝났어요!');return}}
- musSet(S.phase==='lobby'&&S.tut&&S.tut.mode==='slides'&&SLIDES[S.tut.i].video?'':S.phase==='lobby'?'lobby':S.phase==='play'?(S.sab&&SABS[S.sab.type].timed?'crit':'play'):(S.phase==='meeting'||S.phase==='vote')?'meet':'');
+ musSet(S.letter?'letter':S.phase==='lobby'&&S.tut&&S.tut.mode==='slides'&&SLIDES[S.tut.i].video?'':S.phase==='lobby'?'lobby':S.phase==='play'?(S.sab&&SABS[S.sab.type].timed?'crit':'play'):(S.phase==='meeting'||S.phase==='vote')?'meet':'');
  if(S.phase==='play'&&S.sab&&SABS[S.sab.type].timed){
   if(Date.now()-lastSiren>1100){lastSiren=Date.now();SND.siren()}
   if(Date.now()>=S.sab.end){const ty=S.sab.type;S.sabWin=ty;endGame('imp',SAB_LOSE[ty]+' (제한 시간 0초 → 임포스터 즉시 승리)');sabLoseCine(ty);return}
@@ -792,7 +843,7 @@ function viewFor(pid){
   sabCdLeft:Math.max(0,(S.sabCd||0)-Date.now()),doorCdLeft:Math.max(0,(S.doorCd||0)-Date.now()),
   doors:Object.fromEntries(Object.entries(S.doors||{}).filter(([k,v])=>v>Date.now()).map(([k,v])=>[k,v-Date.now()])),
   players:S.order.map(id=>{const q=P(id);return{pid:id,name:q.name,color:q.color,look:q.look,alive:seeAll||id===pid?q.alive:(q.alive||!q.pub),imp:(imp||S.phase==='end')&&q.role==='imp'}}),
-  tut:S.tut&&S.phase==='lobby'?{mode:S.tut.mode,i:S.tut.i||0,id:S.tut.id,role:S.tut.roles?S.tut.roles[pid]:null}:null,practice:S.practice?1:0,solo:S.solo?1:0,soloLeft:S.solo&&S.soloEnd?Math.max(0,S.soloEnd-Date.now()):0,aiChat:S.solo&&(S.phase==='meeting'||S.phase==='vote')?S.aiChat||[]:[],meeting:S.meeting,result:S.result,winner:S.winner,sabWin:S.phase==='end'?S.sabWin||null:null,reason:S.reason,
+  tut:S.tut&&S.phase==='lobby'?{mode:S.tut.mode,i:S.tut.i||0,id:S.tut.id,role:S.tut.roles?S.tut.roles[pid]:null}:null,practice:S.practice?1:0,letter:S.letter?1:0,solo:S.solo?1:0,soloLeft:S.solo&&S.soloEnd?Math.max(0,S.soloEnd-Date.now()):0,aiChat:S.solo&&(S.phase==='meeting'||S.phase==='vote')?S.aiChat||[]:[],meeting:S.meeting,result:S.result,winner:S.winner,sabWin:S.phase==='end'?S.sabWin||null:null,reason:S.reason,
   voted:S.phase==='vote'?alivePlayers().filter(q=>q.vote!=null).length:0,
   aliveN:alivePlayers().length,impN:S.impN||0,usedColors:S.order.map(id=>P(id).color)};
  return v;
@@ -1043,7 +1094,7 @@ function checkWin(){
 }
 function endGame(w,reason){if(w!=='imp'||!/즉시/.test(reason))S.sabWin=null;S.doors={};CLOSED={};S.phase='end';S.winner=w;S.reason=reason;S.timerEnd=0;S.sab=null;S.bodies=[];S.deaths.forEach(id=>{if(P(id))P(id).pub=true});S.deaths=[];w==='crew'?SND.win():SND.lose();bcastAll();renderHost();return true}
 function sabLoseCine(ty){cine('imp',`<div class="pop" style="font-size:clamp(90px,16vw,200px)">${SABS[ty].e}💥</div><div class="big" style="color:#f87171">${esc(SABS[ty].n)}!</div><div class="mid">제한 시간이 0초가 되었어요 — 임포스터 승리</div>`,3500)}
-function toLobby(){
+function toLobby(){if(S)S.letter=false;
  S.order.forEach(id=>Object.assign(P(id),{role:'crew',alive:true,pub:true,tasks:[],meet:0,cd:0,vote:null,vent:null}));
  Object.assign(S,{practice:false,phase:'lobby',deaths:[],bodies:[],sab:null,meeting:null,result:null,winner:null,reason:'',timerEnd:0});
  bcastAll();renderHost();
@@ -1153,6 +1204,8 @@ function renderHost(){
  if(SOLO_HOST)return;
  musBtn();if(AC)musInit();if(!window._musHook){window._musHook=1;document.addEventListener('pointerdown',()=>{initAudio();musInit()},{passive:true})}
  if(!S)return;
+ if(S.letter){letterShow(true,S.order.map(P).filter(p=>!p.bot));return}
+ if($('#letterv')){document.body.classList.remove('lt-on');app.innerHTML=''}
  const ph=S.phase;
  if(ph==='lobby'&&S.tut){const tv=$('#tutv');const key=S.tut.mode==='slides'?'s'+S.tut.i:'ai';if(tv&&tv.dataset.k===key){if(key==='ai'){$('#aigrid').innerHTML=aiGridHTML();$('#tutdone').textContent=S.order.map(P).filter(p=>!p.bot&&p.aiN>0).length}return}app.innerHTML=tutHostHTML();paintSlide(app);const vd=app.querySelector('.sl-vid');if(vd){vd.volume=.6;const pr=vd.play();pr&&pr.catch(()=>{vd.muted=true;vd.play().catch(()=>{});toast('🔊 영상 아래 스피커 버튼을 눌러 소리를 켜 주세요','#475569')})}return}
  if(ph==='lobby'&&$('#lobby')){$('#plistBox').innerHTML=plistHTML({kick:true});$('#pcount').textContent=S.order.length;$('#impHint').textContent=impHint();$('#tutCount')&&($('#tutCount').textContent=tutCount());$('#pendBox').innerHTML=pendHTML();return}
@@ -1265,7 +1318,8 @@ function renderHost(){
    <div style="font-size:clamp(22px,3vw,36px);font-weight:800;margin-top:8px">${esc(S.reason)}</div>
    <div class="line">${team.map(p=>`<div class="bob" style="animation-delay:-${Math.random()*2}s">${av(p,sz,p.alive?null:{ghost:true})}<div>${esc(p.name)}</div></div>`).join('')}</div>
    ${cw?`<div style="font-size:24px;margin-top:14px">이번 판의 임포스터: ${S.order.map(P).filter(p=>p.role==='imp').map(p=>`<b style="color:#f87171">${esc(p.name)}</b>`).join(', ')}</div>`:''}
-   <div class="row" style="margin-top:24px;max-width:900px;width:100%"><button class="btn big green" onclick="toLobby()">🔁 같은 멤버로 한 판 더</button><button class="btn big gray" onclick="newRoom()">🆕 새 방 만들기</button></div></div>`;
+   <div class="row" style="margin-top:24px;max-width:900px;width:100%"><button class="btn big green" onclick="toLobby()">🔁 같은 멤버로 한 판 더</button><button class="btn big gray" onclick="newRoom()">🆕 새 방 만들기</button></div>
+   <button class="btn big" style="margin-top:14px;max-width:900px;width:100%;background:linear-gradient(90deg,#db2777,#9333ea);font-size:clamp(22px,2.4vw,32px)" onclick="finale()">💌 완전히 종료</button></div>`;
  }
  app.innerHTML=h+`<div id="pendBox2">${pendHTML()}</div>`;
  hostTick();
@@ -1363,6 +1417,8 @@ function pTick(){
 }
 function commsOut(){return V.sab&&V.sab.type==='comms'&&V.me.role==='crew'&&V.me.alive}
 function renderPlayer(){
+ if(V.letter){letterShow(false,V.players);return}
+ if($('#letterv')){document.body.classList.remove('lt-on');lastSig=''}
  if(V.phase==='play'){ensureGame();updateHUD();lastSig='';return}
  leaveGame();
  const sig=JSON.stringify([V.tut,V.phase,V.me,V.sab&&[V.sab.type,V.sab.holders],V.players,V.meeting,V.result,V.winner,V.voted].map(x=>x&&x.cdLeft!==undefined?{...x,cdLeft:0,x:0,y:0,tpN:0}:x));
@@ -2189,6 +2245,50 @@ function mgWater(box,t){
   p.addEventListener('pointerdown',e=>{if(p.classList.contains('done'))return;on=true;last=performance.now();p.classList.add('wet');p.setPointerCapture(e.pointerId);requestAnimationFrame(loop)});
   const up=()=>{if(p.classList.contains('done'))return;on=false;p.classList.remove('wet')};p.addEventListener('pointerup',up);p.addEventListener('pointercancel',up)});
 }
+/* ========= 💌 마지막 편지 ========= */
+const LETTER={
+ to:'사랑하는 5학년 5반 친구들에게',
+ body:[
+  '안녕, 얘들아! 김경민 선생님이야.',
+  '11월 2일에 처음 교실 문을 열고 들어왔을 때, 선생님은 엄청 떨렸어. "아이들이 나를 좋아해 줄까?", "수업을 잘할 수 있을까?" 하는 걱정이 가득했거든. 그런데 너희가 반갑게 인사해 주고, 쉬는 시간마다 먼저 다가와 말을 걸어줘서 금방 마음이 편해졌어!',
+  '2주라는 시간이 이렇게 짧을 줄 몰랐어. 같이 수업을 하며 웃었던 일, 점심시간에 나눈 이야기까지, 하나하나 다 선생님 마음속에 소중하게 남아 있어. 특히 마지막 수업 날 너희가 열심히 참여해 준 덕분에 선생님이 큰 힘을 얻었단다.',
+  '선생님은 너희 덕분에 \'좋은 선생님이 되고 싶다\'는 꿈이 더 커졌어.',
+  '앞으로 남은 5학년 생활도 지금처럼 서로 아껴주고, 담임 선생님 말씀 잘 듣고, 무엇보다 건강하고 즐겁게 지내길 바라. 언젠가 멋진 선생님이 되어서 다시 만날 수 있으면 좋겠다.',
+  '그동안 정말 고마웠어. 사랑해!'],
+ date:'2026년 11월 13일',
+ from:'너희를 늘 응원하는 김경민 선생님이'};
+let letterFontAsked=false;
+function letterFont(){if(letterFontAsked)return;letterFontAsked=true;try{const l=document.createElement('link');l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Nanum+Pen+Script&display=swap';document.head.appendChild(l)}catch(e){}}
+function letterHTML(board,people){
+ letterFont();
+ const ppl=(people||[]).slice(0,30);
+ const per=Math.max(1,Math.ceil(ppl.length/2)),slot=(innerHeight||900)/per,sz=Math.round(Math.max(34,Math.min(74,slot-30)));   // 양옆에 고르게 세워요
+ const crew=ppl.map((p,i)=>{const side=i%2,k=i>>1,n=side?Math.floor(ppl.length/2):per,y=(k+.5)/Math.max(1,n)*100,d=2.4+(i%5)*.35;return`<div class="lt-crew ${side?'r':'l'}" style="top:calc(${y}% - ${sz*.6}px);animation-delay:${-i*.7}s,${2.6+i*.08}s;animation-duration:${d}s,.9s">${av(p,sz)}<span>${esc(p.name)}</span></div>`}).join('');
+ const hearts=Array.from({length:board?22:12},(_,i)=>`<i class="lt-heart" style="left:${(i*47)%100}%;animation-delay:${-(i*1.3)%11}s;animation-duration:${9+(i%5)*2}s;font-size:${16+(i*7)%22}px">${['💗','💛','💙','💜','🤍','⭐'][i%6]}</i>`).join('');
+ const stars=Array.from({length:board?70:36},(_,i)=>`<b class="lt-star" style="left:${(i*61)%100}%;top:${(i*37)%100}%;animation-delay:${-(i%7)*.6}s"></b>`).join('');
+ return`<div id="letterv" class="lt ${board?'board':'pad'}">${stars}${hearts}<div class="lt-crews">${crew}</div>
+  <div class="lt-env" aria-hidden="true"><div class="lt-env-back"></div><div class="lt-env-flap"></div><div class="lt-env-paper"></div><div class="lt-env-front"></div><div class="lt-seal">💌</div></div>
+  <div class="lt-paper" id="ltPaper"><div class="lt-tape a"></div><div class="lt-tape b"></div>
+   <div class="lt-in" id="ltIn">
+    <h1 class="lt-to">${esc(LETTER.to)}</h1>
+    ${LETTER.body.map((t,i)=>`<p class="lt-p" style="animation-delay:${3.2+i*1.1}s">${esc(t)}</p>`).join('')}
+    <div class="lt-sign" style="animation-delay:${3.4+LETTER.body.length*1.1}s"><div>${esc(LETTER.date)}</div><div class="lt-from">${esc(LETTER.from)} <span class="lt-hrt">♥</span></div></div>
+   </div></div>
+  ${board?'<button class="lt-back" onclick="letterOff()" title="편지 닫기">↩</button>':''}</div>`;
+}
+// 칠판은 한 화면에 다 보이게 글자 크기를 맞춰요 (패드는 스크롤)
+function fitLetter(){const pp=$('#ltPaper'),inn=$('#ltIn'),lv=$('#letterv');if(!pp||!inn||!lv||!lv.classList.contains('board'))return;
+ let fs=Math.min(46,Math.max(18,innerHeight/24));inn.style.fontSize=fs+'px';
+ for(let k=0;k<60&&inn.offsetHeight>pp.clientHeight-16&&fs>14;k++){fs-=.5;inn.style.fontSize=fs+'px'}}
+function letterShow(board,people){
+ if($('#letterv'))return;closeOv&&closeOv();cineOff&&cineOff();leaveGame&&leaveGame();
+ app.innerHTML=letterHTML(board,people);document.body.classList.add('lt-on');
+ const go=()=>{fitLetter();setTimeout(fitLetter,400)};go();try{document.fonts&&document.fonts.ready.then(go)}catch(e){}setTimeout(go,1500);setTimeout(go,3400);
+ if(board){initAudio();try{[72,76,79,84].forEach((n,i)=>mtone(n,AC.currentTime+.4+i*.18,1.4,'sine',.07,.6))}catch(e){}}
+}
+addEventListener('resize',()=>fitLetter());
+function finale(){if(!S)return;if(!confirm('게임을 완전히 끝내고 편지를 띄울까요?'))return;S.letter=true;bcastAll();saveHost(true);renderHost()}
+function letterOff(){if(!S)return;S.letter=false;document.body.classList.remove('lt-on');app.innerHTML='';bcastAll();renderHost()}
 function shake(el){el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake')}
 
 /* ========= 방해 공작 고치기 ========= */
