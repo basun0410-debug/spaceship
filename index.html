@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>우리 반 우주선 – 임포스터를 찾아라! (v29)</title>
+<title>우리 반 우주선 – 임포스터를 찾아라! (v30)</title>
 <style>
 @font-face{font-family:'GmarketSans';font-weight:300;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff') format('woff')}
 @font-face{font-family:'GmarketSans';font-weight:500;font-display:swap;src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff')}
@@ -426,14 +426,14 @@ const DEFAULT_QUIZ=`[도덕] 지구가 빠르게 뜨거워지며 생기는 위�
 [도덕] 바다에 버려진 쓰레기 때문에 생기는 문제는? / 해양 쓰레기 / 대기 오염 / 물 부족 / 힌트: 바다(海)에 떠다니는 쓰레기를 뭐라고 부를까요?
 [도덕] 공기가 더러워지는 환경 문제는? / 대기 오염 / 해양 쓰레기 / 수질 오염 / 힌트: 하늘의 공기(大氣)가 오염되는 거예요.
 [도덕] 폭염이나 갑작스러운 폭우는 무엇의 예일까요? / 이상 기후 / 일기 예보 / 계절 변화 / 힌트: 평소와 다른(異常) 날씨를 말해요.
-[도덕] 환경 위기는 동식물과 우리 삶 모두에 영향을 준다. (O/X) / O / X / 힌트: 환경이 망가지면 사람도 동식물도 함께 힘들어져요.
+[도덕] 환경 위기는 동식물과 우리 삶 모두에 영향을 준다. (O/X) / O / X / 힌트: 폭염이 계속되면 사람과 동식물은 어떻게 될까요?
 [실과] 생활 속 동식물은 무엇에 따라 분류할까요? / 활용 목적 / 생김새 / 색깔 / 힌트: 동식물을 '무엇에 쓰는지'로 나눴던 것 기억나요?
 [실과] 털실의 재료가 되는 동물은? / 양 / 고양이 / 앵무새 / 힌트: 복슬복슬한 털을 깎아서 실을 만들어요. '메~' 하고 울어요.
 [실과] 비단실을 얻을 수 있는 동물은? / 누에 / 닭 / 돼지 / 힌트: 뽕잎을 먹고 고치를 만드는 곤충이에요.
 [실과] 약재나 차로 쓰이는 식물은? / 인삼 / 장미 / 벚나무 / 힌트: 뿌리를 말려서 약으로 쓰는 귀한 식물이에요. 홍○ 차!
 [실과] 장애인의 생활을 돕는 개를 무엇이라고 할까요? / 보조견 / 경주견 / 반려견 / 힌트: 사람을 '도와주는(補助)' 개예요.
 [실과] 일하고 있는 보조견을 만나면? / 부르거나 만지지 않아요 / 간식을 줘요 / 사진을 찍어요 / 힌트: 보조견은 지금 일하는 중! 방해하면 안 돼요.
-[실과] 소는 먹을거리로도, 원료·재료로도 활용된다. (O/X) / O / X / 힌트: 고기·우유도 주고, 가죽으로 신발도 만들어요.
+[실과] 소는 먹을거리로도, 원료·재료로도 활용된다. (O/X) / O / X / 힌트: 우유는 먹을거리, 가죽은 무엇으로 쓰일까요?
 [수학] 4.81 × 10 = ? / 48.1 / 481 / 0.481 / 힌트: 10을 곱하면 소수점이 오른쪽으로 한 칸 움직여요.
 [수학] 4810 × 0.01 = ? / 48.1 / 481 / 4.81 / 힌트: 0.01을 곱하면 소수점이 왼쪽으로 두 칸 움직여요.
 [수학] 9×7=63일 때, 0.9 × 7 = ? / 6.3 / 63 / 0.63 / 힌트: 0.9는 9의 10분의 1이에요. 63의 10분의 1은?
@@ -441,24 +441,24 @@ const DEFAULT_QUIZ=`[도덕] 지구가 빠르게 뜨거워지며 생기는 위�
 [수학] 37×21=777일 때, 3.7 × 2.1 = ? / 7.77 / 77.7 / 0.777 / 힌트: 3.7과 2.1은 둘 다 소수 한 자리. 777에서 소수점을 왼쪽으로 두 칸!
 [수학] 곱하는 수가 10배가 되면 곱의 소수점은? / 오른쪽으로 한 칸 / 왼쪽으로 한 칸 / 그대로 / 힌트: 수가 커지려면 소수점이 어느 쪽으로 가야 할까요?
 [수학] 0.5 × 2 = ? / 1 / 0.1 / 10 / 힌트: 0.5는 반(1/2)이에요. 반이 두 개면?
-[수학] 할리갈리: ● 0.1×2 와 ● 0.2×4 가 나왔어요. 종을 칠까요? / 친다 (합이 1) / 안 친다 / 모르겠다 / 힌트: 0.2 + 0.8을 계산해 보세요. 합이 1이면 종을 쳐요!
+[수학] 할리갈리: 0.1×2 와 0.2×4 카드가 나왔어요. 종을 칠까요? / 친다 / 안 친다 / 힌트: 0.2 + 0.8을 계산해 보세요. 합이 1이면 종을 쳐요!
 [국어] 짜장면과 짬뽕을 둘 다 만족시키는 '메뉴 합치기' 방법은? / 짬짜면 / 탕수육 / 김밥 / 힌트: 두 메뉴 이름을 반씩 합친 이름이에요.
 [국어] 서로 양보하고 생각을 합쳐 모두가 동의하는 결정을 만드는 것은? / 의견 조정 / 의견 무시 / 억지 결정 / 힌트: 서로의 생각을 '조정'해서 맞추는 거예요.
-[국어] 다수가 손을 들면 소수는 무조건 따라야 한다. (O/X) / X / O / 힌트: 적은 사람의 의견도 존중해야 해요.
+[국어] 다수결로 정할 때는 적은 수의 의견을 들을 필요가 없다. (O/X) / X / O / 힌트: 다수결로 정하더라도 소수의 의견도 존중해야 해요.
 [국어] 의견을 검토하는 기준이 아닌 것은? / 목소리가 큰가? / 실천할 수 있는가? / 효과적인가? / 힌트: 좋은 의견인지는 실천 가능성과 효과로 따져요. 목소리 크기는 상관없어요!
 [국어] 학급 토의 절차의 마지막 단계는? / 의견 결정하기 / 의견 마련하기 / 의견 나누기 / 힌트: 의견을 마련하고 → 나누고 → 마지막에는?
 [과학] 빛에 의해 열이 이동하는 방식은? / 복사 / 전도 / 대류 / 힌트: 햇빛처럼 물질 없이 직접 열이 전해지는 방식이에요.
-[과학] 열 전구 빛이 비친 검은색 판의 온도는? / 더 높아요 / 더 낮아요 / 똑같아요 / 힌트: 검은색은 빛을 잘 흡수해요.
+[과학] 열 전구 빛을 비추었을 때 온도가 더 높아지는 판은? / 검은색 판 / 흰색 판 / 둘 다 같아요 / 힌트: 어두운 색일수록 빛을 잘 흡수해요.
 [과학] 식당 보온 등이 음식을 따뜻하게 하는 열 이동 방식은? / 복사 / 전도 / 대류 / 힌트: 보온 등은 음식에 닿지 않고 빛으로 데워요.
 [과학] 적외선 온도계를 쓸 때 주의할 점은? / 레이저가 눈을 향하지 않게 / 친구 얼굴에 비추기 / 장갑 벗기 / 힌트: 레이저 빛은 눈에 아주 위험해요.
 [과학] 그늘보다 햇빛 아래가 따뜻한 것은 햇빛에 의해 열이 이동했기 때문이다. (O/X) / O / X / 힌트: 햇빛은 아무것도 거치지 않고 열을 전해 줘요.
 [사회] 일제가 대한 제국의 외교권을 빼앗으려 강제로 맺은 조약은? / 을사늑약 / 평화 조약 / 우정 조약 / 힌트: 1905년, '을사년'에 억지로(勒) 맺은 조약이에요.
 [사회] 백성들이 스스로 조직한 군대는? / 의병 / 경찰 / 해군 / 힌트: 나라를 지키려고 일어난 '정의로운(義) 군대'예요.
-[사회] '태백산 호랑이'라 불린 의병장은? / 신돌석 / 안중근 / 세종대왕 / 힌트: 평민 출신 의병장, 경상도 영덕 사람이에요. 이름에 '돌'이 들어가요.
-[사회] 일본에 진 빚을 국민의 힘으로 갚자는 운동은? / 국채 보상 운동 / 새마을 운동 / 환경 운동 / 힌트: 나랏빚(國債)을 갚아서 은혜에 보답(報償)하자는 운동!
+[사회] '태백산 호랑이'라 불린 의병장은? / 신돌석 / 안중근 / 김구 / 힌트: 평민 출신 의병장, 경상도 영덕 사람이에요. 이름에 '돌'이 들어가요.
+[사회] 일본에 진 빚을 국민의 힘으로 갚자는 운동은? / 국채 보상 운동 / 새마을 운동 / 환경 운동 / 힌트: 나랏빚(國債)을 국민이 돈을 모아 갚자(報償)는 운동!
 [사회] 안중근 의사가 의거를 일으킨 곳은? / 하얼빈 / 부산 / 제주도 / 힌트: 중국 북쪽에 있는 도시, 기차역에서 이토 히로부미를 저격했어요.
-[사회] 교육과 산업으로 나라의 힘을 기르자는 운동은? / 애국 계몽 운동 / 의병 운동 / 줄넘기 운동 / 힌트: 백성들을 '계몽(깨우침)'해서 나라를 사랑하게 하자는 운동이에요.
-[사회] 을사늑약이 부당함을 알리려고 헤이그에 보낸 사람들은? / 헤이그 특사 / 의병 / 보조견 / 힌트: 네덜란드 헤이그 만국 평화 회의에 보낸 특별한 사절!
+[사회] 교육과 산업으로 나라의 힘을 기르자는 운동은? / 애국 계몽 운동 / 의병 운동 / 새마을 운동 / 힌트: 학교를 세우고 신문을 펴내 사람들을 '계몽(깨우침)'한 운동이에요.
+[사회] 을사늑약이 부당함을 알리려고 헤이그에 보낸 사람들은? / 헤이그 특사 / 조선 통신사 / 의병 / 힌트: 네덜란드 헤이그 만국 평화 회의에 보낸 특별한 사절!
 [수학] 직사각형 6개로 둘러싸인 도형은? / 직육면체 / 원기둥 / 삼각기둥 / 힌트: 직사각형이 6개! 이름에 '직'이 들어가요.
 [수학] 정사각형 6개로 둘러싸인 도형은? / 정육면체 / 원기둥 / 구 / 힌트: 정사각형이 6개! 이름에 '정'이 들어가요.
 [수학] 직육면체의 모서리는 몇 개? / 12개 / 8개 / 6개 / 힌트: 면과 면이 만나는 선을 세어 보세요. 위 4개, 아래 4개, 옆 4개!
@@ -466,7 +466,7 @@ const DEFAULT_QUIZ=`[도덕] 지구가 빠르게 뜨거워지며 생기는 위�
 [수학] 직육면체의 면은 몇 개? / 6개 / 4개 / 8개 / 힌트: 위·아래·앞·뒤·왼쪽·오른쪽!
 [수학] 주사위는 어떤 도형 모양일까요? / 정육면체 / 원기둥 / 구 / 힌트: 주사위의 면은 모두 똑같은 정사각형이에요.
 [수학] 정육면체는 모든 모서리의 길이가 같다. (O/X) / O / X / 힌트: 정사각형 6개로 둘러싸여 있으니 모서리 길이는?
-[수학] 직육면체에는 삼각형 모양의 면이 있다. (O/X) / X / O / 힌트: 직육면체의 면은 모두 직사각형이에요.`;
+[수학] 직육면체에는 삼각형 모양의 면이 있다. (O/X) / X / O / 힌트: 주변의 상자를 떠올려 보세요. 면이 어떤 모양인가요?`;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
 const pick=a=>a[Math.random()*a.length|0];
@@ -513,7 +513,7 @@ function setStatus(t){let s=$('#status');if(!t){s&&s.remove();return}if(!s){s=do
 function loadScript(src){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
 let peerLib=null;
 function needPeer(){if(LOCAL)return Promise.resolve();if(!peerLib)peerLib=loadScript('./peerjs.min.js?v=1.5.4').catch(()=>loadScript('https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js')).catch(()=>loadScript('https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js'));return peerLib}
-function parseQuiz(txt){return String(txt||'').split('\n').map(l=>{l=l.trim();let s='';const m=l.match(/^\[([^\]]+)\]\s*/);if(m){s=m[1];l=l.slice(m[0].length)}let a=l.split('/').map(x=>x.trim()).filter(Boolean);const hi=a.find(x=>/^힌트\s*[:：]/.test(x));a=a.filter(x=>x!==hi);return a.length>=2?{s,q:a[0],a:a[1],w:a.slice(2),h:hi?hi.replace(/^힌트\s*[:：]\s*/,''):''}:null}).filter(Boolean)}
+function parseQuiz(txt){return String(txt||'').split('\n').map(l=>{l=l.trim();let s='';const m=l.match(/^\[([^\]]+)\]\s*/);if(m){s=m[1];l=l.slice(m[0].length)}l=l.replace(/\(\s*[OoＯ○]\s*[\/／]\s*[XxＸ×]\s*\)/g,'(O, X)');let a=l.split('/').map(x=>x.trim()).filter(Boolean);const hi=a.find(x=>/^힌트\s*[:：]/.test(x));a=a.filter(x=>x!==hi);return a.length>=2?{s,q:a[0],a:a[1],w:a.slice(2),h:hi?hi.replace(/^힌트\s*[:：]\s*/,''):''}:null}).filter(Boolean)}
 
 /* 소리 */
 let AC=null;
@@ -1952,7 +1952,7 @@ function openTask(id){
  const box=$('#mg');
  if(!t.q||quizOk.has(tKey(t)))return openGame(box,t);
  const q=t.q;const hasG=!!tGame(t);
- const opts=shuffle([q.a,...q.w]);
+ let opts=shuffle([q.a,...q.w]);if(opts.length===2&&opts.every(o=>/^[OX]$/.test(o)))opts=['O','X'];
  box.innerHTML=`${hasG?stepBar(1):''}<div class="center" style="padding-top:20px">${q.s?`<span class="subj">${esc(q.s)}</span>`:''}<p class="mgt">${esc(q.q)}</p></div>${opts.map(o=>`<button class="opt">${esc(o)}</button>`).join('')}
   <div class="center" style="margin-top:12px">${q.h?`<button class="btn amber sm" id="hintb">💡 힌트 보기</button>`:`<button class="btn amber sm" id="hintb">💡 힌트 (보기 하나 지우기)</button>`}<div id="hintt" class="hint" style="display:none"></div></div>`;
  const showHint=()=>{const hb=$('#hintb'),ht=$('#hintt');if(!hb||hb.disabled)return;hb.disabled=true;
